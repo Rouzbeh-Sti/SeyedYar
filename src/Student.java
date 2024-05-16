@@ -2,6 +2,14 @@ import java.util.*;
 
 public class Student {
     private String name;
+    private int courseCount=0; // dars ha
+    private int signedUnits=0; //vahed ha
+    private double totalAverage=0;
+    private int currentAverage=0;
+    private int studentID;
+    Map<Course,Double> scores=new HashMap<>();
+    List<Course> signedCourses =new ArrayList<>();
+
 
     public Student(String name, int studentID) {
         this.name = name;
@@ -21,13 +29,6 @@ public class Student {
         return Objects.hash(name, studentID);
     }
 
-    private int courseCount=0; // dars ha
-    private int signedUnits=0; //vahed ha
-    private double totalAverage=0;
-    private int currentAverage=0;
-    private int studentID;
-    Map<Course,Double> scores=new HashMap<>();
-    List<Course> signedCourses =new ArrayList<>();
     public void printCourses(){
         for (int i = 0; i < signedCourses.size(); i++) {
             System.out.println((i+1) + "- "+ signedCourses.get(i).name);
