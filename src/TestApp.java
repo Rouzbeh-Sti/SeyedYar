@@ -28,9 +28,9 @@ public class TestApp {
         assertFalse(t1.courses.contains(c1));
         t1.addCourse(c2);
         t1.addStudent(c1, s1);
-        assertFalse(c1.students.contains(s1));
+        assertFalse(c1.students.keySet().contains(s1));
         t1.addStudent(c2,s1);
-        assertTrue(c2.students.contains(s1));
+        assertTrue(c2.students.keySet().contains(s1));
         t1.addStudent(c2,s2);
         t1.addStudent(c2,s3);
         t1.setScore(c2,s1,16);
@@ -76,11 +76,11 @@ public class TestApp {
         t1.addStudent(c1,s2);
         t1.addStudent(c2,s2);
         System.out.println(t1.courses.contains(c2));
-        assertFalse(c2.students.contains(s2));
-        assertTrue(c1.students.contains(s2));
+        assertFalse(c2.students.keySet().contains(s2));
+        assertTrue(c1.students.keySet().contains(s2));
         assertTrue(s2.signedCourses.contains(c1));
         t1.removeStudent(c1,s2);
-        assertFalse(c1.students.contains(s2));
+        assertFalse(c1.students.keySet().contains(s2));
         assertFalse(s2.signedCourses.contains(c1));
 
     }

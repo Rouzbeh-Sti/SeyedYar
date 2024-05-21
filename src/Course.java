@@ -1,22 +1,22 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Course {
     public String name;
     public int courseID;
     public Teacher teacher;
     public int units;
+    public boolean isActive;
+    public int assignmentCount=0;
+    public String quizDate;
+    public int studentsCount=0;
+    Map<Student,Double> students=new HashMap<>();
+    List<Assignment> assignments=new ArrayList<>();
 
     public Course(String name,int courseID) {
         this.name = name;
         this.courseID=courseID;
     }
 
-    public boolean isActive;
-    public int assignmentCount=0;
-    public String quizDate;
-    public int studentsCount=0;
 
     @Override
     public boolean equals(Object o) {
@@ -31,20 +31,19 @@ public class Course {
         return Objects.hash(courseID);
     }
 
-    List<Student> students=new ArrayList<>();
-    List<Assignment> assignments=new ArrayList<>();
     public void printStudents(){
-        for (int i = 0; i < students.size(); i++) {
-            System.out.println((i+1)+"- "+students.get(i).getName());
+        List<Student> temp=students.keySet().stream().toList();
+        for (int i = 0; i < temp.size(); i++) {
+            System.out.println((i+1)+"- "+temp.get(i).getName());
         }
     }
     public void addStudent(Student stu){
-        students.add(stu);
+        students.put(stu,0.0);
         stu.addCourse(this);
         System.out.println("Student added successfully");
     }
     public void removeStudent(Student stu){
-        if (students.contains(stu)){
+        if (students.keySet().contains(stu)){
             students.remove(stu);
             stu.removeCourse(this);
             System.out.println("Student removed from the course.");
@@ -54,10 +53,11 @@ public class Course {
         }
     }
     public Double topScore(){
-        Double topScore=students.get(0).scores.get(this);
-        for (int i = 0; i < students.size(); i++) {
-            if (topScore<students.get(i).scores.get(this))
-                topScore=students.get(i).scores.get(this);
+        List<Student> temp=students.keySet().stream().toList();
+        Double topScore=temp.get(0).scores.get(this);
+        for (int i = 0; i < temp.size(); i++) {
+            if (topScore<temp.get(i).scores.get(this))
+                topScore=temp.get(i).scores.get(this);
         }
         return topScore;
     }

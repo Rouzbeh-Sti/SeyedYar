@@ -27,7 +27,7 @@ public class Teacher {
             crs.removeAssignment(asg);
     }
     public void setScore(Course crs,Student stu,double score){
-        if (courses.contains(crs) && crs.students.contains(stu)){
+        if (courses.contains(crs) && crs.students.keySet().contains(stu)){
             stu.scores.put(crs,score);
         }
         else System.out.println("Error !");
