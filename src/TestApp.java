@@ -15,8 +15,8 @@ public class TestApp {
          s2=new Student("Ali", 2);
          s3=new Student("Reza", 3);
         t1=new Teacher("Dr. Aliakbary");
-         c1=new Course("Fizik");
-         c2=new Course("AP");
+         c1=new Course("Fizik",1);
+         c2=new Course("AP",2);
          as1=new Assignment("First Assignment",10);
 
     }
@@ -75,6 +75,7 @@ public class TestApp {
         t1.addCourse(c1);
         t1.addStudent(c1,s2);
         t1.addStudent(c2,s2);
+        System.out.println(t1.courses.contains(c2));
         assertFalse(c2.students.contains(s2));
         assertTrue(c1.students.contains(s2));
         assertTrue(s2.signedCourses.contains(c1));

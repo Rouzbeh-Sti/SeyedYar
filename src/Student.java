@@ -30,10 +30,13 @@ public class Student {
     }
 
     public void printCourses(){
-        for (int i = 0; i < signedCourses.size(); i++) {
-            System.out.println((i+1) + "- "+ signedCourses.get(i).name);
+        int number=1;
+        for (Course c : scores.keySet()) {
+            System.out.println(number+"- "+c.name);
+            number++;
         }
     }
+
     public String getName() {
         return name;
     }
@@ -91,7 +94,7 @@ public class Student {
     public void setStudentID(int studentID) {
         this.studentID = studentID;
     }
-    public void addCourse(Course crs){
+    public void addCourse(Course crs){ //add course to Student.
         courseCount++;
         signedUnits+= crs.units;
         signedCourses.add(crs);

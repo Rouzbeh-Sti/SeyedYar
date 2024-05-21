@@ -4,31 +4,33 @@ import java.util.Objects;
 
 public class Course {
     public String name;
+    public int courseID;
     public Teacher teacher;
     public int units;
 
-    public Course(String name) {
+    public Course(String name,int courseID) {
         this.name = name;
+        this.courseID=courseID;
     }
 
     public boolean isActive;
     public int assignmentCount=0;
     public String quizDate;
+    public int studentsCount=0;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Course course = (Course) o;
-        return Objects.equals(name, course.name);
+        return courseID == course.courseID;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(courseID);
     }
 
-    public int studentsCount=0;
     List<Student> students=new ArrayList<>();
     List<Assignment> assignments=new ArrayList<>();
     public void printStudents(){
