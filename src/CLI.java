@@ -21,8 +21,21 @@ public class CLI {
         scanner.close();
         if (input==1)
             adminMenu();
-        if (input==2)
-            teacherMenu();
+        if (input==2) {
+            boolean con = true;
+            do {
+                System.out.println("please enter your ID:");
+                int ID = scanner.nextInt();
+                for(Teacher teacher : Teacher.allTeachers){
+                    if(teacher.getTeacherID() == ID){
+                        t = teacher;
+                        con = false;
+                        clearScreen();
+                    }
+                }
+            }while (con);
+            teacherMenu(t);
+        }
     }
 
 
@@ -85,6 +98,26 @@ public class CLI {
             case 8:
                 //8
                 break;
+        }
+    }
+    public static void teacherMenu(Teacher teacher){
+        Scanner scanner=new Scanner(System.in);
+        boolean check2=true;
+        int input;
+        do {
+            System.out.println("Choose an operation : ");
+            System.out.println("1 - ");
+            System.out.println("2 - ");
+            System.out.println("3 - Create a Course");
+            System.out.println("4 - Delete a Course");
+            System.out.println("5 - Create a Assignment");
+            System.out.println("6 - Add a student to a course");
+            System.out.println("7 - Remove a student from a course");
+            System.out.println("8 - Set a student score in a course");
+            input=scanner.nextInt();
+            if (input>=1 && input<=8)
+                check2=false;
+            clearScreen();
         }
     }
 

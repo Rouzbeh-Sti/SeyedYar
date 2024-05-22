@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Teacher {
     private String name=null;
@@ -55,5 +56,22 @@ public class Teacher {
     public static void deleteTeacher(Teacher teacher){
         allTeachers.remove(teacher);
         //TODO
+    }
+
+    public int getTeacherID() {
+        return teacherID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Teacher teacher = (Teacher) o;
+        return teacherID == teacher.teacherID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(teacherID);
     }
 }

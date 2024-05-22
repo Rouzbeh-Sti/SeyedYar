@@ -49,8 +49,8 @@ public class Assignment {
     public static boolean checkValidID(int assignmentID){
         for (Assignment assignment :allAssignments) {
             if (assignment.assignmentID==assignmentID)
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 }
