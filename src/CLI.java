@@ -36,6 +36,7 @@ public class CLI {
             }while (con);
             teacherMenu(t);
         }
+
     }
 
 
@@ -75,7 +76,20 @@ public class CLI {
         }while (check);
         switch (input){
             case 1:
-                //1
+                boolean checkValidID=true;
+                do {
+                System.out.println("Create a Teacher : \n");
+                System.out.println("Enter Teacher's name : ");
+                String name=scanner.nextLine();
+                System.out.println("Enter Teacher's ID : ");
+                int teacherID= scanner.nextInt();
+                if (Teacher.checkValidID(teacherID)){
+                    System.out.println("ERROR: ID Already Exist.");
+                   }else {
+
+                }
+                }while (checkValidID);
+
                 break;
             case 2:
                 //2
@@ -100,6 +114,7 @@ public class CLI {
                 break;
         }
     }
+
     public static void teacherMenu(Teacher teacher){
         Scanner scanner=new Scanner(System.in);
         boolean check2=true;
@@ -120,5 +135,4 @@ public class CLI {
             clearScreen();
         }
     }
-
 }

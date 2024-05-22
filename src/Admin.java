@@ -30,7 +30,7 @@ public class Admin {
         //TODO
     }
     public static void createAssignment(String name, int deadLineDays, Course course,int assignmentID){
-        if (Assignment.checkValidID(assignmentID)) {
+        if (!Assignment.checkValidID(assignmentID)) {
             Assignment assignment = new Assignment(name, deadLineDays, course, assignmentID);
         }
         //TODO

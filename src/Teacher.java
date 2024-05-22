@@ -9,8 +9,20 @@ public class Teacher {
     List<Course> courses=new ArrayList<>();
     public static List<Teacher> allTeachers=new ArrayList<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Teacher teacher = (Teacher) o;
+        return teacherID == teacher.teacherID;
+    }
 
-    public Teacher(String name,int teacherID) {
+    @Override
+    public int hashCode() {
+        return Objects.hash(teacherID);
+    }
+
+    public Teacher(String name, int teacherID) {
         this.name = name;
         this.teacherID=teacherID;
         allTeachers.add(this);
@@ -53,9 +65,12 @@ public class Teacher {
             crs.changeDeadLine(as1,day);
         }
     }
-    public static void deleteTeacher(Teacher teacher){
-        allTeachers.remove(teacher);
-        //TODO
+    public static boolean checkValidID(int teacherID){
+        for (Teacher teacher :allTeachers) {
+            if (teacher.teacherID==teacherID)
+                return true;
+        }
+        return false;
     }
 
     public int getTeacherID() {
