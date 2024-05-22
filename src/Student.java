@@ -124,4 +124,11 @@ public class Student {
         allStudents.remove(student);
         //TODO
     }
+    public static boolean checkValidID(int studentID){
+        for (Student student:allStudents) {
+            if (student.studentID==studentID)
+                return true;
+        }
+        return false;
+    }
 }

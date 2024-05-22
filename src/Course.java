@@ -95,4 +95,11 @@ public class Course {
         allCourses.remove(course);
         //TODO
     }
+    public static boolean checkValidID(int courseID){
+        for (Course course :allCourses) {
+            if (course.courseID==courseID)
+                return true;
+        }
+        return false;
+    }
 }
