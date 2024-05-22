@@ -53,4 +53,18 @@ public class Assignment {
         }
         return false;
     }
+
+    public int getAssignmentID() {
+        return assignmentID;
+    }
+    public static Assignment getAssignmentById(int Id){
+        if(checkValidID(Id)){
+            for(Assignment assignment : Assignment.allAssignments){
+                if(assignment.getAssignmentID() == Id){
+                    return assignment;
+                }
+            }
+        }
+        return null;
+    }
 }

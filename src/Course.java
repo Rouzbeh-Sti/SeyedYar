@@ -3,6 +3,8 @@ import java.util.*;
 public class Course {
     public String name;
     public int courseID;
+
+
     public Teacher teacher;
     public static List<Course> allCourses=new ArrayList<>();
     public int units;
@@ -101,5 +103,22 @@ public class Course {
                 return true;
         }
         return false;
+    }
+    public int getCourseID() {
+        return courseID;
+    }
+    public static Course getCourseById(int Id){
+        if(checkValidID(Id)){
+            for(Course course : Course.allCourses){
+                if(course.getCourseID() == Id){
+                    return course;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
     }
 }

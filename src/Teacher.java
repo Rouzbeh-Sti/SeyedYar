@@ -72,4 +72,19 @@ public class Teacher {
         }
         return false;
     }
+
+    public int getTeacherID() {
+        return teacherID;
+    }
+    public static Teacher getTeacherById(int Id){
+        if(checkValidID(Id)){
+            for(Teacher teacher : Teacher.allTeachers){
+                if(teacher.getTeacherID() == Id){
+                    return teacher;
+                }
+            }
+        }
+        return null;
+    }
+
 }
