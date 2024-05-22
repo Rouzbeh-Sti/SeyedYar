@@ -35,12 +35,12 @@ public class Admin {
         }
         //TODO
     }
-//    public static void deleteAssignment(Assignment assignment){
-//        if (Assignment.allAssignments.contains(assignment)){
-//            Assignment.deleteAssignment(assignment);
-//        }
-//        //TODO
-//    }
+    public static void deleteAssignment(Assignment assignment){
+        if (Assignment.allAssignments.contains(assignment)){
+            Assignment.deleteAssignment(assignment);
+        }
+        //TODO
+    }
     public static void addStudentToCourse(Student student,Course course){
         course.addStudent(student);
         //TODO
