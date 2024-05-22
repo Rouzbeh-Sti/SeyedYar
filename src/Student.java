@@ -131,4 +131,18 @@ public class Student {
         }
         return false;
     }
+    public static Student getStudentById(int Id){
+        if(checkValidID(Id)){
+            for(Student student : Student.allStudents){
+                if(student.getStudentID() == Id){
+                    return student;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Map<Course, Double> getCourses() {
+        return courses;
+    }
 }

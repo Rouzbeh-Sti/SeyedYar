@@ -76,17 +76,15 @@ public class Teacher {
     public int getTeacherID() {
         return teacherID;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Teacher teacher = (Teacher) o;
-        return teacherID == teacher.teacherID;
+    public static Teacher getTeacherById(int Id){
+        if(checkValidID(Id)){
+            for(Teacher teacher : Teacher.allTeachers){
+                if(teacher.getTeacherID() == Id){
+                    return teacher;
+                }
+            }
+        }
+        return null;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(teacherID);
-    }
 }
