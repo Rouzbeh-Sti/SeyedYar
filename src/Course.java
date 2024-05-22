@@ -79,6 +79,7 @@ public class Course {
     public void removeAssignment(Assignment asg){
         if (assignments.contains(asg)) {
             assignments.remove(asg);
+            Assignment.allAssignments.remove(asg);
             System.out.println("Assignment Removed.");
         }
         else {
@@ -120,5 +121,9 @@ public class Course {
 
     public Teacher getTeacher() {
         return teacher;
+    }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
     }
 }
