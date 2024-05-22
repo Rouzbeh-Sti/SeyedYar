@@ -3,13 +3,18 @@ import java.util.List;
 
 public class Teacher {
     private String name=null;
-
-    public Teacher(String name) {
-        this.name = name;
-    }
-
+    private int teacherID;
     private int coursesCount=0;
     List<Course> courses=new ArrayList<>();
+    public static List<Teacher> allTeachers=new ArrayList<>();
+
+
+    public Teacher(String name,int teacherID) {
+        this.name = name;
+        this.teacherID=teacherID;
+        allTeachers.add(this);
+    }
+
     public void addStudent(Course crs, Student stu){
         if (courses.contains(crs))
             crs.addStudent(stu);
@@ -18,9 +23,9 @@ public class Teacher {
         if (courses.contains(crs))
             crs.removeStudent(stu);
     }
-    public void addAssignment(Course crs,Assignment asg){
-        if (courses.contains(crs))
-            crs.addAssignment(asg);
+    public void createAssignment(String name, int deadLineDays, Course course,int assignmentID){
+        if (courses.contains(course) && Assignment.checkValidID(assignmentID))
+            course.addAssignment(new Assignment(name,deadLineDays,course,assignmentID));
     }
     public void removeAssignment(Course crs, Assignment asg){
         if (courses.contains(crs))
@@ -28,7 +33,7 @@ public class Teacher {
     }
     public void setScore(Course crs,Student stu,double score){
         if (courses.contains(crs) && crs.students.keySet().contains(stu)){
-            stu.scores.put(crs,score);
+            stu.courses.put(crs,score);
         }
         else System.out.println("Error !");
     }
@@ -46,5 +51,9 @@ public class Teacher {
         if (courses.contains(crs) && crs.assignments.contains(as1)){
             crs.changeDeadLine(as1,day);
         }
+    }
+    public static void deleteTeacher(Teacher teacher){
+        allTeachers.remove(teacher);
+        //TODO
     }
 }

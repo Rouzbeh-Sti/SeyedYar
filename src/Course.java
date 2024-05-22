@@ -4,6 +4,7 @@ public class Course {
     public String name;
     public int courseID;
     public Teacher teacher;
+    public static List<Course> allCourses=new ArrayList<>();
     public int units;
     public boolean isActive;
     public int assignmentCount=0;
@@ -15,8 +16,15 @@ public class Course {
     public Course(String name,int courseID) {
         this.name = name;
         this.courseID=courseID;
+        allCourses.add(this);
     }
 
+    public Course(String name, int courseID, Teacher teacher) {
+        this.name = name;
+        this.courseID = courseID;
+        this.teacher = teacher;
+        allCourses.add(this);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -38,9 +46,11 @@ public class Course {
         }
     }
     public void addStudent(Student stu){
-        students.put(stu,0.0);
-        stu.addCourse(this);
-        System.out.println("Student added successfully");
+        if (!students.keySet().contains(stu)) {
+            students.put(stu, 0.0);
+            stu.addCourse(this);
+            System.out.println("Student added successfully");
+        }
     }
     public void removeStudent(Student stu){
         if (students.keySet().contains(stu)){
@@ -54,10 +64,10 @@ public class Course {
     }
     public Double topScore(){
         List<Student> temp=students.keySet().stream().toList();
-        Double topScore=temp.get(0).scores.get(this);
-        for (int i = 0; i < temp.size(); i++) {
-            if (topScore<temp.get(i).scores.get(this))
-                topScore=temp.get(i).scores.get(this);
+        Double topScore=temp.get(0).courses.get(this);
+        for (Student student : temp) {
+            if (topScore < student.courses.get(this))
+                topScore = student.courses.get(this);
         }
         return topScore;
     }
@@ -79,6 +89,10 @@ public class Course {
             if (assignments.get(i).equals(as))
                 index=i;
         }
-        assignments.get(index).deadLineDays=day;
+        assignments.get(index).changeDeadLine(day);
+    }
+    public static void deleteCourse(Course course){
+        allCourses.remove(course);
+        //TODO
     }
 }

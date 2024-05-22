@@ -1,15 +1,23 @@
 import java.util.*;
 
 public class Student {
+    public static List<Student> allStudents=new ArrayList<>();
     private String name;
+    private String password;
+    private int studentID;
     private int courseCount=0; // dars ha
     private int signedUnits=0; //vahed ha
     private double totalAverage=0;
     private int currentAverage=0;
-    private int studentID;
-    Map<Course,Double> scores=new HashMap<>();
-    List<Course> signedCourses =new ArrayList<>();
 
+    public Student(String name, String password, int studentID) {
+        this.name = name;
+        this.password = password;
+        this.studentID = studentID;
+        allStudents.add(this);
+    }
+
+    Map<Course,Double> courses =new HashMap<>();
 
     public Student(String name, int studentID) {
         this.name = name;
@@ -31,7 +39,7 @@ public class Student {
 
     public void printCourses(){
         int number=1;
-        for (Course c : scores.keySet()) {
+        for (Course c : courses.keySet()) {
             System.out.println(number+"- "+c.name);
             number++;
         }
@@ -68,10 +76,10 @@ public class Student {
 
     public double getTotalAverage() {
         int sum=0;
-        for (double score:scores.values()) {
+        for (double score: courses.values()) {
             sum+=score;
         }
-        totalAverage=sum/scores.size();
+        totalAverage=sum/ courses.size();
         return totalAverage;
     }
 
@@ -95,21 +103,25 @@ public class Student {
         this.studentID = studentID;
     }
     public void addCourse(Course crs){ //add course to Student.
-        courseCount++;
-        signedUnits+= crs.units;
-        signedCourses.add(crs);
-        scores.put(crs, 0d);
+        if (!courses.keySet().contains(crs)) {
+            courseCount++;
+            signedUnits += crs.units;
+            courses.put(crs, 0.0);
+        }
     }
     public void removeCourse(Course crs){
-        if (signedCourses.contains(crs)){
+        if (courses.keySet().contains(crs)){
             courseCount--;
             signedUnits-= crs.units;
-            signedCourses.remove(crs);
-            scores.remove(crs);
+            courses.remove(crs);
             System.out.println("Course removed successfully");
         }
         else {
             System.out.println("Unavailable Course");
         }
+    }
+    public static void deleteStudent(Student student){
+        allStudents.remove(student);
+        //TODO
     }
 }
