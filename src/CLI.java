@@ -18,8 +18,9 @@ public class CLI {
             if (input == 1 || input == 2)
                 check = false;
             clearScreen();
-        } while (check);
-        if (input == 1)
+
+        }while (check);
+        if (input==1)
             adminMenu();
         if (input == 2) {
             clearScreen();
@@ -65,10 +66,10 @@ public class CLI {
         Thread.sleep(1000);
         clearScreen();
     }
-    public static void adminMenu(){
+    public static void adminMenu()throws Exception{
         Scanner scanner=new Scanner(System.in);
         boolean check=true;
-        int input;
+        int input=0;
         do {
             System.out.println("Choose an operation : ");
             System.out.println("1 - Create a Teacher");
@@ -90,16 +91,22 @@ public class CLI {
                 do {
                 System.out.println("Create a Teacher : \n");
                 System.out.println("Enter Teacher's name : ");
+                scanner.nextLine();
                 String name=scanner.nextLine();
                 System.out.println("Enter Teacher's ID : ");
                 int teacherID= scanner.nextInt();
                 if (Teacher.checkValidID(teacherID)){
                     System.out.println("ERROR: ID Already Exist.");
+                    Thread.sleep(1500);
                    }else {
-
+                    clearScreen();
+                    Admin.createTeacher(name,teacherID);
+                    System.out.println("Teacher Created !");
+                    checkValidID=false;
+                    Thread.sleep(1000);
+                    clearScreen();
                 }
                 }while (checkValidID);
-
                 break;
             case 2:
                 //2
@@ -123,6 +130,7 @@ public class CLI {
                 //8
                 break;
         }
+        adminMenu();
     }
 
     public static void teacherMenu(Teacher teacher){
