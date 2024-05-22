@@ -67,4 +67,8 @@ public class Assignment {
         }
         return null;
     }
+
+    public void setDeadLineDays(int deadLineDays) {
+        this.deadLineDays = deadLineDays;
+    }
 }

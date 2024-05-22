@@ -299,16 +299,13 @@ public class CLI {
                 condition = true;
                 do{
                     System.out.println("please enter your assignment : ");
-                    if ()
                     assignmentId = scanner.nextInt();
-
+                    if (Assignment.allAssignments.contains(Assignment.getAssignmentById(assignmentId))){
+                        System.out.println("Please enter a newDeadLine");
+                        int deadLineAssignment = scanner.nextInt();
+                        Assignment.getAssignmentById(assignmentId).setDeadLineDays(deadLineAssignment);
+                    }
                 }while (condition);
-                break;
-            case 7:
-                //7
-                break;
-            case 8:
-                //8
                 break;
         }
         teacherMenu(teacher);
