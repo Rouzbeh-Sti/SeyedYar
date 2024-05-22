@@ -48,9 +48,6 @@ public class CLI {
         teacherMenu(thisTeacher);
         scanner.close();
     }
-
-
-
     public static void printWelcome()throws Exception{
         System.out.println("Welcome!");
         Thread.sleep(1500);
@@ -77,25 +74,29 @@ public class CLI {
             System.out.println("3 - Create a Course");
             System.out.println("4 - Delete a Course");
             System.out.println("5 - Create a Assignment");
-            System.out.println("6 - Add a student to a course");
-            System.out.println("7 - Remove a student from a course");
-            System.out.println("8 - Set a student score in a course");
+            System.out.println("6 - Delete a Assignment");
+            System.out.println("7 - Add a student to a course");
+            System.out.println("8 - Remove a student from a course");
+            System.out.println("9 - Set a student score in a course");
+            System.out.println("10 - Back to main menu");
             input=scanner.nextInt();
-            if (input>=1 && input<=8)
+            if (input>=1 && input<=10)
                 check=false;
             clearScreen();
         }while (check);
+        boolean checkValidID=true;
         switch (input){
             case 1:
-                boolean checkValidID=true;
+                 checkValidID=true;
                 do {
-                System.out.println("Create a Teacher : \n");
+                System.out.println("Create a Teacher. \n");
                 System.out.println("Enter Teacher's name : ");
                 scanner.nextLine();
                 String name=scanner.nextLine();
                 System.out.println("Enter Teacher's ID : ");
                 int teacherID= scanner.nextInt();
                 if (Teacher.checkValidID(teacherID)){
+                    clearScreen();
                     System.out.println("ERROR: ID Already Exist.");
                     Thread.sleep(1500);
                    }else {
@@ -104,36 +105,206 @@ public class CLI {
                     System.out.println("Teacher Created !");
                     checkValidID=false;
                     Thread.sleep(1000);
-                    clearScreen();
                 }
+                clearScreen();
                 }while (checkValidID);
+                adminMenu();
                 break;
             case 2:
-                //2
+                 checkValidID=true;
+                do {
+                    System.out.println("Create a Student. \n");
+                    System.out.println("Enter Student's name : ");
+                    scanner.nextLine();
+                    String name=scanner.nextLine();
+                    System.out.println("Enter Student's ID : ");
+                    int studentID= scanner.nextInt();
+                    System.out.println("Enter Student's Password : ");
+                    String studentPassword= scanner.next();
+                    if (Student.checkValidID(studentID)){
+                        System.out.println("ERROR: ID Already Exist.");
+                        Thread.sleep(1500);
+                    }else {
+                        clearScreen();
+                        Admin.createStudent(studentID,studentPassword,name);
+                        System.out.println("Student Created !");
+                        checkValidID=false;
+                        Thread.sleep(1000);
+                    }
+                    clearScreen();
+                }while (checkValidID);
+                adminMenu();
                 break;
             case 3:
-                //3
+                checkValidID=true;
+                do {
+                    System.out.println("Create a Course. \n");
+                    System.out.println("Enter Course's name : ");
+                    scanner.nextLine();
+                    String name=scanner.nextLine();
+                    System.out.println("Enter Course's ID : ");
+                    int courseID= scanner.nextInt();
+                    System.out.println("Enter Course's TeacherID : ");
+                    int teacherID= scanner.nextInt();
+                    if (Course.checkValidID(courseID)){
+                        clearScreen();
+                        System.out.println("ERROR: CourseID Already Exist.");
+                        Thread.sleep(1500);
+                    } else if (Teacher.checkValidID(teacherID)) {
+                        clearScreen();
+                        System.out.println("ERROR: TeacherID Already Exist.");
+                        Thread.sleep(1500);
+                    } else {
+                        clearScreen();
+                        Admin.createCourse(name,Teacher.getTeacherById(teacherID),courseID);
+                        System.out.println("Course Created !");
+                        checkValidID=false;
+                        Thread.sleep(1000);
+                    }
+                    clearScreen();
+                }while (checkValidID);
+                adminMenu();
                 break;
             case 4:
-                //4
+                checkValidID=true;
+                do {
+                    System.out.println("Delete a Course \n");
+                    System.out.println("Enter Course's ID : ");
+                    int courseID= scanner.nextInt();
+                    if (Course.checkValidID(courseID)==false){
+                        System.out.println("CourseID not valid");
+                    }else {
+                        clearScreen();
+                        Admin.deleteCourse(Course.getCourseById(courseID));
+                        System.out.println("Course Deleted !");
+                        checkValidID=false;
+                        Thread.sleep(1000);
+                    }
+                    clearScreen();
+                }while (checkValidID);
+                adminMenu();
                 break;
             case 5:
-                //5
+                checkValidID=true;
+                do {
+                    System.out.println("Create a Assignment. \n");
+                    System.out.println("Enter Assignment's name : ");
+                    scanner.nextLine();
+                    String name=scanner.nextLine();
+                    System.out.println("Enter Assignment's ID : ");
+                    int assignmentID= scanner.nextInt();
+                    System.out.println("Enter Assignment's CourseID : ");
+                    int courseID= scanner.nextInt();
+                    System.out.println("Enter Assignment's Deadline : ");
+                    int deadline= scanner.nextInt();
+                    if (Assignment.checkValidID(assignmentID)){
+                        clearScreen();
+                        System.out.println("ERROR: Assignment ID Already Exist.");
+                        Thread.sleep(1500);
+                    } else if (!Course.checkValidID(courseID)) {
+                        clearScreen();
+                        System.out.println("ERROR: Course ID is not valid.");
+                        Thread.sleep(1500);
+                    } else if (deadline<=0) {
+                        clearScreen();
+                        System.out.println("Deadline invalid");
+                        Thread.sleep(1500);
+                    } else {
+                        clearScreen();
+                        Admin.createAssignment(name,deadline,Course.getCourseById(courseID),assignmentID);
+                        System.out.println("Assignment Created !");
+                        checkValidID=false;
+                        Thread.sleep(1000);
+                    }
+                    clearScreen();
+                }while (checkValidID);
+                adminMenu();
                 break;
             case 6:
-                //6
+                checkValidID=true;
+                do {
+                    System.out.println("Delete a Assignment. \n");
+                    System.out.println("Enter Assignment's ID : ");
+                    int assignmentID= scanner.nextInt();
+                    if (!Assignment.checkValidID(assignmentID)){
+                        clearScreen();
+                        System.out.println("ERROR: Assignment ID not valid.");
+                        Thread.sleep(1500);
+                    } else {
+                        clearScreen();
+                        Admin.deleteAssignment(Assignment.getAssignmentById(assignmentID));
+                        System.out.println("Assignment Deleted !");
+                        checkValidID=false;
+                        Thread.sleep(1000);
+                    }
+                    clearScreen();
+                }while (checkValidID);
+                adminMenu();
                 break;
             case 7:
-                //7
+                checkValidID=true;
+                do {
+                    System.out.println("Add a student to a course \n");
+                    System.out.println("Enter Student's ID : ");
+                    int studentID= scanner.nextInt();
+                    System.out.println("Enter Course's ID : ");
+                    int courseID= scanner.nextInt();
+                    if (!Student.checkValidID(studentID)){
+                        System.out.println("StudentID is not valid");
+                    } else if (!Course.checkValidID(courseID)) {
+                        System.out.println("CourseID is not valid");
+                    } else {
+                        clearScreen();
+                        Admin.addStudentToCourse(Student.getStudentById(studentID),Course.getCourseById(courseID));
+                        System.out.println("Student added to course !");
+                        checkValidID=false;
+                        Thread.sleep(1000);
+                    }
+                    clearScreen();
+                }while (checkValidID);
+                adminMenu();
                 break;
             case 8:
-                //8
+                checkValidID=true;
+                do {
+                    System.out.println("Remove a student from a course \n");
+                    System.out.println("Enter Student's ID : ");
+                    int studentID= scanner.nextInt();
+                    System.out.println("Enter Course's ID : ");
+                    int courseID= scanner.nextInt();
+                    if (!Student.checkValidID(studentID)){
+                        clearScreen();
+                        System.out.println("StudentID is not valid");
+                        Thread.sleep(1500);
+                    } else if (!Course.checkValidID(courseID)) {
+                        System.out.println("CourseID is not valid");
+                        Thread.sleep(1500);
+                    } else if (!(Student.getStudentById(studentID).courses.keySet().contains(Course.getCourseById(courseID)) && Course.getCourseById(courseID).students.keySet().contains(Student.getStudentById(studentID)))) {
+                        clearScreen();
+                        System.out.println("This Student doesn't have this Course");
+                        Thread.sleep(1500);
+                    } else {
+                        clearScreen();
+                        Admin.removeStudentFromCourse(Student.getStudentById(studentID),Course.getCourseById(courseID));
+                        System.out.println("Student removed from course !");
+                        checkValidID=false;
+                        Thread.sleep(1000);
+                    }
+                    clearScreen();
+                }while (checkValidID);
+                adminMenu();
+                break;
+            case 9:
+                
+                break;
+            case 10:
+                clearScreen();
+                printAdminOrTeacher();
                 break;
         }
-        adminMenu();
     }
 
-    public static void teacherMenu(Teacher teacher) throws InterruptedException {
+    public static void teacherMenu(Teacher teacher){
         Scanner scanner=new Scanner(System.in);
         boolean check = true;
         int input;
@@ -150,159 +321,41 @@ public class CLI {
                 check = false;
             clearScreen();
         }while (check);
-        boolean condition;
-        int courseId;
-        int studentId;
         switch (input){
-            case 1://Back to main menu button
-                condition = true;
-                //Duplicated code
+            case 1:
+                boolean condition = true;
+                int courseId;
                 do {
-                    System.out.println("Please enter your desired courseId or '0' to back to main menu :");
+                    System.out.println("Please enter your desired courseId");
                     courseId = scanner.nextInt();
                     if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
                     }
-                    else{
-                        System.out.println("You don't have this course");
-                        Thread.sleep(1500);
-                    }
-                    clearScreen();
                 }while (condition);
                 condition = true;
                 do {
-                    System.out.println("Please enter your desired studentId");
-                    studentId = scanner.nextInt();
-                    if (Student.checkValidID(studentId)){
+                    System.out.println("please enter your desired studentId");
+                    int studentId = scanner.nextInt();
+                    if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
                         condition = false;
                         teacher.addStudent(Course.getCourseById(courseId), Student.getStudentById(studentId));
                     }
-                    else {
-                        System.out.println("This Student Doesn't exist");
-                        Thread.sleep(1500);
-                    }
-                    clearScreen();
                 }while (condition);
                 break;
             case 2:
-                condition = true;
-                do {
-                    System.out.println("Please enter your desired courseId");
-                    courseId = scanner.nextInt();
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
-                        condition = false;
-                    }
-                    else{
-                        System.out.println("You don't have this course");
-                        Thread.sleep(1500);
-                    }
-                    clearScreen();
-                }while (condition);
-                condition = true;
-                do {
-                    System.out.println("Please enter your desired studentId");
-                    studentId = scanner.nextInt();
-                    if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
-                        condition = false;
-                        teacher.removeStudent(Course.getCourseById(courseId), Student.getStudentById(studentId));
-                    }
-                }while (condition);
-                Thread.sleep(1500);
-                clearScreen();
+
                 break;
             case 3:
-                condition = true;
-                do {
-                    System.out.println("Please enter your desired courseId");
-                    courseId = scanner.nextInt();
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
-                        condition = false;
-                    }
-                    else{
-                        System.out.println("You don't have this course");
-                        Thread.sleep(1500);
-                    }
-                }while (condition);
-                condition = true;
-                do {
-                    System.out.println("Please enter your desired studentId");
-                    studentId = scanner.nextInt();
-                    if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
-                        condition = false;
-                    }
-                }while (condition);
-                condition = true;
-                do{
-                    System.out.println("Please enter your desired score");
-                    int score = scanner.nextInt();
-                    if (score <= 20 && score >= 0){
-                        condition = false;
-                        teacher.setScore(Course.getCourseById(courseId), Student.getStudentById(studentId), score);
-                    }
-                }while(condition);
-                Thread.sleep(1500);
-                clearScreen();
+                //3
                 break;
             case 4:
-                condition = true;
-                do{
-                    System.out.println("Please enter your desired courseId for assignment : ");
-                    courseId = scanner.nextInt();
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
-                        condition = false;
-                    }
-                    else{
-                        System.out.println("You don't have this course");
-                        Thread.sleep(1500);
-                    }
-                }while (condition);
-                condition = true;
-                int assignmentId;
-                do{
-                    System.out.println("please enter assignmentId :");
-                    assignmentId = scanner.nextInt();
-                    if(Assignment.checkValidID(assignmentId)){
-                        System.out.println("This Assignment already exist");
-                        condition = false;
-                    }
-                }while (condition);
-                System.out.println("please enter a name for assignment :");
-                String assignmentName = scanner.nextLine();
-                System.out.println("please enter a deadLine for assignment :");
-                int deadLine = scanner.nextInt();
-                new Assignment(assignmentName, deadLine, Course.getCourseById(courseId), assignmentId);
+                //4
                 break;
             case 5:
-                condition = true;
-                do{
-                    System.out.println("Please enter your desired courseId for assignment : ");
-                    courseId = scanner.nextInt();
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
-                        condition = false;
-                    }
-                    else{
-                        System.out.println("You don't have this course");
-                        Thread.sleep(1500);
-                    }
-                }while (condition);
-                condition = true;
-                do{
-                    System.out.println("please enter assignmentId :");
-                    assignmentId = scanner.nextInt();
-                    if(Course.getCourseById(courseId).getAssignments().contains(Assignment.getAssignmentById(assignmentId))){
-                        Course.getCourseById(courseId).removeAssignment(Assignment.getAssignmentById(assignmentId));
-                        condition = false;
-                    }
-                }while (condition);
+                //5
                 break;
             case 6:
-                condition = true;
-                do{
-                    System.out.println("please enter your assignment : ");
-                    if ()
-                    assignmentId = scanner.nextInt();
-
-                }while (condition);
+                //6
                 break;
             case 7:
                 //7

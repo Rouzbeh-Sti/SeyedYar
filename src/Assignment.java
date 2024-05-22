@@ -29,6 +29,7 @@ public class Assignment {
         this.deadLineDays = deadLineDays;
         this.course=course;
         this.assignmentID=assignmentID;
+        course.addAssignment(this);
         allAssignments.add(this);
     }
     public void setCourse(Course course) {
