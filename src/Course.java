@@ -15,17 +15,13 @@ public class Course {
     Map<Student,Double> students=new HashMap<>();
     List<Assignment> assignments=new ArrayList<>();
 
-    public Course(String name,int courseID) {
-        this.name = name;
-        this.courseID=courseID;
-        allCourses.add(this);
-    }
 
     public Course(String name, int courseID, Teacher teacher) {
         this.name = name;
         this.courseID = courseID;
         this.teacher = teacher;
         allCourses.add(this);
+        teacher.courses.add(this);
     }
 
     @Override

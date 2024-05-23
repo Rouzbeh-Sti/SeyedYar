@@ -28,8 +28,13 @@ public class CLI {
         int ID;
         boolean condition = true;
         do {
-            System.out.println("please enter your ID:");
+            System.out.println("please enter your ID or press '0' to back to main menu:");
             ID = scanner.nextInt();
+            if(ID == 0){
+                clearScreen();
+                printAdminOrTeacher();
+                return;
+            }
             if (Teacher.checkValidID(ID)) {
                 condition = false;
                 System.out.println("Login Successful !");
@@ -46,7 +51,6 @@ public class CLI {
                 thisTeacher = teacher;
         }
         teacherMenu(thisTeacher);
-        scanner.close();
     }
     public static void printWelcome()throws Exception{
         System.out.println("Welcome!");
@@ -150,9 +154,9 @@ public class CLI {
                         clearScreen();
                         System.out.println("ERROR: CourseID Already Exist.");
                         Thread.sleep(1500);
-                    } else if (Teacher.checkValidID(teacherID)) {
+                    } else if (!Teacher.checkValidID(teacherID)) {
                         clearScreen();
-                        System.out.println("ERROR: TeacherID Already Exist.");
+                        System.out.println("ERROR: TeacherID doesn't Exist.");
                         Thread.sleep(1500);
                     } else {
                         clearScreen();
@@ -295,7 +299,6 @@ public class CLI {
                 adminMenu();
                 break;
             case 9:
-                
                 break;
             case 10:
                 clearScreen();
@@ -304,7 +307,7 @@ public class CLI {
         }
     }
 
-    public static void teacherMenu(Teacher teacher) throws InterruptedException {
+    public static void teacherMenu(Teacher teacher) throws Exception {
         Scanner scanner=new Scanner(System.in);
         boolean check = true;
         int input;
@@ -316,8 +319,9 @@ public class CLI {
             System.out.println("4 - Create a Assignment");
             System.out.println("5 - Remove a Assignment");
             System.out.println("6 - Change a Deadline Assignment");
-            input=scanner.nextInt();
-            if (input>=1 && input<=8)
+            System.out.println("7 - back to main menu");
+            input = Integer.parseInt(scanner.next());
+            if (input>=1 && input<=7)
                 check = false;
             clearScreen();
         }while (check);
@@ -329,9 +333,18 @@ public class CLI {
                 condition = true;
                 //Duplicated code
                 do {
-                    System.out.println("Please enter your desired courseId or '0' to back to main menu :");
+                    System.out.println("Please enter your desired courseId or '0' to back to teacher menu :");
                     courseId = scanner.nextInt();
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
+                    if (courseId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    if (Course.getCourseById(courseId) == null){
+                        System.out.println("Invalid course ID!");
+                        clearScreen();
+                    }
+                    else if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
                     }
                     else{
@@ -347,20 +360,31 @@ public class CLI {
                     if (Student.checkValidID(studentId)){
                         condition = false;
                         teacher.addStudent(Course.getCourseById(courseId), Student.getStudentById(studentId));
+                        clearScreen();
+                        teacherMenu(teacher);
                     }
                     else {
                         System.out.println("This Student Doesn't exist");
                         Thread.sleep(1500);
+                        clearScreen();
                     }
-                    clearScreen();
                 }while (condition);
                 break;
             case 2:
                 condition = true;
                 do {
-                    System.out.println("Please enter your desired courseId");
+                    System.out.println("Please enter your desired courseId or '0' to back to teacher menu :");
                     courseId = scanner.nextInt();
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
+                    if (courseId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    if (Course.getCourseById(courseId) == null){
+                        System.out.println("Invalid course ID!");
+                        clearScreen();
+                    }
+                    else if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
                     }
                     else{
@@ -373,9 +397,18 @@ public class CLI {
                 do {
                     System.out.println("Please enter your desired studentId");
                     studentId = scanner.nextInt();
-                    if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
+                    if (Student.getStudentById(studentId) == null){
+                        System.out.println("This Student Doesn't exist");
+                    }
+                    else if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
                         condition = false;
                         teacher.removeStudent(Course.getCourseById(courseId), Student.getStudentById(studentId));
+                        clearScreen();
+                        teacherMenu(teacher);
+                    }
+                    else{
+                        System.out.println("this student doesn't have this course!");
+                        condition = false;
                     }
                 }while (condition);
                 Thread.sleep(1500);
@@ -384,9 +417,18 @@ public class CLI {
             case 3:
                 condition = true;
                 do {
-                    System.out.println("Please enter your desired courseId");
+                    System.out.println("Please enter your desired courseId or '0' to back to teacher menu :");
                     courseId = scanner.nextInt();
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
+                    if (courseId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    if(Course.getCourseById(courseId) == null){
+                        System.out.println("Invalid course ID!");
+                        clearScreen();
+                    }
+                    else if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
                     }
                     else{
@@ -396,10 +438,25 @@ public class CLI {
                 }while (condition);
                 condition = true;
                 do {
-                    System.out.println("Please enter your desired studentId");
+                    System.out.println("Please enter your desired studentId or '0' to back to teacher menu :");
                     studentId = scanner.nextInt();
-                    if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
+                    if (studentId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    if (Student.getStudentById(studentId) == null){
+                        System.out.println("This Student Doesn't exist");
+                        clearScreen();
+                    }
+                    else if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
                         condition = false;
+                    }
+                    else {
+                        System.out.println("This student doesn't have this course!");
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
                     }
                 }while (condition);
                 condition = true;
@@ -409,17 +466,29 @@ public class CLI {
                     if (score <= 20 && score >= 0){
                         condition = false;
                         teacher.setScore(Course.getCourseById(courseId), Student.getStudentById(studentId), score);
+                        System.out.println("This score applied");
                     }
                 }while(condition);
                 Thread.sleep(1500);
                 clearScreen();
+                teacherMenu(teacher);
                 break;
             case 4:
                 condition = true;
                 do{
-                    System.out.println("Please enter your desired courseId for assignment : ");
+                    System.out.println("Please enter your desired courseId for assignment or '0' to back to teacher menu : ");
                     courseId = scanner.nextInt();
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
+                    if (courseId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    if(Course.getCourseById(courseId) == null){
+                        System.out.println("Invalid course ID!");
+                        Thread.sleep(1500);
+                        clearScreen();
+                    }
+                    else if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
                     }
                     else{
@@ -430,24 +499,41 @@ public class CLI {
                 condition = true;
                 int assignmentId;
                 do{
-                    System.out.println("please enter assignmentId :");
+                    System.out.println("please enter assignmentId or '0' to back to teacher menu : ");
                     assignmentId = scanner.nextInt();
-                    if(Assignment.checkValidID(assignmentId)){
-                        System.out.println("This Assignment already exist");
+                    if (assignmentId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    if(!Assignment.checkValidID(assignmentId)){
                         condition = false;
+                    }
+                    else {
+                        System.out.println("This Assignment already exist");
+                        Thread.sleep(1500);
+                        clearScreen();
                     }
                 }while (condition);
                 System.out.println("please enter a name for assignment :");
                 String assignmentName = scanner.nextLine();
+                clearScreen();
                 System.out.println("please enter a deadLine for assignment :");
                 int deadLine = scanner.nextInt();
+                clearScreen();
                 new Assignment(assignmentName, deadLine, Course.getCourseById(courseId), assignmentId);
+                teacherMenu(teacher);
                 break;
             case 5:
                 condition = true;
                 do{
-                    System.out.println("Please enter your desired courseId for assignment : ");
+                    System.out.println("Please enter your desired courseId for assignment or '0' to back to teacher menu : ");
                     courseId = scanner.nextInt();
+                    if (courseId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
                     if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
                     }
@@ -458,27 +544,47 @@ public class CLI {
                 }while (condition);
                 condition = true;
                 do{
-                    System.out.println("please enter assignmentId :");
+                    System.out.println("please enter assignmentId or '0' to back to teacher menu : ");
                     assignmentId = scanner.nextInt();
+                    if (assignmentId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
                     if(Course.getCourseById(courseId).getAssignments().contains(Assignment.getAssignmentById(assignmentId))){
                         Course.getCourseById(courseId).removeAssignment(Assignment.getAssignmentById(assignmentId));
                         condition = false;
+                    }
+                    else {
+                        System.out.println("this assignment doesn't exist");
+                        Thread.sleep(1500);
+                        clearScreen();
                     }
                 }while (condition);
                 break;
             case 6:
                 condition = true;
                 do{
-                    System.out.println("please enter your assignment : ");
+                    System.out.println("please enter your assignment ID or '0' to back to teacher menu : ");
                     assignmentId = scanner.nextInt();
+                    if (assignmentId == 0){
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    //error
                     if (Assignment.allAssignments.contains(Assignment.getAssignmentById(assignmentId))){
-                        System.out.println("Please enter a newDeadLine");
+                        System.out.println("Please enter a newDeadLine :");
                         int deadLineAssignment = scanner.nextInt();
                         Assignment.getAssignmentById(assignmentId).setDeadLineDays(deadLineAssignment);
+                        condition = false;
                     }
                 }while (condition);
+                teacherMenu(teacher);
+                break;
+            case 7:
+                printAdminOrTeacher();
                 break;
         }
-        teacherMenu(teacher);
     }
 }
