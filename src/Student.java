@@ -114,10 +114,6 @@ public class Student {
             courseCount--;
             signedUnits-= crs.units;
             courses.remove(crs);
-            System.out.println("Course removed successfully");
-        }
-        else {
-            System.out.println("Unavailable Course");
         }
     }
     public static void deleteStudent(Student student){

@@ -47,17 +47,12 @@ public class Course {
         if (!students.keySet().contains(stu)) {
             students.put(stu, 0.0);
             stu.addCourse(this);
-            System.out.println("Student added successfully");
         }
     }
     public void removeStudent(Student stu){
         if (students.keySet().contains(stu)){
             students.remove(stu);
             stu.removeCourse(this);
-            System.out.println("Student removed from the course.");
-        }
-        else {
-            System.out.println("this student doesn't have the course");
         }
     }
     public Double topScore(){
@@ -76,11 +71,8 @@ public class Course {
         if (assignments.contains(asg)) {
             assignments.remove(asg);
             Assignment.allAssignments.remove(asg);
-            System.out.println("Assignment Removed.");
         }
-        else {
-            System.out.println("Assignment not valid in this course");
-        }
+
     }
     public void changeDeadLine(Assignment as,int day){
         int index=0;

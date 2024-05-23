@@ -55,5 +55,7 @@ public class Admin {
     public static void removeStudentFromCourse(Student student,Course course){
         course.removeStudent(student);
     }
-
+    public static void changeAssignmentDeadline(Assignment assignment,int newDeadline){
+        assignment.changeDeadLine(newDeadline);
+    }
 }
