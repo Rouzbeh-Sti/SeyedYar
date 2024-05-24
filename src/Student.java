@@ -10,11 +10,15 @@ public class Student {
     private double totalAverage=0;
     private int currentAverage=0;
 
-    public Student(String name, String password, int studentID) {
+    public Student(String name, String password, int studentID,boolean addToFile) {
         this.name = name;
         this.password = password;
         this.studentID = studentID;
         allStudents.add(this);
+        if (addToFile){
+            String output=studentID+","+password+","+name+","+"null";
+            FileController.AddToFile(output,"studentList.txt");
+        }
     }
 
     Map<Course,Double> courses =new HashMap<>();
@@ -102,13 +106,18 @@ public class Student {
     public void setStudentID(int studentID) {
         this.studentID = studentID;
     }
-    public void addCourse(Course crs){ //add course to Student.
+    public void addCourse(Course crs){
         if (!courses.keySet().contains(crs)) {
             courseCount++;
             signedUnits += crs.units;
             courses.put(crs, 0.0);
+            String coursesToList="";
+            for (Course course: courses.keySet()) {
+                coursesToList+=course.courseID+"#"+course.students.get(this);
+             }
+            FileController.changeSpecifiedField("studentList.txt",this.getStudentID(),3,coursesToList);
+          }
         }
-    }
     public void removeCourse(Course crs){
         if (courses.keySet().contains(crs)){
             courseCount--;

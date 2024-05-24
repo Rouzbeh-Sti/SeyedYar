@@ -37,8 +37,14 @@ public class CLI {
                 return;
             }
             if (Teacher.checkValidID(ID)) {
+                Teacher thisTeacher = null;
+                for (Teacher teacher : Teacher.allTeachers) {
+                    if (teacher.getTeacherID() == ID)
+                        thisTeacher = teacher;
+                }
                 condition = false;
                 System.out.println("Login Successful !");
+                System.out.println("Welcome dear "+thisTeacher.name);
                 Thread.sleep(1000);
             } else {
                 System.out.println("ERROR: Invalid ID");
@@ -411,6 +417,7 @@ public class CLI {
                     if (Student.checkValidID(studentId)){
                         condition = false;
                         teacher.addStudent(Course.getCourseById(courseId), Student.getStudentById(studentId));
+                        System.out.println("Student added to course successfully");
                         clearScreen();
                         teacherMenu(teacher);
                     }
@@ -454,6 +461,7 @@ public class CLI {
                     else if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
                         condition = false;
                         teacher.removeStudent(Course.getCourseById(courseId), Student.getStudentById(studentId));
+                        System.out.println("Student removed successfully");
                         clearScreen();
                         teacherMenu(teacher);
                     }
@@ -543,6 +551,7 @@ public class CLI {
                         condition = false;
                     }
                     else{
+                        clearScreen();
                         System.out.println("You don't have this course");
                         Thread.sleep(1500);
                     }
@@ -567,32 +576,17 @@ public class CLI {
                     }
                 }while (condition);
                 System.out.println("please enter a name for assignment :");
+                scanner.nextLine();
                 String assignmentName = scanner.nextLine();
                 clearScreen();
                 System.out.println("please enter a deadLine for assignment :");
                 int deadLine = scanner.nextInt();
                 clearScreen();
-                new Assignment(assignmentName, deadLine, Course.getCourseById(courseId), assignmentId);
+                teacher.createAssignment(assignmentName,deadLine,Course.getCourseById(courseId),assignmentId);
+                System.out.println("Assignment Created Successfully");
                 teacherMenu(teacher);
                 break;
             case 5:
-                condition = true;
-                do{
-                    System.out.println("Please enter your desired courseId for assignment or '0' to back to teacher menu : ");
-                    courseId = scanner.nextInt();
-                    if (courseId == 0){
-                        clearScreen();
-                        teacherMenu(teacher);
-                        break;
-                    }
-                    if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
-                        condition = false;
-                    }
-                    else{
-                        System.out.println("You don't have this course");
-                        Thread.sleep(1500);
-                    }
-                }while (condition);
                 condition = true;
                 do{
                     System.out.println("please enter assignmentId or '0' to back to teacher menu : ");
@@ -602,16 +596,24 @@ public class CLI {
                         teacherMenu(teacher);
                         break;
                     }
-                    if(Course.getCourseById(courseId).getAssignments().contains(Assignment.getAssignmentById(assignmentId))){
-                        Course.getCourseById(courseId).removeAssignment(Assignment.getAssignmentById(assignmentId));
-                        condition = false;
-                    }
-                    else {
+                    if(!Assignment.checkValidID(assignmentId)){
+                        clearScreen();
                         System.out.println("this assignment doesn't exist");
                         Thread.sleep(1500);
+                    } else if (!Assignment.getAssignmentById(assignmentId).course.teacher.equals(teacher)) {
                         clearScreen();
+                        System.out.println("ERROR: You Don't have this course");
+                        Thread.sleep(1500);
+                    } else {
+                        clearScreen();
+                        Assignment.deleteAssignment(Assignment.getAssignmentById(assignmentId));
+                        System.out.println("Assignment removed successfully");
+                        condition=false;
+                        Thread.sleep(1500);
                     }
+                    clearScreen();
                 }while (condition);
+                teacherMenu(teacher);
                 break;
             case 6:
                 condition = true;
@@ -627,13 +629,15 @@ public class CLI {
                     if (Assignment.allAssignments.contains(Assignment.getAssignmentById(assignmentId))){
                         System.out.println("Please enter a newDeadLine :");
                         int deadLineAssignment = scanner.nextInt();
-                        Assignment.getAssignmentById(assignmentId).setDeadLineDays(deadLineAssignment);
+                        Assignment.getAssignmentById(assignmentId).changeDeadLine(deadLineAssignment);
+                        System.out.println("Deadline changed successfully");
                         condition = false;
                     }else {
                         clearScreen();
                         System.out.println("You don't have access to this assignment.");
                         Thread.sleep(1500);
                     }
+                    clearScreen();
                 }while (condition);
                 teacherMenu(teacher);
                 break;
