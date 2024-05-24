@@ -41,10 +41,9 @@ public class Admin {
     }
     public static void setStudentScore(Student student,Course course,Double score){
         if (student.courses.keySet().contains(course)){
-            student.courses.put(course,score);
+            student.addCourse(course,score);
             course.students.put(student,score);
         }
-        //TODO
     }
     public static void removeStudentFromCourse(Student student,Course course){
         course.removeStudent(student);

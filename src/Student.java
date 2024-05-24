@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.*;
 
 public class Student {
@@ -114,7 +118,20 @@ public class Student {
             courses.put(crs, 0.0);
             String coursesToList="";
             for (Course course: courses.keySet()) {
-                coursesToList+=course.courseID+"#"+course.students.get(this);
+                coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
+             }
+            FileController.changeSpecifiedField("studentList.txt",this.getStudentID(),3,coursesToList);
+          }
+        }
+        public void addCourse(Course crs,double score){
+        if (courses.keySet().contains(crs)) {
+            courseCount++;
+            signedUnits += crs.units;
+            crs.students.put(this,score);
+            courses.put(crs, score);
+            String coursesToList="";
+            for (Course course: courses.keySet()) {
+                coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
              }
             FileController.changeSpecifiedField("studentList.txt",this.getStudentID(),3,coursesToList);
           }
@@ -124,6 +141,30 @@ public class Student {
             courseCount--;
             signedUnits-= crs.units;
             courses.remove(crs);
+            String coursesToList="";
+            for (Course course: courses.keySet()) {
+                coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
+            }
+            FileController.changeSpecifiedField("studentList.txt",this.getStudentID(),3,coursesToList);
+            if (courses.size()==0){
+                String line;
+                String[] info;
+                try(BufferedReader reader=new BufferedReader(new FileReader("studentList.txt"))){
+                    while ((line=reader.readLine())!=null){
+                        ;
+                        info=line.split(",");
+                        int findID=Integer.parseInt(info[0]);
+                        if (findID==this.studentID){
+                            System.out.println("got It !");
+                            break;
+                        }
+                    }
+                    FileController.deleteSpecifiedIDFromFile(studentID,"studentList.txt");
+                    FileController.AddToFile(line+"#","studentList.txt");
+                }catch (Exception e){
+                    System.out.println("ERROR: "+e.getStackTrace());
+                }
+            }
         }
     }
     public static void deleteStudent(Student student){
