@@ -1,6 +1,6 @@
 public class Admin {
     public static void createTeacher(String name, int teacherID){
-        Teacher teacher=new Teacher(name,teacherID);
+        Teacher teacher=new Teacher(name,teacherID,true);
         //TODO
     }
 //    public static void deleteTeacher(Teacher teacher){
@@ -20,7 +20,7 @@ public class Admin {
 //        //TODO
 //    }
     public static void createCourse(String name,Teacher teacher,int courseID){
-        Course course=new Course(name,courseID,teacher);
+        Course course=new Course(name,courseID,teacher,true);
         //TODO
     }
     public static void deleteCourse(Course course){

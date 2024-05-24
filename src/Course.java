@@ -16,12 +16,16 @@ public class Course {
     List<Assignment> assignments=new ArrayList<>();
 
 
-    public Course(String name, int courseID, Teacher teacher) {
+    public Course(String name, int courseID, Teacher teacher,boolean addToList) {
         this.name = name;
         this.courseID = courseID;
         this.teacher = teacher;
         allCourses.add(this);
         teacher.courses.add(this);
+        if (addToList){
+            String output=courseID+","+name+","+teacher.getTeacherID();
+            FileController.AddToFile(output,"courseList.txt");
+        }
     }
 
     @Override
@@ -84,7 +88,7 @@ public class Course {
     }
     public static void deleteCourse(Course course){
         allCourses.remove(course);
-        //TODO
+        FileController.deleteSpecifiedIDFromFile(course.courseID,"courseList.txt");
     }
     public static boolean checkValidID(int courseID){
         for (Course course :allCourses) {

@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class CLI {
     public static void main(String[] args) throws Exception {
+        FileController.loadObjects();
         printWelcome();
         printAdminOrTeacher();
     }
@@ -79,7 +80,7 @@ public class CLI {
             System.out.println("10 - Set a student score in a course");
             System.out.println("11 - Back to main menu");
             input=scanner.nextInt();
-            if (input>=1 && input<=10)
+            if (input>=1 && input<=11)
                 check=false;
             clearScreen();
         }while (check);
@@ -167,7 +168,7 @@ public class CLI {
             case 4:
                 checkValidID=true;
                 do {
-                    System.out.println("Delete a Course \n");
+                    System.out.println("Delete a Course. \n");
                     System.out.println("Enter Course's ID : ");
                     int courseID= scanner.nextInt();
                     if (Course.checkValidID(courseID)==false){
