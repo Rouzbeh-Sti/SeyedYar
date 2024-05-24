@@ -3,7 +3,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Teacher {
-    private String name=null;
+
+    public String name=null;
     private int teacherID;
     private int coursesCount=0;
     List<Course> courses=new ArrayList<>();
@@ -21,13 +22,15 @@ public class Teacher {
     public int hashCode() {
         return Objects.hash(teacherID);
     }
-
-    public Teacher(String name, int teacherID) {
+    public Teacher(String name, int teacherID,boolean addToFile) {
         this.name = name;
         this.teacherID=teacherID;
         allTeachers.add(this);
+        if (addToFile){
+        String output=teacherID+","+name;
+        FileController.AddToFile(output,"teacherList.txt");
+        }
     }
-
     public void addStudent(Course crs, Student stu){
         if (courses.contains(crs))
             crs.addStudent(stu);
@@ -37,8 +40,7 @@ public class Teacher {
             crs.removeStudent(stu);
     }
     public void createAssignment(String name, int deadLineDays, Course course,int assignmentID){
-        if (courses.contains(course) && Assignment.checkValidID(assignmentID))
-            course.addAssignment(new Assignment(name,deadLineDays,course,assignmentID));
+        new Assignment(name,deadLineDays,course,assignmentID,true);
     }
     public void removeAssignment(Course crs, Assignment asg){
         if (courses.contains(crs))
@@ -60,11 +62,6 @@ public class Teacher {
         courses.remove(crs);
         coursesCount--;
     }
-    public void changeDeadLine(Course crs, Assignment as1, int day){
-        if (courses.contains(crs) && crs.assignments.contains(as1)){
-            crs.changeDeadLine(as1,day);
-        }
-    }
     public static boolean checkValidID(int teacherID){
         for (Teacher teacher :allTeachers) {
             if (teacher.teacherID==teacherID)
@@ -85,6 +82,9 @@ public class Teacher {
             }
         }
         return null;
+    }
+    public static void deleteTeacher(Teacher teacher){
+        allTeachers.remove(teacher);
     }
 
 }

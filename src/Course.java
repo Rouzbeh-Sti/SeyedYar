@@ -16,12 +16,17 @@ public class Course {
     List<Assignment> assignments=new ArrayList<>();
 
 
-    public Course(String name, int courseID, Teacher teacher) {
+
+    public Course(String name, int courseID, Teacher teacher,boolean addToList) {
         this.name = name;
         this.courseID = courseID;
         this.teacher = teacher;
         allCourses.add(this);
         teacher.courses.add(this);
+        if (addToList){
+            String output=courseID+","+name+","+teacher.getTeacherID();
+            FileController.AddToFile(output,"courseList.txt");
+        }
     }
 
     @Override
@@ -47,17 +52,13 @@ public class Course {
         if (!students.keySet().contains(stu)) {
             students.put(stu, 0.0);
             stu.addCourse(this);
-            System.out.println("Student added successfully");
         }
     }
     public void removeStudent(Student stu){
         if (students.keySet().contains(stu)){
             students.remove(stu);
             stu.removeCourse(this);
-            System.out.println("Student removed from the course.");
-        }
-        else {
-            System.out.println("this student doesn't have the course");
+
         }
     }
     public Double topScore(){
@@ -76,10 +77,7 @@ public class Course {
         if (assignments.contains(asg)) {
             assignments.remove(asg);
             Assignment.allAssignments.remove(asg);
-            System.out.println("Assignment Removed.");
-        }
-        else {
-            System.out.println("Assignment not valid in this course");
+
         }
     }
     public void changeDeadLine(Assignment as,int day){
@@ -92,7 +90,7 @@ public class Course {
     }
     public static void deleteCourse(Course course){
         allCourses.remove(course);
-        //TODO
+        FileController.deleteSpecifiedIDFromFile(course.courseID,"courseList.txt");
     }
     public static boolean checkValidID(int courseID){
         for (Course course :allCourses) {
