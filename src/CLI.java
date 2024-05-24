@@ -61,7 +61,7 @@ public class CLI {
     }
     public static void printWelcome()throws Exception{
         System.out.println("Welcome!");
-        Thread.sleep(1500);
+        Thread.sleep(700);
         clearScreen();
     }
     public static void clearScreen(){

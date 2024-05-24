@@ -55,11 +55,8 @@ public class Course {
         }
     }
     public void removeStudent(Student stu){
-        if (students.keySet().contains(stu)){
             students.remove(stu);
             stu.removeCourse(this);
-
-        }
     }
     public Double topScore(){
         List<Student> temp=students.keySet().stream().toList();
@@ -89,6 +86,14 @@ public class Course {
         assignments.get(index).changeDeadLine(day);
     }
     public static void deleteCourse(Course course){
+        for (Assignment assignment :course.assignments) {
+            Assignment.allAssignments.remove(assignment);
+            FileController.deleteSpecifiedIDFromFile(assignment.assignmentID,"assignmentList.txt");
+        }
+        for (Student student :course.students.keySet()) {
+            student.courses.remove(course);
+        }
+        course.teacher.courses.remove(course);
         allCourses.remove(course);
         FileController.deleteSpecifiedIDFromFile(course.courseID,"courseList.txt");
     }

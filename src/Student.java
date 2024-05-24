@@ -155,7 +155,6 @@ public class Student {
                         info=line.split(",");
                         int findID=Integer.parseInt(info[0]);
                         if (findID==this.studentID){
-                            System.out.println("got It !");
                             break;
                         }
                     }
@@ -168,8 +167,11 @@ public class Student {
         }
     }
     public static void deleteStudent(Student student){
+        for (Course course :student.courses.keySet()) {
+            course.students.remove(student);
+        }
         allStudents.remove(student);
-        //TODO
+        FileController.deleteSpecifiedIDFromFile(student.studentID,"studentList.txt");
     }
     public static boolean checkValidID(int studentID){
         for (Student student:allStudents) {

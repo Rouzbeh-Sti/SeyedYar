@@ -12,7 +12,6 @@ public class Admin {
     }
     public static void deleteStudent(Student student){
             Student.deleteStudent(student);
-        //TODO
     }
     public static void createCourse(String name,Teacher teacher,int courseID){
         Course course=new Course(name,courseID,teacher,true);

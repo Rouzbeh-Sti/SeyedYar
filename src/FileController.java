@@ -29,7 +29,7 @@ public class FileController {
                     }
                 }
             }catch (Exception e){
-                System.out.println("Error: 11"+e.getMessage());
+                System.out.println("Error: student "+e.getMessage());
             }
     }
 
@@ -38,12 +38,12 @@ public class FileController {
         try(BufferedReader reader=new BufferedReader(new FileReader("teacherList.txt"))){
             String line;
             String[] info;
-            while ((line= reader.readLine())!=null){
+            while ((line=reader.readLine())!=null){
                 info=line.split(",");
                 new Teacher(info[1],Integer.parseInt(info[0]),false);
             }
         }catch (Exception e){
-            System.out.println("Error: "+e.getMessage());
+            System.out.println("Errorteacher: "+e.getMessage());
         }
     }
     public static void readCourseList(){
@@ -57,7 +57,7 @@ public class FileController {
                 new Course(info[1],Integer.parseInt(info[0]),Teacher.getTeacherById(Integer.parseInt(info[2])),false);
             }
         }catch (Exception e){
-            System.out.println("Error: "+e.getStackTrace());
+            System.out.println("Errorcourse: "+e.getStackTrace());
         }
     }
     public static void readAssignmentList(){
@@ -70,7 +70,7 @@ public class FileController {
                 new Assignment(info[1],Integer.parseInt(info[3]),Course.getCourseById(Integer.parseInt(info[2])),Integer.parseInt(info[0]),false);
             }
         }catch (Exception e){
-            System.out.println("Error: "+e.getStackTrace());
+            System.out.println("Errorassign: "+e.getStackTrace());
         }
     }
 

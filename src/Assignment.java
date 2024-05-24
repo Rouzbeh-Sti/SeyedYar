@@ -48,6 +48,7 @@ public class Assignment {
             isActive=true;
     }
     public static void deleteAssignment(Assignment assignment){
+        assignment.course.removeAssignment(assignment);
         allAssignments.remove(assignment);
         FileController.deleteSpecifiedIDFromFile(assignment.assignmentID,"assignmentList.txt");
     }
