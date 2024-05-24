@@ -22,12 +22,15 @@ public class Teacher {
         return Objects.hash(teacherID);
     }
 
-    public Teacher(String name, int teacherID) {
+    public Teacher(String name, int teacherID,boolean addToFile) {
         this.name = name;
         this.teacherID=teacherID;
         allTeachers.add(this);
+        if (addToFile){
+        String output=teacherID+","+name;
+        FileController.AddToFile(output,"teacherList.txt");
+        }
     }
-
     public void addStudent(Course crs, Student stu){
         if (courses.contains(crs))
             crs.addStudent(stu);
