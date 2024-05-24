@@ -24,19 +24,22 @@ public class Assignment {
         return Objects.hash(assignmentID);
     }
 
-    public Assignment(String name, int deadLineDays, Course course,int assignmentID) {
+    public Assignment(String name, int deadLineDays, Course course,int assignmentID,boolean addToFile) {
         this.name = name;
         this.deadLineDays = deadLineDays;
         this.course=course;
         this.assignmentID=assignmentID;
         course.addAssignment(this);
+        if (deadLineDays<=0)
+            isActive=false;
         allAssignments.add(this);
+        if (addToFile){
+            String output=assignmentID+","+name+","+course.courseID+","+deadLineDays;
+            FileController.AddToFile(output,"assignmentList.txt");
+        }
     }
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
     public void changeDeadLine(int newDays){
+        FileController.changeSpecifiedField("assignmentList.txt",this.assignmentID,3,String.valueOf(newDays));
         deadLineDays=newDays;
         if (newDays<=0)
             isActive=false;
@@ -45,7 +48,7 @@ public class Assignment {
     }
     public static void deleteAssignment(Assignment assignment){
         allAssignments.remove(assignment);
-        //TODO
+        FileController.deleteSpecifiedIDFromFile(assignment.assignmentID,"assignmentList.txt");
     }
     public static boolean checkValidID(int assignmentID){
         for (Assignment assignment :allAssignments) {
@@ -67,9 +70,5 @@ public class Assignment {
             }
         }
         return null;
-    }
-
-    public void setDeadLineDays(int deadLineDays) {
-        this.deadLineDays = deadLineDays;
     }
 }

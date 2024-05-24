@@ -7,36 +7,91 @@ public class FileController {
     public static void loadObjects(){
         readTeacherList();
         readCourseList();
+        readAssignmentList();
+        readStudentList();
     }
+
+    private static void readStudentList() {
+        checkFileExists(".\\studentList.txt");
+            try(BufferedReader reader=new BufferedReader(new FileReader("studentList.txt"))){
+
+                String line;
+                String[] info;
+                String[] coursesAndScores;
+                while ((line= reader.readLine())!=null){
+                    info=line.split(",");
+                    Student student=new Student(info[2],info[1],Integer.parseInt(info[0]),false);
+                    coursesAndScores=info[3].split("#");
+                    for (int i = 0; i < coursesAndScores.length; i+=2) {
+                        int courseID=Integer.parseInt(coursesAndScores[i]);
+                        double score=Double.parseDouble(coursesAndScores[i+1]);
+                        Admin.addStudentToCourse(student,Course.getCourseById(courseID));
+                        Admin.setStudentScore(student,Course.getCourseById(courseID),score);
+                    }
+                }
+            }catch (Exception e){
+                System.out.println("Error: 11"+e.getMessage());
+            }
+    }
+
     public static void readTeacherList(){
+        checkFileExists(".\\teacherList.txt");
         try(BufferedReader reader=new BufferedReader(new FileReader("teacherList.txt"))){
             String line;
             String[] info;
             while ((line= reader.readLine())!=null){
                 info=line.split(",");
-                Teacher teacher=new Teacher(info[1],Integer.parseInt(info[0]),false);
+                new Teacher(info[1],Integer.parseInt(info[0]),false);
             }
         }catch (Exception e){
             System.out.println("Error: "+e.getMessage());
         }
-    }    public static void readCourseList(){
+    }
+    public static void readCourseList(){
+        checkFileExists(".\\courseList.txt");
+
         try(BufferedReader reader=new BufferedReader(new FileReader("courseList.txt"))){
             String line;
             String[] info;
             while ((line= reader.readLine())!=null){
                 info=line.split(",");
-                Course course=new Course(info[1],Integer.parseInt(info[0]),Teacher.getTeacherById(Integer.parseInt(info[2])),false);
+                new Course(info[1],Integer.parseInt(info[0]),Teacher.getTeacherById(Integer.parseInt(info[2])),false);
             }
         }catch (Exception e){
             System.out.println("Error: "+e.getStackTrace());
         }
     }
+    public static void readAssignmentList(){
+        checkFileExists(".\\assignmentList.txt");
+        try(BufferedReader reader=new BufferedReader(new FileReader("assignmentList.txt"))){
+            String line;
+            String[] info;
+            while ((line= reader.readLine())!=null){
+                info=line.split(",");
+                new Assignment(info[1],Integer.parseInt(info[3]),Course.getCourseById(Integer.parseInt(info[2])),Integer.parseInt(info[0]),false);
+            }
+        }catch (Exception e){
+            System.out.println("Error: "+e.getStackTrace());
+        }
+    }
+
+    private static void checkFileExists(String filepath) {
+        File file=new File(filepath);
+        if (!file.exists()){
+            try {
+                file.createNewFile();
+            }catch (Exception e){
+                System.out.println("Error: "+e.getStackTrace());
+            }
+        }
+    }
+
     public static void AddToFile(String input,String fileName){
         try(FileWriter fileWriter=new FileWriter(fileName,true)) {
         fileWriter.write(input+"\n");
         fileWriter.flush();
         }catch (Exception e){
-            System.out.println("Error: "+ e.getMessage());
+            System.out.println("Error: "+ e.getStackTrace());
         }
     }
     public static void deleteSpecifiedIDFromFile(int ID,String fileName){
@@ -61,7 +116,7 @@ public class FileController {
             reader2.close();
             new File("temp.txt").delete();
         }catch (Exception e){
-            System.out.println("Error: "+ e.getMessage());
+            System.out.println("Error: "+ e.getStackTrace());
         }
     }
     public static void deleteFileContent(String fileName){
@@ -70,6 +125,31 @@ public class FileController {
             fileWriter.flush();
         }catch (Exception e){
             System.out.println("Error: "+ e.getMessage());
+        }
+    }
+    public static void changeSpecifiedField(String filename,int ID,int fieldNum,String newField) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            String[] info;
+            String specifiedLine="";
+            while ((line = reader.readLine()) != null) {
+                info = line.split(",");
+                if (Integer.parseInt(info[0]) == ID)
+                    specifiedLine = line;
+            }
+            info = specifiedLine.split(",");
+            info[fieldNum]=newField;
+            deleteSpecifiedIDFromFile(ID,filename);
+            String output="";
+            for (int i = 0; i < info.length; i++) {
+                output+=info[i];
+                if (i!=info.length-1){
+                    output+=",";
+                }
+            }
+            AddToFile(output,filename);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 }
