@@ -194,5 +194,22 @@ public class Student {
     public Map<Course, Double> getCourses() {
         return courses;
     }
+    public static void studentSingUp(int studentID,String password,String name){
+        new Student(name,password,studentID,true);
+    }
+    public static int studentLogin(int studentID,String password){
+        FileController.readStudentList();
+        if (!allStudents.contains(getStudentById(studentID))){
+            //invalid id
+            return 1;
+        } else if (getStudentById(studentID).password.equals(password)) {
+            // login successfull
+            return 2;
+        }else {
+            return 3;
+            // invalid password
+        }
+    }
+
 }
 

@@ -11,7 +11,7 @@ public class FileController {
         readStudentList();
     }
 
-    private static void readStudentList() {
+    public static void readStudentList() {
         checkFileExists(".\\studentList.txt");
             try(BufferedReader reader=new BufferedReader(new FileReader("studentList.txt"))){
                 String line;
