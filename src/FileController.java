@@ -116,7 +116,7 @@ public class FileController {
                 fr2.flush();
             }
             reader2.close();
-            new File("temp.txt").delete();
+            new File("src\\database\\temp.txt").delete();
         }catch (Exception e){
             System.out.println("Error: "+ e.getStackTrace());
         }
