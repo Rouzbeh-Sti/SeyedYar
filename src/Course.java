@@ -25,7 +25,7 @@ public class Course {
         teacher.courses.add(this);
         if (addToList){
             String output=courseID+","+name+","+teacher.getTeacherID();
-            FileController.AddToFile(output,"courseList.txt");
+            FileController.AddToFile(output,"src\\database\\courseList.txt");
         }
     }
 
@@ -88,14 +88,14 @@ public class Course {
     public static void deleteCourse(Course course){
         for (Assignment assignment :course.assignments) {
             Assignment.allAssignments.remove(assignment);
-            FileController.deleteSpecifiedIDFromFile(assignment.assignmentID,"assignmentList.txt");
+            FileController.deleteSpecifiedIDFromFile(assignment.assignmentID,"src\\database\\assignmentList.txt");
         }
         for (Student student :course.students.keySet()) {
             student.courses.remove(course);
         }
         course.teacher.courses.remove(course);
         allCourses.remove(course);
-        FileController.deleteSpecifiedIDFromFile(course.courseID,"courseList.txt");
+        FileController.deleteSpecifiedIDFromFile(course.courseID,"src\\database\\courseList.txt");
     }
     public static boolean checkValidID(int courseID){
         for (Course course :allCourses) {

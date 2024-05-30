@@ -5,6 +5,9 @@ import java.io.FileWriter;
 
 public class FileController {
     public static void loadObjects(){
+        File file=new File("src\\database");
+        if (!file.exists())
+          file.mkdir();
         readTeacherList();
         readCourseList();
         readAssignmentList();
@@ -12,8 +15,8 @@ public class FileController {
     }
 
     public static void readStudentList() {
-        checkFileExists(".\\studentList.txt");
-            try(BufferedReader reader=new BufferedReader(new FileReader("studentList.txt"))){
+        checkFileExists("src\\database\\studentList.txt");
+            try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\studentList.txt"))){
                 String line;
                 String[] info;
                 String[] coursesAndScores;
@@ -34,8 +37,8 @@ public class FileController {
     }
 
     public static void readTeacherList(){
-        checkFileExists(".\\teacherList.txt");
-        try(BufferedReader reader=new BufferedReader(new FileReader("teacherList.txt"))){
+        checkFileExists("src\\database\\teacherList.txt");
+        try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\teacherList.txt"))){
             String line;
             String[] info;
             while ((line=reader.readLine())!=null){
@@ -43,13 +46,13 @@ public class FileController {
                 new Teacher(info[1],Integer.parseInt(info[0]),false);
             }
         }catch (Exception e){
-            System.out.println("Errorteacher: "+e.getMessage());
+            System.out.println("Errorteacher: "+e.getStackTrace());
         }
     }
     public static void readCourseList(){
-        checkFileExists(".\\courseList.txt");
+        checkFileExists("src\\database\\courseList.txt");
 
-        try(BufferedReader reader=new BufferedReader(new FileReader("courseList.txt"))){
+        try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\courseList.txt"))){
             String line;
             String[] info;
             while ((line= reader.readLine())!=null){
@@ -61,8 +64,8 @@ public class FileController {
         }
     }
     public static void readAssignmentList(){
-        checkFileExists(".\\assignmentList.txt");
-        try(BufferedReader reader=new BufferedReader(new FileReader("assignmentList.txt"))){
+        checkFileExists("src\\database\\assignmentList.txt");
+        try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\assignmentList.txt"))){
             String line;
             String[] info;
             while ((line= reader.readLine())!=null){
@@ -80,7 +83,7 @@ public class FileController {
             try {
                 file.createNewFile();
             }catch (Exception e){
-                System.out.println("Error: "+e.getStackTrace());
+                System.out.println("Error check file exist: "+e.getMessage());
             }
         }
     }
@@ -95,7 +98,7 @@ public class FileController {
     }
     public static void deleteSpecifiedIDFromFile(int ID,String fileName){
         try(BufferedReader reader=new BufferedReader(new FileReader(fileName))){
-            FileWriter fr=new FileWriter("temp.txt",false);
+            FileWriter fr=new FileWriter("src\\database\\temp.txt",false);
             String line;
             while ((line= reader.readLine())!=null){
                 int lineID= Integer.parseInt(line.split(",")[0]);
@@ -106,7 +109,7 @@ public class FileController {
             }
             fr.close();
             deleteFileContent(fileName);
-            BufferedReader reader2=new BufferedReader(new FileReader("temp.txt"));
+            BufferedReader reader2=new BufferedReader(new FileReader("src\\database\\temp.txt"));
             FileWriter fr2=new FileWriter(fileName);
             while ((line=reader2.readLine())!=null){
                 fr2.write(line+"\n");

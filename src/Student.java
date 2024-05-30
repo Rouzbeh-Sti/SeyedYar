@@ -21,8 +21,8 @@ public class Student {
         this.studentID = studentID;
         allStudents.add(this);
         if (addToFile){
-            String output=studentID+","+password+","+name+","+"null";
-            FileController.AddToFile(output,"studentList.txt");
+            String output=studentID+","+password+","+name+","+"#";
+            FileController.AddToFile(output,"src\\database\\studentList.txt");
         }
     }
 
@@ -120,7 +120,7 @@ public class Student {
             for (Course course: courses.keySet()) {
                 coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
              }
-            FileController.changeSpecifiedField("studentList.txt",this.getStudentID(),3,coursesToList);
+            FileController.changeSpecifiedField("src\\database\\studentList.txt",this.getStudentID(),3,coursesToList);
           }
         }
         public void addCourse(Course crs,double score){
@@ -133,7 +133,7 @@ public class Student {
             for (Course course: courses.keySet()) {
                 coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
              }
-            FileController.changeSpecifiedField("studentList.txt",this.getStudentID(),3,coursesToList);
+            FileController.changeSpecifiedField("src\\database\\studentList.txt",this.getStudentID(),3,coursesToList);
           }
         }
     public void removeCourse(Course crs){
@@ -145,11 +145,11 @@ public class Student {
             for (Course course: courses.keySet()) {
                 coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
             }
-            FileController.changeSpecifiedField("studentList.txt",this.getStudentID(),3,coursesToList);
+            FileController.changeSpecifiedField("src\\database\\studentList.txt",this.getStudentID(),3,coursesToList);
             if (courses.size()==0){
                 String line;
                 String[] info;
-                try(BufferedReader reader=new BufferedReader(new FileReader("studentList.txt"))){
+                try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\studentList.txt"))){
                     while ((line=reader.readLine())!=null){
                         ;
                         info=line.split(",");
@@ -158,8 +158,8 @@ public class Student {
                             break;
                         }
                     }
-                    FileController.deleteSpecifiedIDFromFile(studentID,"studentList.txt");
-                    FileController.AddToFile(line+"#","studentList.txt");
+                    FileController.deleteSpecifiedIDFromFile(studentID,"src\\database\\studentList.txt");
+                    FileController.AddToFile(line+"#","src\\database\\studentList.txt");
                 }catch (Exception e){
                     System.out.println("ERROR: "+e.getStackTrace());
                 }
@@ -171,7 +171,7 @@ public class Student {
             course.students.remove(student);
         }
         allStudents.remove(student);
-        FileController.deleteSpecifiedIDFromFile(student.studentID,"studentList.txt");
+        FileController.deleteSpecifiedIDFromFile(student.studentID,"src\\database\\studentList.txt");
     }
     public static boolean checkValidID(int studentID){
         for (Student student:allStudents) {

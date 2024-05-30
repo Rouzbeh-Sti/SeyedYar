@@ -28,7 +28,7 @@ public class Teacher {
         allTeachers.add(this);
         if (addToFile){
         String output=teacherID+","+name;
-        FileController.AddToFile(output,"teacherList.txt");
+        FileController.AddToFile(output,"src\\database\\teacherList.txt");
         }
     }
     public void addStudent(Course crs, Student stu){

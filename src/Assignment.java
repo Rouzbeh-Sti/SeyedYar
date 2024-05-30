@@ -36,11 +36,11 @@ public class Assignment {
         allAssignments.add(this);
         if (addToFile){
             String output=assignmentID+","+name+","+course.courseID+","+deadLineDays;
-            FileController.AddToFile(output,"assignmentList.txt");
+            FileController.AddToFile(output,"src\\database\\assignmentList.txt");
         }
     }
     public void changeDeadLine(int newDays){
-        FileController.changeSpecifiedField("assignmentList.txt",this.assignmentID,3,String.valueOf(newDays));
+        FileController.changeSpecifiedField("src\\database\\assignmentList.txt",this.assignmentID,3,String.valueOf(newDays));
         deadLineDays=newDays;
         if (newDays<=0)
             isActive=false;
@@ -50,7 +50,7 @@ public class Assignment {
     public static void deleteAssignment(Assignment assignment){
         assignment.course.removeAssignment(assignment);
         allAssignments.remove(assignment);
-        FileController.deleteSpecifiedIDFromFile(assignment.assignmentID,"assignmentList.txt");
+        FileController.deleteSpecifiedIDFromFile(assignment.assignmentID,"src\\database\\assignmentList.txt");
     }
     public static boolean checkValidID(int assignmentID){
         for (Assignment assignment :allAssignments) {

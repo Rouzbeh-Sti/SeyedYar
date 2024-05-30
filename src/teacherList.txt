@@ -1,4 +1,0 @@
-123,mahdi
-67,hami
-23,msada
-56,rad
