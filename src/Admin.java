@@ -5,12 +5,14 @@ public class Admin {
     }
     public static void deleteTeacher(Teacher teacher){
             Teacher.deleteTeacher(teacher);
+            FileController.deleteSpecifiedIDFromFile(teacher.getTeacherID(), "teacherList.txt");
     }
     public static void createStudent(int studentID,String password,String name){
         new Student(name,password,studentID,true);
     }
     public static void deleteStudent(Student student){
             Student.deleteStudent(student);
+            FileController.deleteSpecifiedIDFromFile(student.getStudentID(), "studentList.txt");
     }
     public static void createCourse(String name,Teacher teacher,int courseID){
         Course course=new Course(name,courseID,teacher,true);
@@ -35,8 +37,8 @@ public class Admin {
     }
     public static void setStudentScore(Student student,Course course,Double score){
         if (student.courses.keySet().contains(course)){
-            student.addCourse(course,score);
             course.students.put(student,score);
+            student.addCourse(course,score);
         }
     }
     public static void removeStudentFromCourse(Student student,Course course){

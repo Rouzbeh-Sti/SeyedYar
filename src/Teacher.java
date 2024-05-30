@@ -46,9 +46,11 @@ public class Teacher {
         if (courses.contains(crs))
             crs.removeAssignment(asg);
     }
-    public void setScore(Course crs,Student stu,double score){
-        if (courses.contains(crs) && crs.students.keySet().contains(stu)){
-            stu.courses.put(crs,score);
+    public void setScore(Course course,Student student,double score){
+        if (courses.contains(course) && course.students.keySet().contains(student)){
+            course.students.put(student,score);
+            student.addCourse(course,score);
+
         }
         else System.out.println("Error !");
     }
@@ -84,20 +86,7 @@ public class Teacher {
         return null;
     }
     public static void deleteTeacher(Teacher teacher){
-        for (Course course :teacher.courses) {
-            for (Student student :course.students.keySet()) {
-                student.removeCourse(course);
-                student.courses.remove(course);
-            }
-            for (Assignment assignment :course.assignments) {
-                Assignment.allAssignments.remove(assignment);
-                FileController.deleteSpecifiedIDFromFile(assignment.assignmentID,"assignmentList.txt");
-            }
-            Course.allCourses.remove(course);
-            FileController.deleteSpecifiedIDFromFile(course.courseID,"courseList.txt");
-        }
         allTeachers.remove(teacher);
-        FileController.deleteSpecifiedIDFromFile(teacher.teacherID, "teacherList.txt");
     }
 
 }

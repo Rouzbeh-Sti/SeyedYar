@@ -19,7 +19,6 @@ public class CLI {
             if (input == 1 || input == 2)
                 check = false;
             clearScreen();
-
         }while (check);
         if (input==1)
             adminMenu();
@@ -534,7 +533,7 @@ public class CLI {
                     }
                     if (Course.getCourseById(courseId) == null){
                         System.out.println("Invalid course ID!");
-                        clearScreen();
+                        Thread.sleep(1500);
                     }
                     else if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
@@ -552,7 +551,9 @@ public class CLI {
                     if (Student.checkValidID(studentId)){
                         condition = false;
                         teacher.addStudent(Course.getCourseById(courseId), Student.getStudentById(studentId));
+                        clearScreen();
                         System.out.println("Student added to course successfully !");
+                        Thread.sleep(1500);
                         clearScreen();
                         teacherMenu(teacher);
                     }
@@ -575,7 +576,7 @@ public class CLI {
                     }
                     if (Course.getCourseById(courseId) == null){
                         System.out.println("Invalid course ID !");
-                        clearScreen();
+                        Thread.sleep(1500);
                     }
                     else if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
@@ -591,22 +592,25 @@ public class CLI {
                     System.out.println("Please enter your desired studentId : ");
                     studentId = scanner.nextInt();
                     if (Student.getStudentById(studentId) == null){
+                        clearScreen();
                         System.out.println("This Student Doesn't exist !");
+                        Thread.sleep(1500);
                     }
                     else if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
                         condition = false;
                         teacher.removeStudent(Course.getCourseById(courseId), Student.getStudentById(studentId));
-
-                        System.out.println("Student removed successfully !");
                         clearScreen();
+                        System.out.println("Student removed successfully !");
+                        Thread.sleep(1500);
                         teacherMenu(teacher);
                     }
                     else{
                         System.out.println("this student doesn't have this course !");
+                        Thread.sleep(1500);
                         condition = false;
                     }
+                    clearScreen();
                 }while (condition);
-                Thread.sleep(1500);
                 clearScreen();
                 break;
             case 3:
@@ -621,7 +625,7 @@ public class CLI {
                     }
                     if(Course.getCourseById(courseId) == null){
                         System.out.println("Invalid course ID !");
-                        clearScreen();
+                        Thread.sleep(1500);
                     }
                     else if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
                         condition = false;
@@ -630,6 +634,7 @@ public class CLI {
                         System.out.println("You don't have this course !");
                         Thread.sleep(1500);
                     }
+                    clearScreen();
                 }while (condition);
                 condition = true;
                 do {
@@ -642,6 +647,7 @@ public class CLI {
                     }
                     if (Student.getStudentById(studentId) == null){
                         System.out.println("This Student Doesn't exist !");
+                        Thread.sleep(1500);
                         clearScreen();
                     }
                     else if (Student.getStudentById(studentId).getCourses().containsKey(Course.getCourseById(courseId))){
@@ -649,18 +655,21 @@ public class CLI {
                     }
                     else {
                         System.out.println("This student doesn't have this course !");
+                        Thread.sleep(1500);
                         clearScreen();
                         teacherMenu(teacher);
                         break;
                     }
                 }while (condition);
+                clearScreen();
                 condition = true;
                 do{
                     System.out.println("Please enter your desired score : ");
-                    int score = scanner.nextInt();
+                    double score = scanner.nextDouble();
                     if (score <= 20 && score >= 0){
                         condition = false;
                         teacher.setScore(Course.getCourseById(courseId), Student.getStudentById(studentId), score);
+                        clearScreen();
                         System.out.println("This score applied !");
                     }
                 }while(condition);
@@ -714,12 +723,13 @@ public class CLI {
                 System.out.println("please enter a name for assignment :");
                 scanner.nextLine();
                 String assignmentName = scanner.nextLine();
-                clearScreen();
                 System.out.println("please enter a deadLine for assignment :");
                 int deadLine = scanner.nextInt();
                 clearScreen();
                 teacher.createAssignment(assignmentName,deadLine,Course.getCourseById(courseId),assignmentId);
                 System.out.println("Assignment Created Successfully !");
+                Thread.sleep(1500);
+                clearScreen();
                 teacherMenu(teacher);
                 break;
             case 5:
@@ -766,7 +776,9 @@ public class CLI {
                         System.out.println("Please enter a newDeadLine :");
                         int deadLineAssignment = scanner.nextInt();
                         Assignment.getAssignmentById(assignmentId).changeDeadLine(deadLineAssignment);
+                        clearScreen();
                         System.out.println("Deadline changed successfully !");
+                        Thread.sleep(1500);
                         condition = false;
                     }else {
                         clearScreen();
