@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seyedyar/pages/Login_page.dart';
+import 'package:seyedyar/pages/SignUp_page.dart';
 
 void main() {
   runApp(const MyApp());
