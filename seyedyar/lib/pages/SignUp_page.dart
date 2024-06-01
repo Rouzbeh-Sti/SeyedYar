@@ -1,21 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:seyedyar/components/MyButton.dart';
 import 'package:seyedyar/components/TextFields.dart';
 import 'package:seyedyar/pages/Login_page.dart';
+import 'package:seyedyar/pages/Profile_page.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   SignUpPage({super.key});
+
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final nameController = TextEditingController();
   final studentIDController = TextEditingController();
   final passwordController = TextEditingController();
+  final passwordConfirmController = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
+  void signUserUp() {
+    if (_formKey.currentState?.validate() ?? false) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(
+            name: nameController.text,
+            studentID: studentIDController.text,
+          ),
+        ),
+      );
+    } else {
+      _showErrorDialog("Please fix the errors in the form.");
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Error"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 28, 135, 83),
         title: const Center(
-          heightFactor: 100,
           child: Text(
             "Sign Up",
-            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 25,
               color: Colors.black,
@@ -25,117 +70,216 @@ class SignUpPage extends StatelessWidget {
         ),
       ),
       backgroundColor: Color.fromARGB(255, 158, 218, 189),
-      body: Column(
-        children: [
-          Center(
-            child: Container(
-              padding: EdgeInsets.all(18),
-              margin: EdgeInsets.only(bottom: 50, left: 20, right: 20, top: 80),
-              height: 400,
-              decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 22, 99, 59),
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              child: Column(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Center(
+                child: Container(
+                  padding: EdgeInsets.all(18),
+                  margin: EdgeInsets.only(bottom: 10, left: 20, right: 20, top: 40),
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 22, 99, 59),
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      const Row(
+                        children: [
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            "Name",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      MyTextField(
+                        hinttext: "Enter your name",
+                        controller: nameController,
+                        obscureText: false,
+                        icon: Icon(Icons.person),
+                        validatorInput: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Row(
+                        children: [
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            "Student ID",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      MyTextField(
+                        hinttext: "Enter your Student ID",
+                        controller: studentIDController,
+                        obscureText: false,
+                        icon: Icon(Icons.school),
+                        keyboardtypeInput: TextInputType.number,
+                        validatorInput: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your Student ID';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Row(
+                        children: [
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            "Password",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      MyTextField(
+                        validatorInput: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a password';
+                          }
+                          return validatePassword(value, studentIDController.text);
+                        },
+                        hinttext: "Enter your Password",
+                        controller: passwordController,
+                        obscureText: true,
+                        icon: Icon(Icons.lock),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      const Row(
+                        children: [
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            "Re-enter Password",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      MyTextField(
+                        validatorInput: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please confirm your password';
+                          }
+                          if (value != passwordController.text) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
+                        hinttext: "Confirm your Password",
+                        controller: passwordConfirmController,
+                        obscureText: true,
+                        icon: Icon(Icons.lock_outline),
+                      ),
+                      MyButton(
+                        onTap: signUserUp,
+                        name: "Sign Up",
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 10,
+                  const Text(
+                    "Have an account? ",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                   ),
-                  const Row(
-                    children: [
-                      SizedBox(
-                        width: 15,
+                  TextButton(
+                    onPressed: () => navigateLogin(context),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Color.fromARGB(255, 66, 99, 245),
                       ),
-                      Text(
-                        "Student ID",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  MyTextField(
-                    hinttext: "Enter your Student ID",
-                    controller: studentIDController,
-                    obscureText: false,
-                    icon: Icon(Icons.person),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const Row(
-                    children: [
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Text(
-                        "Password",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  MyTextField(
-                    hinttext: "Enter your Password",
-                    controller: passwordController,
-                    obscureText: true,
-                    icon: Icon(Icons.lock),
-                  ),
-                  GestureDetector(
-                    child: Container(
-                        margin: EdgeInsets.only(top: 20),
-                        padding: EdgeInsets.all(15),
-                        width: 150,
-                        height: 70,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(199, 4, 207, 48),
-                            borderRadius: BorderRadius.circular(30.0)),
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(fontSize: 26),
-                          textAlign: TextAlign.center,
-                        )),
+                    ),
                   ),
                 ],
               ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "have an account?!    ",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-              ),
-              TextButton(
-                  onPressed: () => navigateLogin(context),
-                  child: Text(
-                    "Login",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Color.fromARGB(255, 66, 99, 245)),
-                  ))
             ],
-          )
-        ],
+          ),
+        ),
       ),
     );
   }
 
   navigateLogin(context) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginPage(),
+      ),
+    );
   }
+
+  String? validatePassword(String password, String studentID) {
+    if (password.length < 8) {
+      return "Password should be at least 8 characters";
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(password)) {
+      return "Password should contain at least an uppercase character";
+    }
+    if (!RegExp(r'[a-z]').hasMatch(password)) {
+      return "Password should contain at least a lowercase character";
+    }
+    if (!RegExp(r'[0-9]').hasMatch(password)) {
+      return "Password should contain at least a number";
+    }
+    if (studentID.isNotEmpty && RegExp(RegExp.escape(studentID), caseSensitive: false).hasMatch(password)) {
+      return "Password shouldn't contain your StudentID";
+    }
+    return null;
+  }
+
+  SignUserUp() {}
 }
