@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:seyedyar/pages/Login_page.dart';
+import 'package:seyedyar/pages/Welcome_page.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: WelcomePage(),
     );
   }
 }
