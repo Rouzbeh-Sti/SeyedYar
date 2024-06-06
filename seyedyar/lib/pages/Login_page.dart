@@ -29,7 +29,7 @@ class LoginPage extends StatelessWidget {
                   width: 105,
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: Center(
                   child: Text(
                     "Login        ",
@@ -42,7 +42,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: Icon(Icons.arrow_right_alt_sharp),
                 color: Colors.black,
                 onPressed: () {
                   Navigator.pushReplacement(

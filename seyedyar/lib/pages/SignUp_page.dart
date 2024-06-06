@@ -86,7 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: Icon(Icons.arrow_right_alt_sharp),
                 color: Colors.black,
                 onPressed: () {
                   Navigator.pushReplacement(

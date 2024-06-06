@@ -15,7 +15,7 @@ class WelcomePage extends StatelessWidget {
             children: [
               Image.asset(
                 'lib/images/Logo1.png',
-                height: 200, // Large logo size
+                height: 200,
               ),
               SizedBox(height: 50),
               ElevatedButton(

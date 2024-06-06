@@ -9,6 +9,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -26,7 +27,7 @@ class ProfilePage extends StatelessWidget {
                   width: 105,
                 ),
               ),
-              Expanded(
+              const Expanded(
                 child: Center(
                   child: Text(
                     "Profile        ",
@@ -127,7 +128,7 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Add your edit profile functionality here
+                      // Edit Profile
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
@@ -150,7 +151,7 @@ class ProfilePage extends StatelessWidget {
                   SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
-                      // Add your delete account functionality here
+                      // delete account
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
