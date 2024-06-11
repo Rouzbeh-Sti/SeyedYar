@@ -72,7 +72,7 @@ class ProfilePage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey,
                     child: Icon(Icons.person, size: 50, color: Colors.white),
@@ -139,7 +139,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                       minimumSize: Size(double.infinity, 50),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Edit Profile',
                       style: TextStyle(
                         fontSize: 18,
@@ -155,14 +155,14 @@ class ProfilePage extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                       minimumSize: Size(double.infinity, 50),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Delete Account',
                       style: TextStyle(
                         fontSize: 18,
@@ -188,7 +188,7 @@ class ProfilePage extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.black54,
               fontWeight: FontWeight.bold,

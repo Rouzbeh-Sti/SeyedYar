@@ -200,13 +200,12 @@ public class Student {
     public static int studentLogin(int studentID,String password){
         FileController.readStudentList();
         if (!allStudents.contains(getStudentById(studentID))){
-            //invalid id
-            return 1;
+            return 0; // invalid id
         } else if (getStudentById(studentID).password.equals(password)) {
             // login successfull
             return 2;
         }else {
-            return 3;
+            return 1;
             // invalid password
         }
     }

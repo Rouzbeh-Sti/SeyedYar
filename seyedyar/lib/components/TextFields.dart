@@ -74,7 +74,8 @@ class _MyTextFieldState extends State<MyTextField> {
           ),
           fillColor: Color.fromARGB(237, 234, 222, 222),
           filled: true,
-          contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 10.0),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 16.0, horizontal: 10.0),
           errorMaxLines: 3,
           suffixIcon: widget.obscureText
               ? IconButton(

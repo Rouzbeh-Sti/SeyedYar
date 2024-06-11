@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:seyedyar/components/MyButton.dart';
 import 'package:seyedyar/components/TextFields.dart';
 import 'package:seyedyar/pages/Login_page.dart';
-import 'package:seyedyar/pages/Profile_page.dart';
 import 'package:seyedyar/pages/Welcome_page.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -17,23 +18,27 @@ class _SignUpPageState extends State<SignUpPage> {
   final studentIDController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
-
+  String response = '';
   final _formKey = GlobalKey<FormState>();
 
-  void signUserUp() {
-    if (_formKey.currentState?.validate() ?? false) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProfilePage(
-            name: nameController.text,
-            studentID: studentIDController.text,
-          ),
-        ),
-      );
-    } else {
-      _showErrorDialog("Please fix the errors in the form.");
-    }
+  Future<String> signUserUp() async {
+    print("clicked");
+    await Socket.connect("192.168.1.195", 8080).then((serverSocket) {
+      print("Connected to server");
+      serverSocket.write(
+          "GET: signup~${studentIDController.text}~${passwordController.text}~${nameController.text}\u0000");
+      serverSocket.flush();
+      serverSocket.listen((socketResponse) {
+        setState(() {
+          response = String.fromCharCodes(socketResponse);
+        });
+        print("Response from server: $response");
+      });
+    }).catchError((error) {
+      print("Connection error: $error");
+    });
+    print("******** server response : { $response } *********");
+    return response;
   }
 
   void _showErrorDialog(String message) {
@@ -141,7 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           hinttext: "Enter your name",
                           controller: nameController,
                           obscureText: false,
-                          icon: Icon(Icons.person),
+                          icon: const Icon(Icons.person),
                           validatorInput: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your name';
@@ -251,8 +256,15 @@ class _SignUpPageState extends State<SignUpPage> {
                           icon: Icon(Icons.lock_outline),
                         ),
                         MyButton(
-                          onTap: signUserUp,
                           name: "Sign Up",
+                          onTap: () async {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              await signUserUp();
+                            } else {
+                              _showErrorDialog(
+                                  "Please fix the errors in the form.");
+                            }
+                          },
                         )
                       ],
                     ),
@@ -316,6 +328,4 @@ class _SignUpPageState extends State<SignUpPage> {
     }
     return null;
   }
-
-  SignUserUp() {}
 }
