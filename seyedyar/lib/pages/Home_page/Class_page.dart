@@ -26,7 +26,7 @@ class ClassPage extends StatelessWidget {
                           fontWeight: FontWeight.w800
                         ),
                       ),
-                      Text(
+                      Text( 
                         'ترم بهار ۱۴۰۳',
                         style: TextStyle(
                           fontSize: 10,
