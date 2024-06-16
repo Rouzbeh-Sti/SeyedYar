@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seyedyar/components/CardTask.dart';
 
 class TaskPage extends StatelessWidget {
   const TaskPage({super.key});
@@ -48,13 +49,13 @@ class TaskPage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 12),
-                  const CardWidget(title: 'ریز آز - تمرین ۱', time: '4:00 عصر'),
+                  const CardTask(title: 'ریز آز - تمرین ۱', time: '4:00 عصر'),
                   SizedBox(height: 10),
-                  const CardWidget(title: 'ریز آز - تمرین ۱', time: '4:00 عصر'),
+                  const CardTask(title: 'ریز آز - تمرین ۱', time: '4:00 عصر'),
                   SizedBox(height: 10),
-                  const CardWidget(title: 'ریز آز - تمرین ۱', time: '4:00 عصر'),
+                  const CardTask(title: 'ریز آز - تمرین ۱', time: '4:00 عصر'),
                   SizedBox(height: 10),
-                  const CardWidget(title: 'ریز آز - تمرین ۱', time: '4:00 عصر'),
+                  const CardTask(title: 'ریز آز - تمرین ۱', time: '4:00 عصر'),
                 ],
               ),
               // دکمه افزودن کار جدید بدون بک‌گراند
@@ -78,67 +79,7 @@ class TaskPage extends StatelessWidget {
   }
 }
 
-class CardWidget extends StatelessWidget {
-  final String title;
-  final String time;
 
-  const CardWidget({
-    Key? key,
-    required this.title,
-    required this.time,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var widthOfScreen = MediaQuery.of(context).size.width;
-    var heightOfScreen = MediaQuery.of(context).size.height;
-
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(9),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(3),
-        width: widthOfScreen * 0.8,
-        height: heightOfScreen * 0.055,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              time,
-              style: const TextStyle(
-                color: Color.fromARGB(212, 212, 212, 1),
-                fontSize: 10,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Image.asset('lib/images/tik.png', width: 24, height: 24),
-                    const SizedBox(width: 20),
-                    Image.asset('lib/images/delete.png', width: 24, height: 24),
-                  ],
-                ),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 void _showAddTaskDialog(BuildContext context) {
   TextEditingController titleController = TextEditingController();
