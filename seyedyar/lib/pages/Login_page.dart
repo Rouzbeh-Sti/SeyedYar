@@ -5,6 +5,7 @@ import 'package:seyedyar/components/MyButton.dart';
 import 'package:seyedyar/components/TextFields.dart';
 import 'package:seyedyar/pages/SignUp_page.dart';
 import 'package:seyedyar/pages/Welcome_page.dart';
+import 'package:seyedyar/pages/main_page.dart'; // Import the MainPage
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -157,7 +158,27 @@ class _LoginPageState extends State<LoginPage> {
                           onTap: () async {
                             if (_formKey.currentState?.validate() ?? false) {
                               // No validation errors, proceed to connect to backend
-                              await LogUserIn();
+                              String loginResponse = await LogUserIn();
+                              switch (loginResponse) {
+                                case "200":
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MainPage()),
+                                  );
+                                  break;
+                                case "401":
+                                  _showErrorDialog(
+                                      "Incorrect password. Please try again.");
+                                  break;
+                                case "404":
+                                  _showErrorDialog(
+                                      "Invalid Student ID. Please try again.");
+                                  break;
+                                default:
+                                  _showErrorDialog(
+                                      "Login failed. Please check your credentials.");
+                              }
                             } else {
                               // Show error dialog if there are validation errors
                               _showErrorDialog(
@@ -209,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<String> LogUserIn() async {
     print("clicked");
-    await Socket.connect("192.168.1.195", 8080).then((serverSocket) {
+    await Socket.connect("192.168.1.196", 8080).then((serverSocket) {
       print("Connected to server");
       serverSocket.write(
           "GET: loginChecker~${studentIDController.text}~${passwordController.text}\u0000");
