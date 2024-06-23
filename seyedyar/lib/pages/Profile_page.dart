@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seyedyar/pages/Login_page.dart';
+import 'package:seyedyar/pages/main_page.dart';
 
 class ProfilePage extends StatelessWidget {
   final String name;
@@ -9,7 +10,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -40,12 +40,17 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.logout),
+                icon: Icon(Icons.arrow_forward),
                 color: Colors.black,
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(
+                      builder: (context) => MainPage(
+                        name: name,
+                        studentID: studentID,
+                      ),
+                    ),
                   );
                 },
               ),
@@ -174,6 +179,38 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                child: const Text(
+                  'Log Out',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
           ],
         ),
       ),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:seyedyar/components/custom_app_bar.dart';
 
 class NewsPage extends StatelessWidget {
+  final String name;
+  final String studentID;
+
+  NewsPage({required this.name, required this.studentID});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'News'),
-      backgroundColor: Color.fromARGB(255, 158, 218, 189),
-      body: Center(
-        child: Text('Welcome to the News Page'),
-      ),
+    return Center(
+      child: Text('Welcome to the News Page, $name ($studentID)'),
     );
   }
 }

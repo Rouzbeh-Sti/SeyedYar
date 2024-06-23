@@ -1,9 +1,8 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.*;
+import com.google.gson.Gson;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.*;
 public class Student {
     public static List<Student> allStudents=new ArrayList<>();
     private String name;
@@ -209,6 +208,11 @@ public class Student {
             // invalid password
         }
     }
-
+    public String toJson() {
+        return new Gson().toJson(this);
+    }
+    public String getDataAsString() {
+        return toJson();
+    }
 }
 

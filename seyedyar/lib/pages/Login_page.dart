@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -85,14 +86,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: Column(
                       children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
                         const Row(
                           children: [
-                            SizedBox(
-                              width: 15,
-                            ),
+                            SizedBox(width: 15),
                             Text(
                               "Student ID",
                               style: TextStyle(
@@ -102,9 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
+                        const SizedBox(height: 15),
                         MyTextField(
                           hinttext: "Enter your Student ID",
                           controller: studentIDController,
@@ -118,14 +113,10 @@ class _LoginPageState extends State<LoginPage> {
                             return null;
                           },
                         ),
-                        const SizedBox(
-                          height: 30,
-                        ),
+                        const SizedBox(height: 30),
                         const Row(
                           children: [
-                            SizedBox(
-                              width: 15,
-                            ),
+                            SizedBox(width: 15),
                             Text(
                               "Password",
                               style: TextStyle(
@@ -135,9 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
                         MyTextField(
                           hinttext: "Enter your Password",
                           controller: passwordController,
@@ -150,21 +139,28 @@ class _LoginPageState extends State<LoginPage> {
                             return null;
                           },
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        const SizedBox(height: 20),
                         MyButton(
                           name: "Login",
                           onTap: () async {
                             if (_formKey.currentState?.validate() ?? false) {
                               // No validation errors, proceed to connect to backend
-                              String loginResponse = await LogUserIn();
-                              switch (loginResponse) {
+                              String loginResponse = await logUserIn();
+                              List<String> responseParts =
+                                  loginResponse.split("~");
+                              switch (responseParts[0]) {
                                 case "200":
+                                  Map<String, dynamic> userData =
+                                      jsonDecode(responseParts[1]);
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => MainPage()),
+                                      builder: (context) => MainPage(
+                                        name: userData['name'],
+                                        studentID:
+                                            userData['studentID'].toString(),
+                                      ),
+                                    ),
                                   );
                                   break;
                                 case "401":
@@ -195,7 +191,9 @@ class _LoginPageState extends State<LoginPage> {
                       const Text(
                         "Don't have an account?!    ",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 17),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                        ),
                       ),
                       TextButton(
                         onPressed: () => navigateSignUp(context),
@@ -228,9 +226,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<String> LogUserIn() async {
+  Future<String> logUserIn() async {
     print("clicked");
-    await Socket.connect("192.168.1.196", 8080).then((serverSocket) {
+    await Socket.connect("192.168.1.13", 8080).then((serverSocket) {
       print("Connected to server");
       serverSocket.write(
           "GET: loginChecker~${studentIDController.text}~${passwordController.text}\u0000");
@@ -252,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Error"),
+        title: const Text("Error"),
         content: Text(message),
         actions: [
           TextButton(

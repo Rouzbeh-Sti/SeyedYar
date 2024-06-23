@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:seyedyar/pages/profile_page.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final String name;
+  final String studentID;
+  final bool showProfileButton;
+  final VoidCallback? onProfileTap;
 
-  CustomAppBar({required this.title});
+  CustomAppBar({
+    required this.title,
+    required this.name,
+    required this.studentID,
+    this.showProfileButton = false,
+    this.onProfileTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,18 +43,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.person),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        ProfilePage(name: 'Student Name', studentID: '12345')),
-              );
-            },
-          ),
+          if (showProfileButton)
+            IconButton(
+              icon: Icon(Icons.person),
+              color: Colors.black,
+              onPressed: onProfileTap,
+            ),
         ],
       ),
     );
