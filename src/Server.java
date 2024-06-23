@@ -112,7 +112,7 @@ class ClientHandler extends Thread {
             case "DELETE: deleteStudent":
                 studentId = Integer.parseInt(split[1]);
                 Student student = Student.getStudentById(studentId);
-                if (student != null) {
+                if (Student.checkValidID(studentId)) {
                     Admin.deleteStudent(student);
                     System.out.println("Student deleted: " + studentId);
                     try {

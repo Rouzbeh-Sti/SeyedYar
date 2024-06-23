@@ -197,7 +197,6 @@ public class Student {
         new Student(name,password,studentID,true);
     }
     public static int studentLogin(int studentID,String password){
-        FileController.readStudentList();
         if (!allStudents.contains(getStudentById(studentID))){
             return 0; // invalid id
         } else if (getStudentById(studentID).password.equals(password)) {
