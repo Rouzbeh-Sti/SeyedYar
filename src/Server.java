@@ -43,9 +43,6 @@ class ClientHandler extends Thread {
     public void writer(String message) throws IOException {
         dos.writeBytes(message);
         dos.flush();
-        dos.close();
-        dis.close();
-        socket.close();
         System.out.println("message sent to front: " + message);
     }
 
@@ -91,18 +88,35 @@ class ClientHandler extends Thread {
                 }
                 break;
             case "GET: signup":
-                if (Student.checkValidID(Integer.parseInt(split[1]))) {
-                    System.out.println("Student ID already exists");
+                studentId = Integer.parseInt(split[1]);
+                String newPassword = split[2];
+                String name = split[3];
+
+                if (Student.checkValidID(studentId)) {
+                    System.out.println("Student ID already exists: 380");
                     try {
                         writer("380");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    Admin.createStudent(Integer.parseInt(split[1]), split[2], split[3]);
-                    System.out.println("Student created: student id: " + split[1] + " password: " + split[2] + " named: " + split[3]);
+                    Admin.createStudent(studentId, newPassword, name);
+                    System.out.println("Student created: student id: " + studentId + " password: " + newPassword + " named: " + name);
+                    try {
+                        writer("201~" + getUserData(studentId));  // 201 indicates created
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 break;
+        }
+
+        try {
+            dis.close();
+            dos.close();
+            socket.close();
+        } catch (IOException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
         }
     }
 

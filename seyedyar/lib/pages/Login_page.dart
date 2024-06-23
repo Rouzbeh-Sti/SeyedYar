@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:seyedyar/components/MyButton.dart';
 import 'package:seyedyar/components/TextFields.dart';
 import 'package:seyedyar/pages/SignUp_page.dart';
 import 'package:seyedyar/pages/Welcome_page.dart';
-import 'package:seyedyar/pages/main_page.dart'; // Import the MainPage
+import 'package:seyedyar/pages/main_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -228,20 +227,26 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<String> logUserIn() async {
     print("clicked");
-    await Socket.connect("192.168.1.13", 8080).then((serverSocket) {
+    try {
+      final serverSocket = await Socket.connect("192.168.1.13", 8080);
       print("Connected to server");
       serverSocket.write(
           "GET: loginChecker~${studentIDController.text}~${passwordController.text}\u0000");
       serverSocket.flush();
-      serverSocket.listen((socketResponse) {
-        setState(() {
-          response = String.fromCharCodes(socketResponse);
-        });
-        print("Response from server: $response");
-      });
-    }).catchError((error) {
+
+      List<int> responseBytes = [];
+      await serverSocket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+
+      response = String.fromCharCodes(responseBytes).trim();
+      print("Response from server: $response");
+
+      serverSocket.destroy();
+    } catch (error) {
       print("Connection error: $error");
-    });
+      response = "Connection error: $error";
+    }
     print("******** server response : { $response } *********");
     return response;
   }

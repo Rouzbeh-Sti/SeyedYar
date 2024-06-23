@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:seyedyar/components/MyButton.dart';
 import 'package:seyedyar/components/TextFields.dart';
 import 'package:seyedyar/pages/Login_page.dart';
 import 'package:seyedyar/pages/Welcome_page.dart';
+import 'package:seyedyar/pages/main_page.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({super.key});
@@ -23,22 +25,29 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<String> signUserUp() async {
     print("clicked");
-    await Socket.connect("192.168.1.13", 8080).then((serverSocket) {
+    try {
+      final serverSocket = await Socket.connect("192.168.1.13", 8080);
       print("Connected to server");
       serverSocket.write(
           "GET: signup~${studentIDController.text}~${passwordController.text}~${nameController.text}\u0000");
       serverSocket.flush();
-      serverSocket.listen((socketResponse) {
-        setState(() {
-          response = String.fromCharCodes(socketResponse);
-        });
-        print("Response from server: $response");
-      });
-    }).catchError((error) {
+
+      List<int> responseBytes = [];
+      await for (var data in serverSocket) {
+        responseBytes.addAll(data);
+        if (responseBytes.isNotEmpty && responseBytes.last == 0) {
+          break;
+        }
+      }
+      response = utf8.decode(responseBytes).trim();
+      print("Response from server: $response");
+
+      serverSocket.destroy();
+      return response;
+    } catch (error) {
       print("Connection error: $error");
-    });
-    print("******** server response : { $response } *********");
-    return response;
+      return "Connection error: $error";
+    }
   }
 
   void _showErrorDialog(String message) {
@@ -59,7 +68,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -259,7 +267,27 @@ class _SignUpPageState extends State<SignUpPage> {
                           name: "Sign Up",
                           onTap: () async {
                             if (_formKey.currentState?.validate() ?? false) {
-                              await signUserUp();
+                              String signUpResponse = await signUserUp();
+                              if (signUpResponse == "380") {
+                                _showErrorDialog(
+                                    "Student ID already exists. Please try a different one.");
+                              } else if (signUpResponse.startsWith("201~")) {
+                                Map<String, dynamic> userData =
+                                    jsonDecode(signUpResponse.split("~")[1]);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MainPage(
+                                      name: userData['name'],
+                                      studentID:
+                                          userData['studentID'].toString(),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                _showErrorDialog(
+                                    "Sign Up failed. Please check your inputs.");
+                              }
                             } else {
                               _showErrorDialog(
                                   "Please fix the errors in the form.");
