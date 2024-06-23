@@ -109,6 +109,26 @@ class ClientHandler extends Thread {
                     }
                 }
                 break;
+            case "DELETE: deleteStudent":
+                studentId = Integer.parseInt(split[1]);
+                Student student = Student.getStudentById(studentId);
+                if (student != null) {
+                    Admin.deleteStudent(student);
+                    System.out.println("Student deleted: " + studentId);
+                    try {
+                        writer("200");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    System.out.println("Student not found: 404");
+                    try {
+                        writer("404");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
         }
 
         try {

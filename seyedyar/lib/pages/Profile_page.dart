@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:seyedyar/pages/Login_page.dart';
 import 'package:seyedyar/pages/main_page.dart';
@@ -46,11 +48,8 @@ class ProfilePage extends StatelessWidget {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MainPage(
-                        name: name,
-                        studentID: studentID,
-                      ),
-                    ),
+                        builder: (context) =>
+                            MainPage(name: name, studentID: studentID)),
                   );
                 },
               ),
@@ -156,7 +155,7 @@ class ProfilePage extends StatelessWidget {
                   SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
-                      // delete account
+                      _showDeleteConfirmationDialog(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -179,42 +178,86 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginPage(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  minimumSize: Size(double.infinity, 50),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
                 ),
-                child: const Text(
-                  'Log Out',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                minimumSize: Size(double.infinity, 50),
+              ),
+              child: const Text(
+                'Log Out',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),
-            SizedBox(height: 20),
           ],
         ),
       ),
     );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete Account"),
+        content: Text("Are you sure you want to delete your account?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              // Call the delete account function and navigate to login page
+              _deleteAccount(context);
+            },
+            child: Text("Delete"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _deleteAccount(BuildContext context) async {
+    try {
+      final serverSocket = await Socket.connect("192.168.1.13", 8080);
+      print("Connected to server");
+      serverSocket.write("DELETE: deleteStudent~${studentID}\u0000");
+      serverSocket.flush();
+
+      List<int> responseBytes = [];
+      await for (var data in serverSocket) {
+        responseBytes.addAll(data);
+        if (responseBytes.isNotEmpty && responseBytes.last == 0) {
+          String response = String.fromCharCodes(responseBytes).trim();
+          print("Response from server: $response");
+          break;
+        }
+      }
+
+      serverSocket.destroy();
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } catch (error) {
+      print("Connection error: $error");
+    }
   }
 
   Widget _buildInfoRow(String title, String value) {
