@@ -234,7 +234,7 @@ class ProfilePage extends StatelessWidget {
 
   void _deleteAccount(BuildContext context) async {
     try {
-      final serverSocket = await Socket.connect("192.168.1.13", 8080);
+      final serverSocket = await Socket.connect("192.168.1.54", 8080);
       print("Connected to server");
       serverSocket.write("DELETE: deleteStudent~${studentID}\u0000");
       serverSocket.flush();
