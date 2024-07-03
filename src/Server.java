@@ -151,7 +151,30 @@ class ClientHandler extends Thread {
                         throw new RuntimeException(e);
                     }
                 }
-                break;        }
+                break;
+            case "ADD: course":
+                studentId = Integer.parseInt(split[1]);
+                int courseId = Integer.parseInt(split[2]);
+                Student student1 = Student.getStudentById(studentId);
+                Course course = Course.getCourseById(courseId);
+                try {
+
+                    if (course == null) {
+                        writer("404~Course not found");
+                    } else if (student1 == null) {
+                        writer("404~Student not found");
+                    } else if (student1.getCourses().containsKey(course)) {
+                        writer("400~Student already enrolled in this course");
+                    } else {
+                        Admin.addStudentToCourse(student1, course);
+                        writer("200~Course added successfully");
+                    }
+                }catch (IOException e){
+                    throw new RuntimeException();
+                }
+                break;
+
+        }
 
         try {
             dis.close();

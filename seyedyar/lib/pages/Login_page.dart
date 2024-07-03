@@ -228,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<String> logUserIn() async {
     print("clicked");
     try {
-      final serverSocket = await Socket.connect("192.168.1.54", 8080);
+      final serverSocket = await Socket.connect("192.168.1.13", 8080);
       print("Connected to server");
       serverSocket.write(
           "GET: loginChecker~${studentIDController.text}~${passwordController.text}\u0000");

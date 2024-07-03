@@ -12,6 +12,21 @@ public class FileController {
         readCourseList();
         readAssignmentList();
         readStudentList();
+        readTaskList();
+    }
+
+    private static void readTaskList() {
+        checkFileExists("src\\database\\taskList.txt");
+        try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\taskList.txt"))){
+            String line;
+            String[] info;
+            while ((line= reader.readLine())!=null){
+                info=line.split(",");
+                new Task(info[0],Boolean.getBoolean(info[1]),Integer.parseInt(info[2]),false);
+            }
+        }catch (Exception e){
+            System.out.println("Errorcourse: "+e.getStackTrace());
+        }
     }
 
     public static void readStudentList() {
@@ -154,4 +169,30 @@ public class FileController {
             System.out.println("Error: " + e.getMessage());
         }
     }
+    public static void deleteSpecifiedTask(String taskName){
+        try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\taskList.txt"))){
+            FileWriter fr=new FileWriter("src\\database\\temp.txt",false);
+            String line;
+            while ((line= reader.readLine())!=null){
+                String lineName= line.split(",")[0];
+                if (!lineName.equals(taskName)){
+                    fr.write(line+"\n");
+                    fr.flush();
+                }
+            }
+            fr.close();
+            deleteFileContent("src\\database\\taskList.txt");
+            BufferedReader reader2=new BufferedReader(new FileReader("src\\database\\temp.txt"));
+            FileWriter fr2=new FileWriter("src\\database\\taskList.txt");
+            while ((line=reader2.readLine())!=null){
+                fr2.write(line+"\n");
+                fr2.flush();
+            }
+            reader2.close();
+            new File("src\\database\\temp.txt").delete();
+        }catch (Exception e){
+            System.out.println("Error: "+ e.getStackTrace());
+        }
+    }
+
 }

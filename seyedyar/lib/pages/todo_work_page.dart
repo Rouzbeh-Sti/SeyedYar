@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
               child: Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(); // بستن دیالوگ بدون افزودن آیتم
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
@@ -129,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (title.isNotEmpty) {
                   addItem(title);
                 }
-                Navigator.of(context).pop(); // بستن دیالوگ پس از افزودن آیتم
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -149,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: item.isActive ? Colors.black : Colors.black45,
+            color: item.isActive ? Colors.black : Colors.black54,
           ),
         ),
         trailing: IconButton(
@@ -204,19 +204,19 @@ class _MyHomePageState extends State<MyHomePage> {
                       end: Alignment.topLeft,
                       colors: section1Items[index].isActive
                           ? [
-                        Color(0xFFD8F3DC),
-                        Color(0xFFb7e4c7),
-                        Color(0xFF95d5b2),
-                        Color(0xFF74c69d),
-                        Color(0xFF52b788),
-                      ]
+                              Color(0xFFD8F3DC),
+                              Color(0xFFb7e4c7),
+                              Color(0xFF95d5b2),
+                              Color(0xFF74c69d),
+                              Color(0xFF52b788),
+                            ]
                           : [
-                        Color(0xFFf8edeb),
-                        Color(0xFFfae1dd),
-                        Color(0xFFfbb1bd),
-                        Color(0xFFf29491),
-                        Color(0xFFf28482),
-                      ],
+                              Color(0xFFf8edeb),
+                              Color(0xFFfae1dd),
+                              Color(0xFFfbb1bd),
+                              Color(0xFFf29491),
+                              Color(0xFFf28482),
+                            ],
                     ),
                     boxShadow: const [
                       BoxShadow(
@@ -226,7 +226,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: widthOfScreen * 0.04),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: widthOfScreen * 0.04),
                   child: listItem(section1Items[index]),
                 );
               },
@@ -254,19 +255,19 @@ class _MyHomePageState extends State<MyHomePage> {
                       end: Alignment.topLeft,
                       colors: section2Items[index].isActive
                           ? [
-                        Color(0xFFD8F3DC),
-                        Color(0xFFb7e4c7),
-                        Color(0xFF95d5b2),
-                        Color(0xFF74c69d),
-                        Color(0xFF52b788),
-                      ]
+                              Color(0xFFD8F3DC),
+                              Color(0xFFb7e4c7),
+                              Color(0xFF95d5b2),
+                              Color(0xFF74c69d),
+                              Color(0xFF52b788),
+                            ]
                           : [
-                        Color(0xFFf8edeb),
-                        Color(0xFFfae1dd),
-                        Color(0xFFfbb1bd),
-                        Color(0xFFf29491),
-                        Color(0xFFf28482),
-                      ],
+                              Color(0xFFf8edeb),
+                              Color(0xFFfae1dd),
+                              Color(0xFFfbb1bd),
+                              Color(0xFFf29491),
+                              Color(0xFFf28482),
+                            ],
                     ),
                     boxShadow: const [
                       BoxShadow(
@@ -276,7 +277,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ],
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: widthOfScreen * 0.04),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: widthOfScreen * 0.04),
                   child: listItem(section2Items[index]),
                 );
               },
@@ -289,7 +291,10 @@ class _MyHomePageState extends State<MyHomePage> {
           showAddItemDialog(context);
         },
         backgroundColor: Color(0xFF74C69D),
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
       ),
     );
   }
