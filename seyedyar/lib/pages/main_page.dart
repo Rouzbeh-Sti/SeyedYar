@@ -28,7 +28,7 @@ class _MainPageState extends State<MainPage> {
     _pages = <Widget>[
       HomePage(name: widget.name, studentID: widget.studentID),
       TodoWorkPage(name: widget.name, studentID: widget.studentID),
-      CoursesPage(name: widget.name, studentID: widget.studentID),
+      CoursesPage(studentId: int.parse(widget.studentID)),
       NewsPage(name: widget.name, studentID: widget.studentID),
       AssignmentsPage(name: widget.name, studentID: widget.studentID),
     ];

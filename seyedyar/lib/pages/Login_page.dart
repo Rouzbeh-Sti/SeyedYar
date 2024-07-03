@@ -238,7 +238,6 @@ class _LoginPageState extends State<LoginPage> {
       await serverSocket.listen((data) {
         responseBytes.addAll(data);
       }).asFuture();
-
       response = String.fromCharCodes(responseBytes).trim();
       print("Response from server: $response");
 

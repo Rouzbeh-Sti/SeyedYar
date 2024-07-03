@@ -89,4 +89,7 @@ public class Teacher {
         allTeachers.remove(teacher);
     }
 
+    public String getName() {
+        return name;
+    }
 }
