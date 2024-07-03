@@ -129,7 +129,29 @@ class ClientHandler extends Thread {
                     }
                 }
                 break;
-        }
+            case "GET: studentCourses":
+                studentId = Integer.parseInt(split[1]);
+                Student studentById = Student.getStudentById(studentId);
+                if (studentById != null) {
+                    StringBuilder coursesData = new StringBuilder();
+                    for (Course course : studentById.getCourses().keySet()) {
+                        coursesData.append(course.getCourseID()).append(",")
+                                .append(course.name).append(",")
+                                .append(course.getTeacher().getName()).append(";");
+                    }
+                    try {
+                        writer("200~" + coursesData.toString());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;        }
 
         try {
             dis.close();
