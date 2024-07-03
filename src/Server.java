@@ -153,12 +153,20 @@ class ClientHandler extends Thread {
                 }
                 break;
             case "ADD: course":
-                studentId = Integer.parseInt(split[1]);
+                if (split.length < 3) {
+                    System.out.println("Invalid ADD: course command format.");
+                    try {
+                        writer("400~Invalid command format");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
+                }
+                int studentId1 = Integer.parseInt(split[1]);
                 int courseId = Integer.parseInt(split[2]);
-                Student student1 = Student.getStudentById(studentId);
+                Student student1 = Student.getStudentById(studentId1);
                 Course course = Course.getCourseById(courseId);
                 try {
-
                     if (course == null) {
                         writer("404~Course not found");
                     } else if (student1 == null) {
@@ -169,11 +177,91 @@ class ClientHandler extends Thread {
                         Admin.addStudentToCourse(student1, course);
                         writer("200~Course added successfully");
                     }
-                }catch (IOException e){
-                    throw new RuntimeException();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;            case "GET: studentTasks":
+                studentId = Integer.parseInt(split[1]);
+                Student studentById1 = Student.getStudentById(studentId);
+                if (studentById1 != null) {
+                    StringBuilder tasksData = new StringBuilder();
+                    for (Task task : Task.allTasks) {
+                        if (task.forStudentID == studentId) {
+                            tasksData.append(task.title).append(",")
+                                    .append(task.isActive).append(";");
+                        }
+                    }
+                    try {
+                        writer("200~" + tasksData.toString());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404~Student not found");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 break;
-
+            case "ADD: task":
+                studentId = Integer.parseInt(split[1]);
+                String taskTitle = split[2];
+                studentById1 = Student.getStudentById(studentId);
+                if (studentById1 != null) {
+                    Task newTask = new Task(taskTitle, true, studentId, true);
+                    try {
+                        writer("200~Task added successfully");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404~Student not found");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+            case "UPDATE: task":
+                studentId = Integer.parseInt(split[1]);
+                taskTitle = split[2];
+                boolean isDone = Boolean.parseBoolean(split[3]);
+                Task taskToUpdate = Task.getTaskByNameAndID(taskTitle,studentId);
+                if (taskToUpdate != null && taskToUpdate.forStudentID == studentId) {
+                    Task.updateTask(taskToUpdate,isDone);
+                    try {
+                        writer("200~Task updated successfully");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404~Task not found");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+            case "DELETE: task":
+                studentId = Integer.parseInt(split[1]);
+                taskTitle = split[2];
+                Task taskToDelete = Task.getTaskByNameAndID(taskTitle,studentId);
+                if (taskToDelete != null && taskToDelete.forStudentID == studentId) {
+                    Task.deleteTask(taskToDelete);
+                    try {
+                        writer("200~Task deleted successfully");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404~Task not found");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
         }
 
         try {

@@ -17,17 +17,19 @@ public class FileController {
 
     private static void readTaskList() {
         checkFileExists("src\\database\\taskList.txt");
-        try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\taskList.txt"))){
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\taskList.txt"))) {
             String line;
             String[] info;
-            while ((line= reader.readLine())!=null){
-                info=line.split(",");
-                new Task(info[0],Boolean.getBoolean(info[1]),Integer.parseInt(info[2]),false);
+            while ((line = reader.readLine()) != null) {
+                info = line.split(",");
+                new Task(info[0], Boolean.parseBoolean(info[1]), Integer.parseInt(info[2]), false);
             }
-        }catch (Exception e){
-            System.out.println("Errorcourse: "+e.getStackTrace());
+        } catch (Exception e) {
+            System.out.println("Errorcourse: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
 
     public static void readStudentList() {
         checkFileExists("src\\database\\studentList.txt");
@@ -169,13 +171,14 @@ public class FileController {
             System.out.println("Error: " + e.getMessage());
         }
     }
-    public static void deleteSpecifiedTask(String taskName){
+    public static void deleteSpecifiedTask(String taskName,int studentID){
         try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\taskList.txt"))){
             FileWriter fr=new FileWriter("src\\database\\temp.txt",false);
             String line;
             while ((line= reader.readLine())!=null){
                 String lineName= line.split(",")[0];
-                if (!lineName.equals(taskName)){
+                int taskStudentID=Integer.parseInt(line.split(",")[2]);
+                if (!(lineName.equals(taskName) && taskStudentID==studentID)){
                     fr.write(line+"\n");
                     fr.flush();
                 }
@@ -192,6 +195,33 @@ public class FileController {
             new File("src\\database\\temp.txt").delete();
         }catch (Exception e){
             System.out.println("Error: "+ e.getStackTrace());
+        }
+    }
+    public static void updateTask(Task task,boolean isActive){
+        String taskTitle= task.title;
+        int studentID= task.forStudentID;
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\taskList.txt"))) {
+            String line;
+            String[] info;
+            String specifiedLine="";
+            while ((line = reader.readLine()) != null) {
+                info = line.split(",");
+                if (info[0].equals(taskTitle) && Integer.parseInt(info[2])==studentID)
+                    specifiedLine = line;
+            }
+            info = specifiedLine.split(",");
+            info[1]=String.valueOf(isActive);
+            deleteSpecifiedTask(taskTitle,studentID);
+            String output="";
+            for (int i = 0; i < info.length; i++) {
+                output+=info[i];
+                if (i!=info.length-1){
+                    output+=",";
+                }
+            }
+            AddToFile(output,"src\\database\\taskList.txt");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 

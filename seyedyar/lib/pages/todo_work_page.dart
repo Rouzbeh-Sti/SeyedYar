@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,8 @@ class ListItem {
   bool isActive;
   IconData icon;
 
-  ListItem(this.title, this.isActive, this.icon);
+  ListItem(this.title, this.isActive)
+      : icon = isActive ? Icons.done_outline : Icons.close;
 }
 
 class TodoWorkPage extends StatelessWidget {
@@ -19,59 +21,165 @@ class TodoWorkPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: MyHomePage(studentID: studentID),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  final String studentID;
+
+  MyHomePage({required this.studentID});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<ListItem> section1Items = [
-    ListItem('Item 1', true, Icons.done_outline),
-    ListItem('Item 2', true, Icons.done_outline),
-    ListItem('Item 3', true, Icons.done_outline),
-  ];
+  List<ListItem> section1Items = [];
+  List<ListItem> section2Items = [];
 
-  List<ListItem> section2Items = [
-    ListItem('Item A', false, Icons.close),
-    ListItem('Item B', false, Icons.close),
-    ListItem('Item C', false, Icons.close),
-  ];
-
-  void addItem(String title) {
-    setState(() {
-      section1Items.add(ListItem(title, true, Icons.done_outline));
-    });
+  @override
+  void initState() {
+    super.initState();
+    fetchTasks();
   }
 
-  void toggleItemStatus(ListItem item) {
-    setState(() {
-      if (section1Items.contains(item)) {
-        section1Items.remove(item);
-        item.isActive = false;
-        item.icon = Icons.close;
-        section2Items.add(item);
-      } else if (section2Items.contains(item)) {
-        section2Items.remove(item);
-        item.isActive = true;
-        item.icon = Icons.done_outline;
-        section1Items.add(item);
+  void fetchTasks() async {
+    try {
+      final serverSocket = await Socket.connect('192.168.1.13', 8080);
+      serverSocket.write("GET: studentTasks~${widget.studentID}\u0000");
+
+      List<int> responseBytes = [];
+      await serverSocket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        String data = response.split('~')[1];
+        List<String> tasksData = data.split(";");
+        List<ListItem> fetchedTasks =
+            tasksData.where((taskData) => taskData.isNotEmpty).map((taskData) {
+          List<String> parts = taskData.split(",");
+          return ListItem(parts[0], parts[1] == 'true');
+        }).toList();
+        setState(() {
+          section1Items = fetchedTasks.where((item) => item.isActive).toList();
+          section2Items = fetchedTasks.where((item) => !item.isActive).toList();
+        });
+      } else {
+        print("ERROR: ${response.split('~')[1]}");
       }
-    });
+
+      serverSocket.close();
+    } catch (e) {
+      print("ERROR: $e");
+    }
   }
 
-  void deleteItem(ListItem item) {
-    setState(() {
-      if (section1Items.contains(item)) {
-        section1Items.remove(item);
-      } else if (section2Items.contains(item)) {
-        section2Items.remove(item);
+  void addTask(String title) async {
+    if (title.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Task title cannot be empty")),
+      );
+      return;
+    }
+
+    // Check if the task already exists
+    for (var task in section1Items) {
+      if (task.title == title) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Task already exists")),
+        );
+        return;
       }
-    });
+    }
+
+    for (var task in section2Items) {
+      if (task.title == title) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Task already exists")),
+        );
+        return;
+      }
+    }
+
+    try {
+      final serverSocket = await Socket.connect('192.168.1.13', 8080);
+      serverSocket.write("ADD: task~${widget.studentID}~$title\u0000");
+
+      List<int> responseBytes = [];
+      await serverSocket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        setState(() {
+          fetchTasks();
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Task added successfully")));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(response.split("~")[1])));
+      }
+
+      serverSocket.close();
+    } catch (e) {
+      print("ERROR: $e");
+    }
+  }
+
+  void updateTaskStatus(ListItem item, bool isActive) async {
+    try {
+      final serverSocket = await Socket.connect('192.168.1.13', 8080);
+      serverSocket.write(
+          "UPDATE: task~${widget.studentID}~${item.title}~$isActive\u0000");
+
+      List<int> responseBytes = [];
+      await serverSocket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        fetchTasks();
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(response.split("~")[1])));
+      }
+
+      serverSocket.close();
+    } catch (e) {
+      print("ERROR: $e");
+    }
+  }
+
+  void deleteTask(ListItem item) async {
+    try {
+      final serverSocket = await Socket.connect('192.168.1.13', 8080);
+      serverSocket
+          .write("DELETE: task~${widget.studentID}~${item.title}\u0000");
+
+      List<int> responseBytes = [];
+      await serverSocket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        fetchTasks();
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(response.split("~")[1])));
+      }
+
+      serverSocket.close();
+    } catch (e) {
+      print("ERROR: $e");
+    }
   }
 
   void showDeleteConfirmationDialog(BuildContext context, ListItem item) {
@@ -91,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
               child: Text('Delete'),
               onPressed: () {
-                deleteItem(item);
+                deleteTask(item);
                 Navigator.of(context).pop();
               },
             ),
@@ -108,11 +216,11 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add New Item'),
+          title: Text('Add New Task'),
           content: TextField(
             controller: titleController,
             decoration: InputDecoration(
-              hintText: 'Enter item title',
+              hintText: 'Enter task title',
             ),
           ),
           actions: <Widget>[
@@ -127,8 +235,9 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 String title = titleController.text.trim();
                 if (title.isNotEmpty) {
-                  addItem(title);
+                  addTask(title);
                 }
+                titleController.clear(); // Clear the text field
                 Navigator.of(context).pop();
               },
             ),
@@ -152,12 +261,14 @@ class _MyHomePageState extends State<MyHomePage> {
             color: item.isActive ? Colors.black : Colors.black54,
           ),
         ),
-        trailing: IconButton(
-          icon: Icon(item.icon),
-          color: item.isActive ? Colors.green : Colors.red,
-          onPressed: () {
-            toggleItemStatus(item);
+        trailing: Checkbox(
+          value: !item.isActive,
+          onChanged: (bool? value) {
+            if (value != null) {
+              updateTaskStatus(item, !value);
+            }
           },
+          activeColor: Colors.green,
         ),
       ),
     );
@@ -190,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: section1Items.length,
               itemBuilder: (context, index) {
                 return Container(

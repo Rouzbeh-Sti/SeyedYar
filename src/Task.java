@@ -4,18 +4,18 @@ import java.util.Objects;
 
 public class Task {
     String title;
-    boolean isDone;
+    boolean isActive;
     int forStudentID;
-    public static List<Task> allTasks=new ArrayList<>();
+    public static List<Task> allTasks = new ArrayList<>();
 
-    public Task(String title, boolean isDone,int forStudentID,boolean addToFile) {
-        this.forStudentID=forStudentID;
+    public Task(String title, boolean isActive, int forStudentID, boolean addToFile) {
+        this.forStudentID = forStudentID;
         this.title = title;
-        this.isDone = isDone;
+        this.isActive = isActive;
         allTasks.add(this);
-        if (addToFile){
-            String output=title+","+isDone;
-            FileController.AddToFile(output,"src\\database\\taskList.txt");
+        if (addToFile) {
+            String output = title + "," + isActive + "," + forStudentID;
+            FileController.AddToFile(output, "src\\database\\taskList.txt");
         }
     }
 
@@ -32,26 +32,26 @@ public class Task {
         return Objects.hash(title, forStudentID);
     }
 
-    public static Task getTaskByName(String taskName){
-        if(checkValidName(taskName)){
-            for(Task task : Task.allTasks){
-                if(task.title.equals(taskName)){
-                    return task;
-                }
+    public static Task getTaskByNameAndID(String taskName, int studentID) {
+        for (Task task : Task.allTasks) {
+            if (task.title.equals(taskName) && task.forStudentID == studentID) {
+                return task;
             }
         }
         return null;
     }
 
-    public static boolean checkValidName(String taskName) {
-        for (Task task :allTasks) {
-            if (task.equals(getTaskByName(taskName)))
-                return true;
-        }
-        return false;
+    public static boolean checkValidName(String taskName, int studentID) {
+        return getTaskByNameAndID(taskName, studentID) != null;
     }
-    public static void deleteTask(Task task){
+
+    public static void deleteTask(Task task) {
         allTasks.remove(task);
-        FileController.deleteSpecifiedTask(task.title);
+        FileController.deleteSpecifiedTask(task.title, task.forStudentID);
+    }
+
+    public static void updateTask(Task task, boolean isActive) {
+        task.isActive = isActive;
+        FileController.updateTask(task, isActive);
     }
 }

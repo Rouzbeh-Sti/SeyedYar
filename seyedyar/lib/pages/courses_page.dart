@@ -60,18 +60,13 @@ class _CoursesPageState extends State<CoursesPage> {
     }
   }
 
-  void addCourse() async {
-    if (courseIdController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Course ID cannot be empty")),
-      );
-      return;
-    }
-
+  void addCourse(String courseId) async {
     try {
       final serverSocket = await Socket.connect('192.168.1.13', 8080);
-      serverSocket.write(
-          "ADD: course~${widget.studentId}~${courseIdController.text}\u0000");
+      String message = "ADD: course~${widget.studentId}~$courseId\u0000";
+      print(
+          "Sending message: $message"); // Add this line to debug the message being sent
+      serverSocket.write(message);
 
       List<int> responseBytes = [];
       await serverSocket.listen((data) {
@@ -97,6 +92,8 @@ class _CoursesPageState extends State<CoursesPage> {
   }
 
   void showAddCourseDialog() {
+    TextEditingController courseIdController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -118,7 +115,13 @@ class _CoursesPageState extends State<CoursesPage> {
             TextButton(
               child: Text('Add'),
               onPressed: () {
-                addCourse();
+                String courseId = courseIdController.text.trim();
+                if (courseId.isNotEmpty) {
+                  addCourse(courseId);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Course ID cannot be empty")));
+                }
                 courseIdController.clear();
                 Navigator.of(context).pop();
               },
