@@ -207,11 +207,19 @@ public class Student {
             // invalid password
         }
     }
-    public String toJson() {
-        return new Gson().toJson(this);
+    public static String toJson(Student student) {
+        Gson gson = new Gson();
+        return gson.toJson(student);
     }
+
+    public static Student fromJson(String jsonString) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonString, Student.class);
+    }
+
     public String getDataAsString() {
-        return toJson();
+        return toJson(this);
     }
+
 }
 

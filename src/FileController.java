@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileController {
     public static void loadObjects(){
@@ -11,6 +13,7 @@ public class FileController {
         readTeacherList();
         readCourseList();
         readAssignmentList();
+        readStudentAssignmentList();
         readStudentList();
         readTaskList();
     }
@@ -80,17 +83,54 @@ public class FileController {
             System.out.println("Errorcourse: "+e.getStackTrace());
         }
     }
-    public static void readAssignmentList(){
+    public static void readAssignmentList() {
         checkFileExists("src\\database\\assignmentList.txt");
-        try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\assignmentList.txt"))){
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\assignmentList.txt"))) {
             String line;
             String[] info;
-            while ((line= reader.readLine())!=null){
-                info=line.split(",");
-                new Assignment(info[1],Integer.parseInt(info[3]),Course.getCourseById(Integer.parseInt(info[2])),Integer.parseInt(info[0]),false);
+            while ((line = reader.readLine()) != null) {
+                info = line.split(",");
+                String name = info[1];
+                int assignmentID = Integer.parseInt(info[0]);
+                Course course = Course.getCourseById(Integer.parseInt(info[2]));
+                String dueDate = info[3];
+                String dueTime = info[4];
+                String estimatedTime = info[5];
+                boolean isActive = Boolean.parseBoolean(info[6]);
+                String description = info.length > 7 ? info[7] : "";
+                String givingDescription = info.length > 8 ? info[8] : "";
+                double score = info.length > 9 ? Double.parseDouble(info[9]) : 0.0;
+
+                Assignment assignment = new Assignment(name, assignmentID, course, dueDate, dueTime, estimatedTime, false);
+                assignment.description = description;
+                assignment.givingDescription = givingDescription;
+                assignment.score = score;
+                assignment.isActive = isActive;
             }
-        }catch (Exception e){
-            System.out.println("Errorassign: "+e.getStackTrace());
+        } catch (Exception e) {
+            System.out.println("Errorassignment: " + e.getStackTrace());
+        }
+    }
+    public static void readStudentAssignmentList() {
+        checkFileExists("src\\database\\studentAssignmentList.txt");
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\studentAssignmentList.txt"))) {
+            String line;
+            String[] info;
+            while ((line = reader.readLine()) != null) {
+                info = line.split(",");
+                new StudentAssignment(
+                        Integer.parseInt(info[0]),
+                        Integer.parseInt(info[1]),
+                        info[2],
+                        Boolean.parseBoolean(info[3]),
+                        info[4],
+                        info[5],
+                        Double.parseDouble(info[6]),
+                        false
+                );
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading student assignments: " + e.getMessage());
         }
     }
 
@@ -167,6 +207,54 @@ public class FileController {
                 }
             }
             AddToFile(output,filename);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+    public synchronized static void changeStudentAssignmentField(int assignmentID, int studentID, int fieldNum, String newField) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\studentAssignmentList.txt"))) {
+            List<String> lines = new ArrayList<>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] info = line.split(",");
+                if (Integer.parseInt(info[0]) == assignmentID && Integer.parseInt(info[1]) == studentID) {
+                    info[fieldNum] = newField;
+                    line = String.join(",", info);
+                }
+                lines.add(line);
+            }
+            try (FileWriter writer = new FileWriter("src\\database\\studentAssignmentList.txt", false)) {
+                for (String ln : lines) {
+                    writer.write(ln + "\n");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+    public static void deleteStudentAssignmentFromFile(int studentID, int assignmentID, String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            FileWriter fr = new FileWriter("src\\database\\temp.txt", false);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] info = line.split(",");
+                int fileStudentID = Integer.parseInt(info[0]);
+                int fileAssignmentID = Integer.parseInt(info[1]);
+                if (fileStudentID != studentID || fileAssignmentID != assignmentID) {
+                    fr.write(line + "\n");
+                    fr.flush();
+                }
+            }
+            fr.close();
+            deleteFileContent(fileName);
+            BufferedReader reader2 = new BufferedReader(new FileReader("src\\database\\temp.txt"));
+            FileWriter fr2 = new FileWriter(fileName);
+            while ((line = reader2.readLine()) != null) {
+                fr2.write(line + "\n");
+                fr2.flush();
+            }
+            reader2.close();
+            new File("src\\database\\temp.txt").delete();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }

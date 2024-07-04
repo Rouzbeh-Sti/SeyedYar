@@ -3,6 +3,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class Server {
     public static void main(String[] args) throws Exception {
@@ -180,7 +181,8 @@ class ClientHandler extends Thread {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                break;            case "GET: studentTasks":
+                break;
+                case "GET: studentTasks":
                 studentId = Integer.parseInt(split[1]);
                 Student studentById1 = Student.getStudentById(studentId);
                 if (studentById1 != null) {
@@ -262,8 +264,78 @@ class ClientHandler extends Thread {
                     }
                 }
                 break;
-        }
+            case "UPDATE: studentAssignment":
+                int studentID = Integer.parseInt(split[1]);
+                int assignmentID = Integer.parseInt(split[2]);
+                String fieldToUpdate = split[3];
+                String newValue = split[4];
 
+                StudentAssignment studentAssignment = StudentAssignment.getStudentAssignment(studentID, assignmentID);
+                if (studentAssignment != null) {
+                    switch (fieldToUpdate) {
+                        case "estimatedTime":
+                            studentAssignment.setEstimatedTime(newValue);
+                            break;
+                        case "description":
+                            studentAssignment.setDescription(newValue);
+                            break;
+                        case "givingDescription":
+                            studentAssignment.setGivingDescription(newValue);
+                            break;
+                        case "isActive":
+                            studentAssignment.setActive(Boolean.parseBoolean(newValue));
+                            break;
+                        default:
+                            try {
+                                writer("400~Invalid field to update");
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            return;
+                    }
+                    try {
+                        writer("200~Field updated successfully");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404~Student assignment not found");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+                case "GET: studentAssignments":
+                studentID = Integer.parseInt(split[1]);
+                List<StudentAssignment> studentAssignments = StudentAssignment.getAssignmentsForStudent(studentID);
+                if (studentAssignments != null && !studentAssignments.isEmpty()) {
+                    StringBuilder responseBuilder = new StringBuilder("200~");
+                    for (StudentAssignment sa : studentAssignments) {
+                        responseBuilder.append(sa.getAssignmentID()).append(",")
+                                .append(sa.getAssignmentName()).append(",") // Include assignmentName
+                                .append(sa.getCourseName()).append(",")
+                                .append(sa.getDueDate()).append(",")
+                                .append(sa.getDueTime()).append(",")
+                                .append(sa.getEstimatedTime()).append(",")
+                                .append(sa.getIsActive()).append(",")
+                                .append(sa.getDescription()).append(",")
+                                .append(sa.getGivingDescription()).append(",")
+                                .append(sa.getScore()).append(";");
+                    }
+                    try {
+                        writer(responseBuilder.toString());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("200~"); // Return an empty response but with a 200 status
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;        }
         try {
             dis.close();
             dos.close();

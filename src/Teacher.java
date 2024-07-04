@@ -39,9 +39,12 @@ public class Teacher {
         if (courses.contains(crs))
             crs.removeStudent(stu);
     }
-    public void createAssignment(String name, int deadLineDays, Course course,int assignmentID){
-        new Assignment(name,deadLineDays,course,assignmentID,true);
+    public static void createAssignment(String name, int assignmentID, Course course, String dueDate, String dueTime, String estimatedTime) {
+        if (!Assignment.checkValidID(assignmentID)) {
+            new Assignment(name, assignmentID, course, dueDate, dueTime, estimatedTime, true);
+        }
     }
+
     public void removeAssignment(Course crs, Assignment asg){
         if (courses.contains(crs))
             crs.removeAssignment(asg);

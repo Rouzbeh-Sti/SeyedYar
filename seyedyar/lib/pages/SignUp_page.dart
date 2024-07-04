@@ -280,7 +280,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     builder: (context) => MainPage(
                                       name: userData['name'],
                                       studentID:
-                                          userData['studentID'].toString(),
+                                          userData['studentID'],
                                     ),
                                   ),
                                 );

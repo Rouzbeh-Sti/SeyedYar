@@ -13,7 +13,7 @@ class ListItem {
 
 class TodoWorkPage extends StatelessWidget {
   final String name;
-  final String studentID;
+  final int studentID;
 
   TodoWorkPage({required this.name, required this.studentID});
 
@@ -27,7 +27,7 @@ class TodoWorkPage extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  final String studentID;
+  final int  studentID;
 
   MyHomePage({required this.studentID});
 
@@ -86,7 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
 
-    // Check if the task already exists
     for (var task in section1Items) {
       if (task.title == title) {
         ScaffoldMessenger.of(context).showSnackBar(

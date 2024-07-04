@@ -6,7 +6,7 @@ import 'package:seyedyar/pages/main_page.dart';
 
 class ProfilePage extends StatelessWidget {
   final String name;
-  final String studentID;
+  final int studentID;
 
   ProfilePage({required this.name, required this.studentID});
 

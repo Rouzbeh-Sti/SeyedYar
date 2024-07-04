@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class NewsPage extends StatelessWidget {
   final String name;
-  final String studentID;
+  final int  studentID;
 
   NewsPage({required this.name, required this.studentID});
 

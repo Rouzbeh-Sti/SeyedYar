@@ -269,54 +269,62 @@ public class CLI {
                 adminMenu();
                 break;
             case 7:
-                checkValidID=true;
+                checkValidID = true;
                 do {
-                    System.out.println("Create a Assignment. \n");
-                    System.out.println("Enter Assignment's name or press '0' button to back to admin menu : ");
+                    System.out.println("Create an Assignment. \n");
+                    System.out.println("Enter Assignment's name or press '0' button to back to admin menu: ");
                     scanner.nextLine();
-                    String name=scanner.nextLine();
-                    try{
-                        if(Integer.parseInt(name) == 0){
+                    String name = scanner.nextLine();
+                    try {
+                        if (Integer.parseInt(name) == 0) {
                             clearScreen();
                             adminMenu();
                             break;
                         }
-                    }catch (NumberFormatException e){}
-                    System.out.println("Enter Assignment's ID : ");
-                    int assignmentID= scanner.nextInt();
-                    System.out.println("Enter Assignment's CourseID or press '0' button to back to admin menu : ");
-                    int courseID= scanner.nextInt();
-                    if(courseID == 0){
+                    } catch (NumberFormatException e) {
+                    }
+
+                    System.out.println("Enter Assignment's ID: ");
+                    int assignmentID = scanner.nextInt();
+
+                    System.out.println("Enter Assignment's CourseID or press '0' button to back to admin menu: ");
+                    int courseID = scanner.nextInt();
+                    if (courseID == 0) {
                         clearScreen();
                         adminMenu();
                         break;
                     }
-                    System.out.println("Enter Assignment's Deadline : ");
-                    int deadline= scanner.nextInt();
-                    if (Assignment.checkValidID(assignmentID)){
+
+                    System.out.println("Enter Assignment's Due Date (yyyy-MM-dd): ");
+                    scanner.nextLine();
+                    String dueDateStr = scanner.nextLine();
+
+                    System.out.println("Enter Assignment's Due Time (HH:mm): ");
+                    String dueTimeStr = scanner.nextLine();
+
+                    System.out.println("Enter Estimated Time: ");
+                    String estimatedTime = scanner.nextLine();
+
+                    if (Assignment.checkValidID(assignmentID)) {
                         clearScreen();
-                        System.out.println("ERROR: Assignment ID Already Exist.");
+                        System.out.println("ERROR: Assignment ID Already Exists.");
                         Thread.sleep(1500);
                     } else if (!Course.checkValidID(courseID)) {
                         clearScreen();
                         System.out.println("ERROR: Course ID is not valid.");
                         Thread.sleep(1500);
-                    } else if (deadline<=0) {
-                        clearScreen();
-                        System.out.println("Deadline invalid");
-                        Thread.sleep(1500);
                     } else {
                         clearScreen();
-                        Admin.createAssignment(name,deadline,Course.getCourseById(courseID),assignmentID);
-                        System.out.println("Assignment Created !");
-                        checkValidID=false;
+                        Admin.createAssignment(name, assignmentID, Course.getCourseById(courseID), dueDateStr, dueTimeStr, estimatedTime);
+                        System.out.println("Assignment Created!");
+                        checkValidID = false;
                         Thread.sleep(1000);
                     }
                     clearScreen();
-                }while (checkValidID);
+                } while (checkValidID);
                 adminMenu();
                 break;
-            case 8:
+                case 8:
                 checkValidID=true;
                 do {
                     System.out.println("Delete a Assignment. \n");
@@ -343,34 +351,37 @@ public class CLI {
                 adminMenu();
                 break;
             case 9:
-                checkValidID=true;
+                checkValidID = true;
                 do {
-                    System.out.println("Change a Assignment's Deadline : \n");
+                    System.out.println("Change an Assignment's Deadline : \n");
                     System.out.println("Enter assignment's ID or press '0' button to back to admin menu : ");
-                    int assignmentID= scanner.nextInt();
-                    if(assignmentID == 0){
+                    int assignmentID = scanner.nextInt();
+                    if (assignmentID == 0) {
                         clearScreen();
                         adminMenu();
                         break;
                     }
-                    System.out.println("Enter New Deadline :");
-                    int newDeadline=scanner.nextInt();
-                    if (!Assignment.checkValidID(assignmentID)){
+                    System.out.println("Enter New Deadline Date (YYYY-MM-DD):");
+                    String newDeadlineDate = scanner.next();
+                    System.out.println("Enter New Deadline Time (HH:MM):");
+                    String newDeadlineTime = scanner.next();
+
+                    if (!Assignment.checkValidID(assignmentID)) {
                         clearScreen();
                         System.out.println("AssignmentID is not valid.");
                         Thread.sleep(1500);
-                    }else {
+                    } else {
                         clearScreen();
-                        Admin.changeAssignmentDeadline(Assignment.getAssignmentById(assignmentID),newDeadline);
+                        Admin.changeAssignmentDeadline(Assignment.getAssignmentById(assignmentID), newDeadlineDate, newDeadlineTime);
                         System.out.println("Assignment deadline has been changed successfully");
-                        checkValidID=false;
+                        checkValidID = false;
                         Thread.sleep(1000);
                     }
                     clearScreen();
-                }while (checkValidID);
+                } while (checkValidID);
                 adminMenu();
                 break;
-            case 10:
+                case 10:
                 checkValidID=true;
                 do {
                     System.out.println("Add a student to a course \n");
@@ -679,60 +690,64 @@ public class CLI {
                 break;
             case 4:
                 condition = true;
-                do{
+                do {
                     System.out.println("Please enter your desired courseId for assignment or '0' to back to teacher menu : ");
                     courseId = scanner.nextInt();
-                    if (courseId == 0){
+                    if (courseId == 0) {
                         clearScreen();
                         teacherMenu(teacher);
                         break;
                     }
-                    if(Course.getCourseById(courseId) == null){
+                    if (Course.getCourseById(courseId) == null) {
                         System.out.println("Invalid course ID !");
                         Thread.sleep(1500);
                         clearScreen();
-                    }
-                    else if (Course.getCourseById(courseId).getTeacher().equals(teacher)){
+                    } else if (Course.getCourseById(courseId).getTeacher().equals(teacher)) {
                         condition = false;
-                    }
-                    else{
+                    } else {
                         clearScreen();
                         System.out.println("You don't have this course !");
                         Thread.sleep(1500);
                     }
-                }while (condition);
+                } while (condition);
+
                 condition = true;
                 int assignmentId;
-                do{
-                    System.out.println("please enter assignmentId or '0' to back to teacher menu : ");
+                do {
+                    System.out.println("Please enter assignmentId or '0' to back to teacher menu : ");
                     assignmentId = scanner.nextInt();
-                    if (assignmentId == 0){
+                    if (assignmentId == 0) {
                         clearScreen();
                         teacherMenu(teacher);
                         break;
                     }
-                    if(!Assignment.checkValidID(assignmentId)){
+                    if (!Assignment.checkValidID(assignmentId)) {
                         condition = false;
-                    }
-                    else {
-                        System.out.println("This Assignment already exist !");
+                    } else {
+                        System.out.println("This Assignment already exists !");
                         Thread.sleep(1500);
                         clearScreen();
                     }
-                }while (condition);
-                System.out.println("please enter a name for assignment :");
-                scanner.nextLine();
+                } while (condition);
+
+                System.out.println("Please enter a name for the assignment :");
+                scanner.nextLine(); // consume newline
                 String assignmentName = scanner.nextLine();
-                System.out.println("please enter a deadLine for assignment :");
-                int deadLine = scanner.nextInt();
+                System.out.println("Please enter the deadline date for the assignment (YYYY-MM-DD) :");
+                String deadlineDate = scanner.next();
+                System.out.println("Please enter the deadline time for the assignment (HH:MM) :");
+                String deadlineTime = scanner.next();
+                System.out.println("Please enter the estimated time to complete the assignment :");
+                scanner.nextLine(); // consume newline
+                String estimatedTime = scanner.nextLine();
+
                 clearScreen();
-                teacher.createAssignment(assignmentName,deadLine,Course.getCourseById(courseId),assignmentId);
+                teacher.createAssignment(assignmentName, assignmentId, Course.getCourseById(courseId), deadlineDate, deadlineTime, estimatedTime);
                 System.out.println("Assignment Created Successfully !");
                 Thread.sleep(1500);
                 clearScreen();
                 teacherMenu(teacher);
-                break;
-            case 5:
+                break;                case 5:
                 condition = true;
                 do{
                     System.out.println("please enter assignmentId or '0' to back to teacher menu : ");
@@ -763,33 +778,35 @@ public class CLI {
                 break;
             case 6:
                 condition = true;
-                do{
-                    System.out.println("please enter your assignment ID or '0' to back to teacher menu : ");
+                do {
+                    System.out.println("Please enter your assignment ID or '0' to back to teacher menu : ");
                     assignmentId = scanner.nextInt();
-                    if (assignmentId == 0){
+                    if (assignmentId == 0) {
                         clearScreen();
                         teacherMenu(teacher);
                         break;
                     }
-                    //error
-                    if (Assignment.allAssignments.contains(Assignment.getAssignmentById(assignmentId))){
-                        System.out.println("Please enter a newDeadLine :");
-                        int deadLineAssignment = scanner.nextInt();
-                        Assignment.getAssignmentById(assignmentId).changeDeadLine(deadLineAssignment);
+                    Assignment assignment = Assignment.getAssignmentById(assignmentId);
+                    if (assignment != null && Assignment.allAssignments.contains(assignment)) {
+                        System.out.println("Please enter the new deadline date (YYYY-MM-DD) :");
+                        String newDeadlineDate = scanner.next();
+                        System.out.println("Please enter the new deadline time (HH:MM) :");
+                        String newDeadlineTime = scanner.next();
+                        assignment.changeDeadline(newDeadlineDate, newDeadlineTime);
                         clearScreen();
-                        System.out.println("Deadline changed successfully !");
+                        System.out.println("Deadline changed successfully!");
                         Thread.sleep(1500);
                         condition = false;
-                    }else {
+                    } else {
                         clearScreen();
-                        System.out.println("You don't have access to this assignment !");
+                        System.out.println("You don't have access to this assignment!");
                         Thread.sleep(1500);
                     }
                     clearScreen();
-                }while (condition);
+                } while (condition);
                 teacherMenu(teacher);
                 break;
-            case 7:
+                case 7:
                 printAdminOrTeacher();
                 break;
         }

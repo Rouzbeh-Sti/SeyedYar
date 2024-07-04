@@ -9,7 +9,7 @@ import 'package:seyedyar/pages/profile_page.dart';
 
 class MainPage extends StatefulWidget {
   final String name;
-  final String studentID;
+  final int studentID;
 
   MainPage({required this.name, required this.studentID});
 
@@ -28,9 +28,9 @@ class _MainPageState extends State<MainPage> {
     _pages = <Widget>[
       HomePage(name: widget.name, studentID: widget.studentID),
       TodoWorkPage(name: widget.name, studentID: widget.studentID),
-      CoursesPage(studentId: int.parse(widget.studentID)),
+      CoursesPage(studentId: widget.studentID),
       NewsPage(name: widget.name, studentID: widget.studentID),
-      AssignmentsPage(name: widget.name, studentID: widget.studentID),
+      AssignmentPage(studentID: widget.studentID),
     ];
   }
 
@@ -61,8 +61,7 @@ class _MainPageState extends State<MainPage> {
             context,
             MaterialPageRoute(
               builder: (context) => ProfilePage(
-                name: widget.name,
-                studentID: widget.studentID,
+                name: widget.name,studentID: widget.studentID,
               ),
             ),
           );

@@ -22,11 +22,13 @@ public class Admin {
             Course.deleteCourse(course);
         }
     }
-    public static void createAssignment(String name, int deadLineDays, Course course,int assignmentID){
+    public static void createAssignment(String name, int assignmentID, Course course, String dueDate, String dueTime, String estimatedTime) {
         if (!Assignment.checkValidID(assignmentID)) {
-            Assignment assignment = new Assignment(name, deadLineDays, course, assignmentID,true);
+            new Assignment(name, assignmentID, course, dueDate, dueTime, estimatedTime, true);
         }
     }
+
+
     public static void deleteAssignment(Assignment assignment){
         if (Assignment.allAssignments.contains(assignment)){
             Assignment.deleteAssignment(assignment);
@@ -44,7 +46,11 @@ public class Admin {
     public static void removeStudentFromCourse(Student student,Course course){
         course.removeStudent(student);
     }
-    public static void changeAssignmentDeadline(Assignment assignment,int newDeadline){
-        assignment.changeDeadLine(newDeadline);
+    public static void changeAssignmentDeadline(Assignment assignment, String newDueDate, String newDueTime) {
+        assignment.changeDeadline(newDueDate, newDueTime);
+    }
+    public static void changeAssignmentEstimatedTime(Assignment assignment, String newEstimatedTime) {
+        assignment.setEstimatedTime(newEstimatedTime);
+        FileController.changeSpecifiedField("src\\database\\assignmentList.txt", assignment.getAssignmentID(), 5, newEstimatedTime);
     }
 }

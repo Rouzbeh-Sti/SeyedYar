@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String name;
-  final String studentID;
+  final int studentID;
   final bool showProfileButton;
   final VoidCallback? onProfileTap;
 

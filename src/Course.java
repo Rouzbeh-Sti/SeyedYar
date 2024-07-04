@@ -77,14 +77,15 @@ public class Course {
 
         }
     }
-    public void changeDeadLine(Assignment as,int day){
-        int index=0;
+    public void changeDeadline(Assignment as, String newDate, String newTime) {
         for (int i = 0; i < assignments.size(); i++) {
-            if (assignments.get(i).equals(as))
-                index=i;
+            if (assignments.get(i).equals(as)) {
+                assignments.get(i).changeDeadline(newDate, newTime);
+                break;
+            }
         }
-        assignments.get(index).changeDeadLine(day);
     }
+
     public static void deleteCourse(Course course){
         for (Assignment assignment :course.assignments) {
             Assignment.allAssignments.remove(assignment);

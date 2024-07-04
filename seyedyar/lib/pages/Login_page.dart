@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                                       builder: (context) => MainPage(
                                         name: userData['name'],
                                         studentID:
-                                            userData['studentID'].toString(),
+                                            userData['studentID'],
                                       ),
                                     ),
                                   );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
   final String name;
-  final String studentID;
+  final int studentID;
 
   HomePage({required this.name, required this.studentID});
 
