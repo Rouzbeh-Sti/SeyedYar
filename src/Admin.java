@@ -14,8 +14,8 @@ public class Admin {
             Student.deleteStudent(student);
             FileController.deleteSpecifiedIDFromFile(student.getStudentID(), "src\\database\\studentList.txt");
     }
-    public static void createCourse(String name,Teacher teacher,int courseID){
-        Course course=new Course(name,courseID,teacher,true);
+    public static void createCourse(String name,Teacher teacher,int courseID,int units){
+        Course course=new Course(name,courseID,teacher,units,true);
     }
     public static void deleteCourse(Course course){
         if (Course.allCourses.contains(course)){

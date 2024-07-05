@@ -3,29 +3,29 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
+
 public class Student {
-    public static List<Student> allStudents=new ArrayList<>();
+    public static List<Student> allStudents = new ArrayList<>();
     private String name;
     private String password;
     private int studentID;
-    private int courseCount=0; // dars ha
-    private int signedUnits=0; //vahed ha
-    private double totalAverage=0;
-    private int currentAverage=0;
+    private int courseCount = 0; // dars ha
+    private int signedUnits = 0; // vahed ha
+    private double totalAverage = 0;
+    private int currentAverage = 0;
 
-
-    public Student(String name, String password, int studentID,boolean addToFile) {
+    public Student(String name, String password, int studentID, boolean addToFile) {
         this.name = name;
         this.password = password;
         this.studentID = studentID;
         allStudents.add(this);
-        if (addToFile){
-            String output=studentID+","+password+","+name+","+"#";
-            FileController.AddToFile(output,"src\\database\\studentList.txt");
+        if (addToFile) {
+            String output = studentID + "," + password + "," + name + "," + "#";
+            FileController.AddToFile(output, "src\\database\\studentList.txt");
         }
     }
 
-    Map<Course,Double> courses =new HashMap<>();
+    Map<Course, Double> courses = new HashMap<>();
 
     public Student(String name, int studentID) {
         this.name = name;
@@ -45,10 +45,10 @@ public class Student {
         return Objects.hash(name, studentID);
     }
 
-    public void printCourses(){
-        int number=1;
+    public void printCourses() {
+        int number = 1;
         for (Course c : courses.keySet()) {
-            System.out.println(number+"- "+c.name);
+            System.out.println(number + "- " + c.name);
             number++;
         }
     }
@@ -56,14 +56,17 @@ public class Student {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
-    public void printTotalAverage(){
-        System.out.println("Student's total Average : "+totalAverage);
+
+    public void printTotalAverage() {
+        System.out.println("Student's total Average : " + totalAverage);
     }
-    public void printSignedUnits(){
-        System.out.println("Studen't Signed Units : "+signedUnits);
+
+    public void printSignedUnits() {
+        System.out.println("Studen't Signed Units : " + signedUnits);
     }
 
     public int getCourseCount() {
@@ -83,11 +86,11 @@ public class Student {
     }
 
     public double getTotalAverage() {
-        int sum=0;
-        for (double score: courses.values()) {
-            sum+=score;
+        int sum = 0;
+        for (double score : courses.values()) {
+            sum += score;
         }
-        totalAverage=sum/ courses.size();
+        totalAverage = sum / courses.size();
         return totalAverage;
     }
 
@@ -110,79 +113,84 @@ public class Student {
     public void setStudentID(int studentID) {
         this.studentID = studentID;
     }
-    public void addCourse(Course crs){
+
+    public void addCourse(Course crs) {
         if (!courses.keySet().contains(crs)) {
             courseCount++;
             signedUnits += crs.units;
             courses.put(crs, 0.0);
-            String coursesToList="";
-            for (Course course: courses.keySet()) {
-                coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
-             }
-            FileController.changeSpecifiedField("src\\database\\studentList.txt",this.getStudentID(),3,coursesToList);
-          }
+            String coursesToList = "";
+            for (Course course : courses.keySet()) {
+                coursesToList += course.courseID + "#" + course.students.get(this) + "#";
+            }
+            FileController.changeSpecifiedField("src\\database\\studentList.txt", this.getStudentID(), 3, coursesToList);
         }
-        public void addCourse(Course crs,double score){
+    }
+
+    public void addCourse(Course crs, double score) {
         if (courses.keySet().contains(crs)) {
             courseCount++;
             signedUnits += crs.units;
-            crs.students.put(this,score);
+            crs.students.put(this, score);
             courses.put(crs, score);
-            String coursesToList="";
-            for (Course course: courses.keySet()) {
-                coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
-             }
-            FileController.changeSpecifiedField("src\\database\\studentList.txt",this.getStudentID(),3,coursesToList);
-          }
-        }
-    public void removeCourse(Course crs){
-        if (courses.keySet().contains(crs)){
-            courseCount--;
-            signedUnits-= crs.units;
-            courses.remove(crs);
-            String coursesToList="";
-            for (Course course: courses.keySet()) {
-                coursesToList+=course.courseID+"#"+course.students.get(this)+"#";
+            String coursesToList = "";
+            for (Course course : courses.keySet()) {
+                coursesToList += course.courseID + "#" + course.students.get(this) + "#";
             }
-            FileController.changeSpecifiedField("src\\database\\studentList.txt",this.getStudentID(),3,coursesToList);
-            if (courses.size()==0){
+            FileController.changeSpecifiedField("src\\database\\studentList.txt", this.getStudentID(), 3, coursesToList);
+        }
+    }
+
+    public void removeCourse(Course crs) {
+        if (courses.keySet().contains(crs)) {
+            courseCount--;
+            signedUnits -= crs.units;
+            courses.remove(crs);
+            String coursesToList = "";
+            for (Course course : courses.keySet()) {
+                coursesToList += course.courseID + "#" + course.students.get(this) + "#";
+            }
+            FileController.changeSpecifiedField("src\\database\\studentList.txt", this.getStudentID(), 3, coursesToList);
+            if (courses.size() == 0) {
                 String line;
                 String[] info;
-                try(BufferedReader reader=new BufferedReader(new FileReader("src\\database\\studentList.txt"))){
-                    while ((line=reader.readLine())!=null){
-                        ;
-                        info=line.split(",");
-                        int findID=Integer.parseInt(info[0]);
-                        if (findID==this.studentID){
+                try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\studentList.txt"))) {
+                    while ((line = reader.readLine()) != null) {
+                        info = line.split(",");
+                        int findID = Integer.parseInt(info[0]);
+                        if (findID == this.studentID) {
                             break;
                         }
                     }
-                    FileController.deleteSpecifiedIDFromFile(studentID,"src\\database\\studentList.txt");
-                    FileController.AddToFile(line+"#","src\\database\\studentList.txt");
-                }catch (Exception e){
-                    System.out.println("ERROR: "+e.getStackTrace());
+                    FileController.deleteSpecifiedIDFromFile(studentID, "src\\database\\studentList.txt");
+                    FileController.AddToFile(line + "#", "src\\database\\studentList.txt");
+                } catch (Exception e) {
+                    System.out.println("ERROR: " + e.getStackTrace());
                 }
             }
         }
     }
-    public static void deleteStudent(Student student){
-        for (Course course :student.courses.keySet()) {
+
+    public static void deleteStudent(Student student) {
+        for (Course course : student.courses.keySet()) {
             course.students.remove(student);
         }
         allStudents.remove(student);
-        FileController.deleteSpecifiedIDFromFile(student.studentID,"src\\database\\studentList.txt");
+        FileController.deleteSpecifiedIDFromFile(student.studentID, "src\\database\\studentList.txt");
     }
-    public static boolean checkValidID(int studentID){
-        for (Student student:allStudents) {
-            if (student.studentID==studentID)
+
+    public static boolean checkValidID(int studentID) {
+        for (Student student : allStudents) {
+            if (student.studentID == studentID)
                 return true;
         }
         return false;
     }
-    public static Student getStudentById(int Id){
-        if(checkValidID(Id)){
-            for(Student student : Student.allStudents){
-                if(student.getStudentID() == Id){
+
+    public static Student getStudentById(int Id) {
+        if (checkValidID(Id)) {
+            for (Student student : Student.allStudents) {
+                if (student.getStudentID() == Id) {
                     return student;
                 }
             }
@@ -193,20 +201,23 @@ public class Student {
     public Map<Course, Double> getCourses() {
         return courses;
     }
-    public static void studentSingUp(int studentID,String password,String name){
-        new Student(name,password,studentID,true);
+
+    public static void studentSingUp(int studentID, String password, String name) {
+        new Student(name, password, studentID, true);
     }
-    public static int studentLogin(int studentID,String password){
-        if (!allStudents.contains(getStudentById(studentID))){
+
+    public static int studentLogin(int studentID, String password) {
+        if (!allStudents.contains(getStudentById(studentID))) {
             return 0; // invalid id
         } else if (getStudentById(studentID).password.equals(password)) {
-            // login successfull
+            // login successful
             return 2;
-        }else {
+        } else {
             return 1;
             // invalid password
         }
     }
+
     public static String toJson(Student student) {
         Gson gson = new Gson();
         return gson.toJson(student);
@@ -221,5 +232,29 @@ public class Student {
         return toJson(this);
     }
 
-}
+    public int getTotalUnits() {
+        int totalUnits = 0;
+        for (Course course : courses.keySet()) {
+            totalUnits += course.units;
+        }
+        return totalUnits;
+    }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public double calculateOverallScore() {
+        double totalScore = 0;
+        int totalUnits = 0;
+        for (Course course : courses.keySet()) {
+            totalScore += courses.get(course) * course.units;
+            totalUnits += course.units;
+        }
+        return totalUnits == 0 ? 0 : totalScore / totalUnits;
+    }
+}

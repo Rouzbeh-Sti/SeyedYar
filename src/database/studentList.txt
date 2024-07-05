@@ -1,2 +1,1 @@
-2,Alireza84,karim,1#0.0#2#0.0#
-1,Alireza84,rouzbeh,1#0.0#2#0.0#
+1,Alireza84,bwhwh,1#19.8#2#19.4#3#0.0#

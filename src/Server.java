@@ -343,6 +343,65 @@ class ClientHandler extends Thread {
                     }
                 }
                 break;
+            case "GET: studentProfile":
+                 studentID = Integer.parseInt(split[1]);
+                Student studentProfile = Student.getStudentById(studentID);
+                if (studentProfile != null) {
+                    String profileData = studentProfile.getTotalUnits() + "," + studentProfile.calculateOverallScore();
+                    try {
+                        writer("200~" + profileData);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404~Student not found");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+            case "UPDATE: changeName":
+                studentID = Integer.parseInt(split[1]);
+                String newName = split[2];
+                student = Student.getStudentById(studentID);
+                if (student != null) {
+                    student.setName(newName);
+                    FileController.changeSpecifiedField("src/database/studentList.txt", studentID, 2, newName);
+                    try {
+                        writer("200~Name updated successfully");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404~Student not found");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+            case "UPDATE: password":
+                studentID = Integer.parseInt(split[1]);
+                String currentPassword = split[2];
+                 newPassword = split[3];
+                student = Student.getStudentById(studentID);
+                if (student != null && student.getPassword().equals(currentPassword)) {
+                    student.setPassword(newPassword);
+                    FileController.changeSpecifiedField("src/database/studentList.txt", studentID, 1, newPassword);
+                    try {
+                        writer("200~Password updated successfully");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("401~Invalid current password");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
         }
         try {
             dis.close();
