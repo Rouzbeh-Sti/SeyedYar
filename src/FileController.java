@@ -113,11 +113,13 @@ public class FileController {
     }
     public static void readStudentAssignmentList() {
         checkFileExists("src\\database\\studentAssignmentList.txt");
+        boolean studentAssignmentsExist = false;
+
         try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\studentAssignmentList.txt"))) {
             String line;
-            String[] info;
             while ((line = reader.readLine()) != null) {
-                info = line.split(",");
+                studentAssignmentsExist = true;
+                String[] info = line.split(",");
                 new StudentAssignment(
                         Integer.parseInt(info[0]),
                         Integer.parseInt(info[1]),
@@ -132,8 +134,32 @@ public class FileController {
         } catch (Exception e) {
             System.out.println("Error reading student assignments: " + e.getMessage());
         }
-    }
 
+        if (!studentAssignmentsExist) {
+            try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\assignmentList.txt"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] info = line.split(",");
+                    int assignmentID = Integer.parseInt(info[0]);
+                    List<Student> students = Student.allStudents;
+                    for (Student student : students) {
+                        new StudentAssignment(
+                                assignmentID,
+                                student.getStudentID(),
+                                info[5], // estimatedTime
+                                Boolean.parseBoolean(info[6]), // isActive
+                                info.length > 7 ? info[7] : "", // description
+                                info.length > 8 ? info[8] : "", // givingDescription
+                                info.length > 9 ? Double.parseDouble(info[9]) : 0.0, // score
+                                true // addToFile
+                        );
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Error generating student assignments: " + e.getMessage());
+            }
+        }
+    }
     private static void checkFileExists(String filepath) {
         File file=new File(filepath);
         if (!file.exists()){

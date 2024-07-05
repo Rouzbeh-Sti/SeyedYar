@@ -1,5 +1,0 @@
-1,1,1,true,,,0.0,apthread
-1,402233,1,true,,,0.0,apthread
-3,1,8,true,,,0.0,ui
-3,402233,8,false,,,0.0,ui
-85,402233,,true,,,0.0,tahlil

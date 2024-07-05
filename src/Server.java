@@ -312,14 +312,14 @@ class ClientHandler extends Thread {
                 }
                 break;
 
-                case "GET: studentAssignments":
+            case "GET: studentAssignments":
                 studentID = Integer.parseInt(split[1]);
                 List<StudentAssignment> studentAssignments = StudentAssignment.getAssignmentsForStudent(studentID);
                 if (studentAssignments != null && !studentAssignments.isEmpty()) {
                     StringBuilder responseBuilder = new StringBuilder("200~");
                     for (StudentAssignment sa : studentAssignments) {
                         responseBuilder.append(sa.getAssignmentID()).append(",")
-                                .append(sa.getAssignmentName()).append(",") // Include assignmentName
+                                .append(sa.getAssignmentName()).append(",")
                                 .append(sa.getCourseName()).append(",")
                                 .append(sa.getDueDate()).append(",")
                                 .append(sa.getDueTime()).append(",")
@@ -335,13 +335,15 @@ class ClientHandler extends Thread {
                         throw new RuntimeException(e);
                     }
                 } else {
+                    // No assignments found, send an empty response with 200 status
                     try {
-                        writer("200~"); // Return an empty response but with a 200 status
+                        writer("200~");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                break;        }
+                break;
+        }
         try {
             dis.close();
             dos.close();

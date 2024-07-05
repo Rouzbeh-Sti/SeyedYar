@@ -33,30 +33,36 @@ class _AssignmentPageState extends State<AssignmentPage> {
 
       if (response.startsWith("200~")) {
         String data = response.split('~')[1];
-        List<String> assignmentsData = data.split(";");
-        List<StudentAssignment> fetchedAssignments = assignmentsData
-            .where((assignmentData) => assignmentData.isNotEmpty)
-            .map((assignmentData) {
-          List<String> parts = assignmentData.split(",");
-          return StudentAssignment(
-            assignmentID: int.parse(parts[0]),
-            studentID: widget.studentID,
-            name: parts[1],
-            courseName: parts[2],
-            dueDate: parts[3],
-            dueTime: parts[4],
-            estimatedTime: parts[5],
-            isActive: parts[6] == 'true',
-            description: parts[7],
-            givingDescription: parts[8],
-            score: double.parse(parts[9]),
-          );
-        }).toList();
+        if (data.isEmpty) {
+          setState(() {
+            assignments = [];
+          });
+        } else {
+          List<String> assignmentsData = data.split(";");
+          List<StudentAssignment> fetchedAssignments = assignmentsData
+              .where((assignmentData) => assignmentData.isNotEmpty)
+              .map((assignmentData) {
+            List<String> parts = assignmentData.split(",");
+            return StudentAssignment(
+              assignmentID: int.parse(parts[0]),
+              studentID: widget.studentID,
+              name: parts[1],
+              courseName: parts[2],
+              dueDate: parts[3],
+              dueTime: parts[4],
+              estimatedTime: parts[5],
+              isActive: parts[6] == 'true',
+              description: parts[7],
+              givingDescription: parts[8],
+              score: double.parse(parts[9]),
+            );
+          }).toList();
 
-        setState(() {
-          assignments = fetchedAssignments;
-          sortAssignments();
-        });
+          setState(() {
+            assignments = fetchedAssignments;
+            sortAssignments();
+          });
+        }
       } else {
         throw Exception(response.split('~')[1]);
       }
@@ -70,7 +76,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
     return Scaffold(
       backgroundColor: Color(0xFFD8F3DC),
       body: assignments.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: Text('No assignments available'))
           : ListView.builder(
               padding: EdgeInsets.all(16),
               itemCount: assignments.length,
