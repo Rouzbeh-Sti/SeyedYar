@@ -41,7 +41,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
           return StudentAssignment(
             assignmentID: int.parse(parts[0]),
             studentID: widget.studentID,
-            name: parts[1], // Read assignmentName
+            name: parts[1],
             courseName: parts[2],
             dueDate: parts[3],
             dueTime: parts[4],
@@ -164,8 +164,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
       ),
       builder: (context) {
         return Container(
-          color:
-              Color.fromARGB(255, 168, 223, 171), // Set a new background color
+          color: Color.fromARGB(255, 168, 223, 171),
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
             left: 20,
@@ -198,216 +197,32 @@ class _AssignmentPageState extends State<AssignmentPage> {
                     ],
                   ),
                   SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text('Title:',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                      ),
-                      Expanded(
-                        child: Text(assignment.name,
-                            style: TextStyle(fontSize: 18)),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text('Course:',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                      Expanded(
-                        child: Text(assignment.courseName,
-                            style: TextStyle(fontSize: 16)),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text('Due Date:',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                      Expanded(
-                        child: Text(assignment.dueDate,
-                            style: TextStyle(fontSize: 16)),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text('Due Time:',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                      Expanded(
-                        child: Text(assignment.dueTime,
-                            style: TextStyle(fontSize: 16)),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text('Status:',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                      Expanded(
-                        child: Text(assignment.isActive ? "Active" : "Inactive",
-                            style: TextStyle(fontSize: 16)),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text('Estimated Time:',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                      Container(
-                        width: 80,
-                        child: TextFormField(
-                          controller: estimatedTimeController,
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            errorStyle: TextStyle(height: 0),
-                            contentPadding: EdgeInsets.symmetric(vertical: 10),
-                          ),
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return '';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Text("hours", style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  TextFormField(
-                    controller: descriptionController,
-                    decoration: InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 3,
-                  ),
-                  SizedBox(height: 5),
-                  TextFormField(
-                    controller: givingDescriptionController,
-                    decoration: InputDecoration(
-                      labelText: 'Giving Description',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 3,
-                  ),
+                  buildDetailRow('Title:', assignment.name),
+                  buildDetailRow('Course:', assignment.courseName),
+                  buildDetailRow('Due Date:', assignment.dueDate),
+                  buildDetailRow('Due Time:', assignment.dueTime),
+                  buildDetailRow(
+                      'Status:', assignment.isActive ? "Active" : "Inactive"),
+                  buildEditableRow(
+                      context,
+                      'Estimated Time:',
+                      estimatedTimeController,
+                      assignment.estimatedTime, (value) {
+                    updateEstimatedTime(context, assignment, value);
+                  }),
+                  buildEditableRow(context, 'Description:',
+                      descriptionController, assignment.description, (value) {
+                    updateDescription(context, assignment, value);
+                  }),
+                  buildEditableRow(
+                      context,
+                      'Giving Description:',
+                      givingDescriptionController,
+                      assignment.givingDescription, (value) {
+                    updateGivingDescription(context, assignment, value);
+                  }),
                   SizedBox(height: 20),
-                  if (_formKey.currentState?.validate() == false)
-                    Padding(
-                      padding: EdgeInsets.only(top: 5, left: 200),
-                      child: Text(
-                        'Cannot be empty',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState?.validate() == true) {
-                              updateAssignmentDetails(
-                                  context,
-                                  assignment,
-                                  estimatedTimeController.text,
-                                  descriptionController.text,
-                                  givingDescriptionController.text);
-                              setState(() {
-                                assignment.estimatedTime =
-                                    estimatedTimeController.text;
-                                assignment.description =
-                                    descriptionController.text;
-                                assignment.givingDescription =
-                                    givingDescriptionController.text;
-                              });
-                              Navigator.pop(context);
-                            }
-                          },
-                          child: Text(
-                            'Update',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(169, 244, 73, 73),
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Upload File',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 24),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  buildUploadButton(),
                   SizedBox(height: 20),
                 ],
               ),
@@ -418,45 +233,112 @@ class _AssignmentPageState extends State<AssignmentPage> {
     );
   }
 
-  void updateAssignmentDetails(
+  Widget buildDetailRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(label,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        ),
+        Expanded(
+          child: Text(value, style: TextStyle(fontSize: 16)),
+        ),
+      ],
+    );
+  }
+
+  Widget buildEditableRow(
       BuildContext context,
-      StudentAssignment assignment,
-      String estimatedTime,
-      String description,
-      String givingDescription) async {
-    try {
-      final socket = await Socket.connect('192.168.1.13', 8080);
-      socket.write(
-          "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~estimatedTime~$estimatedTime\u0000");
-      socket.write(
-          "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~description~$description\u0000");
-      socket.write(
-          "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~givingDescription~$givingDescription\u0000");
+      String label,
+      TextEditingController controller,
+      String initialValue,
+      Function(String) onSave) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(label,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        ),
+        Expanded(
+          child: Container(
+            width: 120,
+            child: TextFormField(
+              controller: controller,
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                errorStyle: TextStyle(height: 0),
+                contentPadding: EdgeInsets.symmetric(vertical: 10),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.check),
+                      onPressed: () {
+                        onSave(controller.text);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        setState(() {
+                          controller.text = initialValue;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              keyboardType: TextInputType.text,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Cannot be empty';
+                }
+                return null;
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-      List<int> responseBytes = [];
-      await socket.listen((data) {
-        responseBytes.addAll(data);
-      }).asFuture();
-      String response = String.fromCharCodes(responseBytes).trim();
+  Widget buildUploadButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: () {},
+          child: Text(
+            'Upload File',
+            style: TextStyle(color: Colors.black),
+          ),
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-      if (response.startsWith("200~")) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Assignment details updated successfully')));
-        setState(() {
-          assignment.estimatedTime = estimatedTime;
-          assignment.description = description;
-          assignment.givingDescription = givingDescription;
-          sortAssignments();
-        });
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(response.split("~")[1])));
-      }
-      socket.close();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update assignment details: $e')));
-    }
+  Future<void> updateEstimatedTime(BuildContext context,
+      StudentAssignment assignment, String estimatedTime) async {
+    await sendUpdate(context, assignment, 'estimatedTime', estimatedTime);
+  }
+
+  Future<void> updateDescription(BuildContext context,
+      StudentAssignment assignment, String description) async {
+    await sendUpdate(context, assignment, 'description', description);
+  }
+
+  Future<void> updateGivingDescription(BuildContext context,
+      StudentAssignment assignment, String givingDescription) async {
+    await sendUpdate(
+        context, assignment, 'givingDescription', givingDescription);
   }
 
   void updateAssignmentStatus(
@@ -466,6 +348,8 @@ class _AssignmentPageState extends State<AssignmentPage> {
       socket.write(
           "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~isActive~$isActive\u0000");
 
+      await socket.flush();
+
       List<int> responseBytes = [];
       await socket.listen((data) {
         responseBytes.addAll(data);
@@ -473,12 +357,12 @@ class _AssignmentPageState extends State<AssignmentPage> {
       String response = String.fromCharCodes(responseBytes).trim();
 
       if (response.startsWith("200~")) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Assignment status updated successfully')));
         setState(() {
           assignment.isActive = isActive;
           sortAssignments();
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Assignment status updated successfully')));
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(response.split("~")[1])));
@@ -487,6 +371,48 @@ class _AssignmentPageState extends State<AssignmentPage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to update assignment status: $e')));
+    }
+  }
+
+  Future<void> sendUpdate(BuildContext context, StudentAssignment assignment,
+      String field, String value) async {
+    try {
+      final socket = await Socket.connect('192.168.1.13', 8080);
+      socket.write(
+          "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~$field~$value\u0000");
+      await socket.flush();
+
+      List<int> responseBytes = [];
+      await socket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$field updated successfully')));
+        setState(() {
+          switch (field) {
+            case 'estimatedTime':
+              assignment.setEstimatedTime(value);
+              break;
+            case 'description':
+              assignment.setDescription(value);
+              break;
+            case 'givingDescription':
+              assignment.setGivingDescription(value);
+              break;
+          }
+          sortAssignments();
+        });
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(response.split("~")[1])));
+      }
+      socket.close();
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to update $field: $e')));
     }
   }
 

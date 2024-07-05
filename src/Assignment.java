@@ -112,5 +112,13 @@ public class Assignment {
         this.score = score;
         FileController.changeSpecifiedField("src/database/assignmentList.txt", this.assignmentID, 9, String.valueOf(score));
     }
-
+    public static List<Assignment> getAssignmentsByCourse(int courseID) {
+        List<Assignment> courseAssignments = new ArrayList<>();
+        for (Assignment assignment : allAssignments) {
+            if (assignment.course.getCourseID() == courseID) {
+                courseAssignments.add(assignment);
+            }
+        }
+        return courseAssignments;
+    }
 }

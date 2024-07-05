@@ -177,7 +177,12 @@ class ClientHandler extends Thread {
                     } else {
                         Admin.addStudentToCourse(student1, course);
                         writer("200~Course added successfully");
+                        List<Assignment> assignments = Assignment.getAssignmentsByCourse(courseId);
+                        for (Assignment assignment : assignments) {
+                            new StudentAssignment(assignment.getAssignmentID(), studentId1, "", true, "", "", 0.0, true);
+                        }
                     }
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -306,6 +311,7 @@ class ClientHandler extends Thread {
                     }
                 }
                 break;
+
                 case "GET: studentAssignments":
                 studentID = Integer.parseInt(split[1]);
                 List<StudentAssignment> studentAssignments = StudentAssignment.getAssignmentsForStudent(studentID);

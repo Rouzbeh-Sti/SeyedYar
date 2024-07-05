@@ -24,4 +24,16 @@ class StudentAssignment {
     required this.givingDescription,
     required this.score,
   });
+
+  void setEstimatedTime(String value) {
+    estimatedTime = value;
+  }
+
+  void setDescription(String value) {
+    description = value;
+  }
+
+  void setGivingDescription(String value) {
+    givingDescription = value;
+  }
 }
