@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +22,10 @@ public class FileController {
             String[] info;
             while ((line = reader.readLine()) != null) {
                 info = line.split(",");
-                new Task(info[0], Boolean.parseBoolean(info[1]), Integer.parseInt(info[2]), false);
+                new Task(info[0], Boolean.parseBoolean(info[1]), Integer.parseInt(info[2]), info[3], false); // include dateTime
             }
         } catch (Exception e) {
-            System.out.println("Errorcourse: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -178,6 +175,32 @@ public class FileController {
             System.out.println("Error: "+ e.getStackTrace());
         }
     }
+    public static void updateTaskDateTime(Task task) {
+        List<String> fileContent = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\taskList.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] info = line.split(",");
+                if (info[0].equals(task.title) && Integer.parseInt(info[2]) == task.forStudentID) {
+                    info[3] = task.dateTime;
+                    fileContent.add(String.join(",", info));
+                } else {
+                    fileContent.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src\\database\\taskList.txt"))) {
+            for (String line : fileContent) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void deleteFileContent(String fileName){
         try(FileWriter fileWriter=new FileWriter(fileName,false)){
             fileWriter.write("");

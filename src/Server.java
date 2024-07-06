@@ -187,7 +187,7 @@ class ClientHandler extends Thread {
                     throw new RuntimeException(e);
                 }
                 break;
-                case "GET: studentTasks":
+            case "GET: studentTasks":
                 studentId = Integer.parseInt(split[1]);
                 Student studentById1 = Student.getStudentById(studentId);
                 if (studentById1 != null) {
@@ -195,7 +195,8 @@ class ClientHandler extends Thread {
                     for (Task task : Task.allTasks) {
                         if (task.forStudentID == studentId) {
                             tasksData.append(task.title).append(",")
-                                    .append(task.isActive).append(";");
+                                    .append(task.isActive).append(",")
+                                    .append(task.dateTime).append(";");
                         }
                     }
                     try {
@@ -211,12 +212,13 @@ class ClientHandler extends Thread {
                     }
                 }
                 break;
-            case "ADD: task":
+                case "ADD: task":
                 studentId = Integer.parseInt(split[1]);
                 String taskTitle = split[2];
+                String dateTime = split[3];
                 studentById1 = Student.getStudentById(studentId);
                 if (studentById1 != null) {
-                    Task newTask = new Task(taskTitle, true, studentId, true);
+                    Task newTask = new Task(taskTitle, true, studentId, dateTime, true); // include dateTime
                     try {
                         writer("200~Task added successfully");
                     } catch (IOException e) {
@@ -245,6 +247,35 @@ class ClientHandler extends Thread {
                 } else {
                     try {
                         writer("404~Task not found");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+            case "UPDATE: taskDateTime":
+                studentId = Integer.parseInt(split[1]);
+                 taskTitle = split[2];
+                String newDateTime = split[3];
+                studentById1 = Student.getStudentById(studentId);
+                if (studentById1 != null) {
+                     taskToUpdate = Task.getTaskByNameAndID(taskTitle, studentId);
+                    if (taskToUpdate != null) {
+                        taskToUpdate.updateDateTime(newDateTime);
+                        try {
+                            writer("200~Task date and time updated successfully");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        try {
+                            writer("404~Task not found");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                } else {
+                    try {
+                        writer("404~Student not found");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
