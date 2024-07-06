@@ -1,1 +1,2 @@
-1,1,2,true,,,0.0,taklifap
+2,1,,false,,,0.0,ap
+1,1,,false,,,0.0,tahlil

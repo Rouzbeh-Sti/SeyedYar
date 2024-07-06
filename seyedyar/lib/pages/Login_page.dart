@@ -143,7 +143,6 @@ class _LoginPageState extends State<LoginPage> {
                           name: "Login",
                           onTap: () async {
                             if (_formKey.currentState?.validate() ?? false) {
-                              // No validation errors, proceed to connect to backend
                               String loginResponse = await logUserIn();
                               List<String> responseParts =
                                   loginResponse.split("~");

@@ -225,6 +225,8 @@ public class CLI {
                     int courseID= scanner.nextInt();
                     System.out.println("Enter Course's TeacherID : ");
                     int teacherID= scanner.nextInt();
+                    System.out.println("Enter Course's Units : ");
+                    int units = scanner.nextInt();
                     if (Course.checkValidID(courseID)){
                         clearScreen();
                         System.out.println("ERROR: CourseID Already Exist.");
@@ -235,7 +237,7 @@ public class CLI {
                         Thread.sleep(1500);
                     } else {
                         clearScreen();
-                        Admin.createCourse(name,Teacher.getTeacherById(teacherID),courseID);
+                        Admin.createCourse(name, Teacher.getTeacherById(teacherID), courseID, units);
                         System.out.println("Course Created !");
                         checkValidID=false;
                         Thread.sleep(1000);
