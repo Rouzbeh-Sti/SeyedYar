@@ -446,6 +446,25 @@ class ClientHandler extends Thread {
                     throw new RuntimeException(e);
                 }
                 break;
+            case "GET: studentSummary":
+                 studentID = Integer.parseInt(split[1]);
+                 student = Student.getStudentById(studentID);
+                if (student != null) {
+                    String summaryData = student.getSummaryData();
+                    try {
+                        writer("200~" + summaryData + "\n");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    try {
+                        writer("404~Student not found\n");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+
         }
         try {
             dis.close();

@@ -84,81 +84,86 @@ class _AssignmentPageState extends State<AssignmentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFD8F3DC),
-      body: assignments.isEmpty
-          ? Center(child: Text('No assignments available'))
-          : ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: assignments.length,
-              itemBuilder: (context, index) {
-                StudentAssignment assignment = assignments[index];
-                Duration timeRemaining = calculateTimeRemaining(
-                    assignment.dueDate, assignment.dueTime);
-                return GestureDetector(
-                  onTap: () {
-                    showAssignmentDetails(context, assignment);
-                  },
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: LinearGradient(
-                        colors: assignment.isActive
-                            ? [Color(0xFFD8F3DC), Color(0xFF74C69D)]
-                            : [Color(0xFFF8D7DA), Color(0xFFF5C6CB)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          offset: Offset(0, 5),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Color(0xFFD8F3DC),
+        body: assignments.isEmpty
+            ? Center(child: Text('No assignments available'))
+            : ListView.builder(
+                padding: EdgeInsets.all(16),
+                itemCount: assignments.length,
+                itemBuilder: (context, index) {
+                  StudentAssignment assignment = assignments[index];
+                  Duration timeRemaining = calculateTimeRemaining(
+                      assignment.dueDate, assignment.dueTime);
+                  return GestureDetector(
+                    onTap: () {
+                      showAssignmentDetails(context, assignment);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        gradient: LinearGradient(
+                          colors: assignment.isActive
+                              ? [Color(0xFFD8F3DC), Color(0xFF74C69D)]
+                              : [Color(0xFFF8D7DA), Color(0xFFF5C6CB)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                      ],
-                    ),
-                    padding: EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${assignment.name} (${formatDuration(timeRemaining)})',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Course: ${assignment.courseName}',
-                                style: TextStyle(color: Colors.black54),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Due: ${assignment.dueDate} at ${assignment.dueTime}',
-                                style: TextStyle(color: Colors.black54),
-                              ),
-                            ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            offset: Offset(0, 5),
                           ),
-                        ),
-                        Checkbox(
-                          value: !assignment.isActive,
-                          onChanged: (bool? value) {
-                            updateAssignmentStatus(
-                                context, assignment, !value!);
-                          },
-                        ),
-                      ],
+                        ],
+                      ),
+                      padding: EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${assignment.name} (${formatDuration(timeRemaining)})',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Course: ${assignment.courseName}',
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Due: ${assignment.dueDate} at ${assignment.dueTime}',
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Checkbox(
+                            value: !assignment.isActive,
+                            onChanged: (bool? value) {
+                              updateAssignmentStatus(
+                                  context, assignment, !value!);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
+      ),
     );
   }
 
@@ -375,7 +380,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
   void updateAssignmentStatus(
       BuildContext context, StudentAssignment assignment, bool isActive) async {
     try {
-      final socket = await Socket.connect('192.168.1.13', 8080);
+      final socket = await Socket.connect('192.168.1.199', 8080);
       socket.write(
           "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~isActive~$isActive\u0000");
 
@@ -408,7 +413,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
   Future<void> sendUpdate(BuildContext context, StudentAssignment assignment,
       String field, String value) async {
     try {
-      final socket = await Socket.connect('192.168.1.13', 8080);
+      final socket = await Socket.connect('192.168.1.199', 8080);
       socket.write(
           "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~$field~$value\u0000");
       await socket.flush();

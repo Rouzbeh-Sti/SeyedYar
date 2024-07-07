@@ -177,27 +177,32 @@ class _CoursesPageState extends State<CoursesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Color(0xFFD8F3DC),
-        child: courses.isEmpty
-            ? Center(child: Text('No courses available'))
-            : ListView.builder(
-                itemCount: courses.length,
-                itemBuilder: (context, index) {
-                  return courseCard(courses[index]);
-                },
-              ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: showAddCourseDialog,
-        child: Icon(
-          Icons.add,
-          color: Colors.black,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        body: Container(
+          color: Color(0xFFD8F3DC),
+          child: courses.isEmpty
+              ? Center(child: Text('No courses available'))
+              : ListView.builder(
+                  itemCount: courses.length,
+                  itemBuilder: (context, index) {
+                    return courseCard(courses[index]);
+                  },
+                ),
         ),
-        backgroundColor: Color(0xFF74C69D),
+        floatingActionButton: FloatingActionButton(
+          onPressed: showAddCourseDialog,
+          child: Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
+          backgroundColor: Color(0xFF74C69D),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

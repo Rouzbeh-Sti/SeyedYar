@@ -476,133 +476,138 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var widthOfScreen = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFD8F3DC),
-        title: const Center(
-          child: Text(
-            'All Tasks',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFFD8F3DC),
+          title: const Center(
+            child: Text(
+              'All Tasks',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
-      ),
-      body: Container(
-        color: Color(0xFFD8F3DC),
-        child: ListView(
-          children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Remaining tasks',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        body: Container(
+          color: Color(0xFFD8F3DC),
+          child: ListView(
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Remaining tasks',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: section1Items.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    shape: BoxShape.rectangle,
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomRight,
-                      end: Alignment.topLeft,
-                      colors: section1Items[index].isActive
-                          ? [
-                              Color(0xFFD8F3DC),
-                              Color(0xFFb7e4c7),
-                              Color(0xFF95d5b2),
-                              Color(0xFF74c69d),
-                              Color(0xFF52b788),
-                            ]
-                          : [
-                              Color(0xFFf8edeb),
-                              Color(0xFFfae1dd),
-                              Color(0xFFfbb1bd),
-                              Color(0xFFf29491),
-                              Color(0xFFf28482),
-                            ],
-                    ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 5.0,
-                        offset: Offset(0, 5),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: section1Items.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      shape: BoxShape.rectangle,
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomRight,
+                        end: Alignment.topLeft,
+                        colors: section1Items[index].isActive
+                            ? [
+                                Color(0xFFD8F3DC),
+                                Color(0xFFb7e4c7),
+                                Color(0xFF95d5b2),
+                                Color(0xFF74c69d),
+                                Color(0xFF52b788),
+                              ]
+                            : [
+                                Color(0xFFf8edeb),
+                                Color(0xFFfae1dd),
+                                Color(0xFFfbb1bd),
+                                Color(0xFFf29491),
+                                Color(0xFFf28482),
+                              ],
                       ),
-                    ],
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: widthOfScreen * 0.04),
-                  child: listItem(section1Items[index]),
-                );
-              },
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Completed tasks',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5.0,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: widthOfScreen * 0.04),
+                    child: listItem(section1Items[index]),
+                  );
+                },
               ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: section2Items.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    shape: BoxShape.rectangle,
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomRight,
-                      end: Alignment.topLeft,
-                      colors: section2Items[index].isActive
-                          ? [
-                              Color(0xFFD8F3DC),
-                              Color(0xFFb7e4c7),
-                              Color(0xFF95d5b2),
-                              Color(0xFF74c69d),
-                              Color(0xFF52b788),
-                            ]
-                          : [
-                              Color(0xFFf8edeb),
-                              Color(0xFFfae1dd),
-                              Color(0xFFfbb1bd),
-                              Color(0xFFf29491),
-                              Color(0xFFf28482),
-                            ],
-                    ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 5.0,
-                        offset: Offset(0, 5),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Completed tasks',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: section2Items.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      shape: BoxShape.rectangle,
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomRight,
+                        end: Alignment.topLeft,
+                        colors: section2Items[index].isActive
+                            ? [
+                                Color(0xFFD8F3DC),
+                                Color(0xFFb7e4c7),
+                                Color(0xFF95d5b2),
+                                Color(0xFF74c69d),
+                                Color(0xFF52b788),
+                              ]
+                            : [
+                                Color(0xFFf8edeb),
+                                Color(0xFFfae1dd),
+                                Color(0xFFfbb1bd),
+                                Color(0xFFf29491),
+                                Color(0xFFf28482),
+                              ],
                       ),
-                    ],
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: widthOfScreen * 0.04),
-                  child: listItem(section2Items[index]),
-                );
-              },
-            ),
-          ],
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5.0,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: widthOfScreen * 0.04),
+                    child: listItem(section2Items[index]),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showAddItemDialog(context);
-        },
-        backgroundColor: Color(0xFF74C69D),
-        child: Icon(
-          Icons.add,
-          color: Colors.black,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showAddItemDialog(context);
+          },
+          backgroundColor: Color(0xFF74C69D),
+          child: Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
         ),
       ),
     );

@@ -1,92 +1,275 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:shamsi_date/shamsi_date.dart'; // برای تاریخ شمسی
+import 'package:intl/intl.dart';
 import 'todo_work_page.dart';
 
-class HomePage extends StatelessWidget {
+class homePage extends StatefulWidget {
   final String name;
   final int studentID;
 
-  HomePage({required this.name, required this.studentID});
+  homePage({required this.name, required this.studentID});
+
+  @override
+  _homePageState createState() => _homePageState();
+}
+
+class _homePageState extends State<homePage> {
+  Map<String, dynamic> summaryData = {
+    'highestScore': 0.0,
+    'lowestScore': 0.0,
+    'numberOfAssignments': 0,
+    'numberOfTasks': 0,
+    'numberOfCourses': 0,
+    'numberOfAssignmentsPastDue': 0,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSummaryData();
+    fetchTasks();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Summary',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: Scaffold(
+    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: Color(0xFFD8F3DC),
-        appBar: AppBar(
-          backgroundColor: Color(0xFFD8F3DC),
-          title: const Text(
-            'Summary',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(
+                    'Summary',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        child: buildSummaryCard(
+                            'Highest Score',
+                            summaryData['highestScore'].toString(),
+                            Icons.trending_up,
+                            Colors.green)),
+                    SizedBox(width: 10),
+                    Expanded(
+                        child: buildSummaryCard(
+                            'Lowest Score',
+                            summaryData['lowestScore'].toString(),
+                            Icons.trending_down,
+                            Colors.red)),
+                    SizedBox(width: 10),
+                    Expanded(
+                        child: buildSummaryCard(
+                            'Assignments',
+                            summaryData['numberOfAssignments'].toString(),
+                            Icons.assignment,
+                            Colors.blue)),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        child: buildSummaryCard(
+                            'Tasks',
+                            summaryData['numberOfTasks'].toString(),
+                            Icons.task,
+                            Colors.orange)),
+                    SizedBox(width: 10),
+                    Expanded(
+                        child: buildSummaryCard(
+                            'Courses',
+                            summaryData['numberOfCourses'].toString(),
+                            Icons.school,
+                            Colors.purple)),
+                    SizedBox(width: 10),
+                    Expanded(
+                        child: buildSummaryCard(
+                            'Past Due',
+                            summaryData['numberOfAssignmentsPastDue']
+                                .toString(),
+                            Icons.assignment_late,
+                            Colors.redAccent)),
+                  ],
+                ),
+                SizedBox(height: 20),
+                CurrentTasks(formattedDate: formattedDate),
+                Container(
+                  height: section1Items.length * 80.0,
+                  child: TaskList(items: section1Items),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text(
+                    'Done Assignments',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: completedExercises.length,
+                    itemBuilder: (context, index) {
+                      return CompletedExerciseCard(
+                        exercise: completedExercises[index],
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 80),
+              ],
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child: greenCards[0]),
-                  SizedBox(width: 10),
-                  Expanded(child: greenCards[1]),
-                  SizedBox(width: 10),
-                  Expanded(child: greenCards[2]),
-                ],
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  greenCards[3],
-                  SizedBox(width: 10),
-                  greenCards[4],
-                ],
-              ),
-              SizedBox(height: 20),
-              // بخش Current Tasks
-              CurrentTasks(),
-              Expanded(
-                child: TaskList(items: section1Items),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Text(
-                  'Done Assignment',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Container(
-                height: 100,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: completedExercises.length,
-                  itemBuilder: (context, index) {
-                    return CompletedExerciseCard(
-                      exercise: completedExercises[index],
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 80),
-            ],
-          ),
+      ),
+    );
+  }
+
+  Future<void> fetchSummaryData() async {
+    try {
+      final socket = await Socket.connect('192.168.1.199', 8080);
+      socket.write("GET: studentSummary~${widget.studentID}\u0000");
+
+      List<int> responseBytes = [];
+      await socket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        String data = response.split('~')[1];
+        List<String> summaryParts = data.split(",");
+        setState(() {
+          summaryData = {
+            'highestScore': double.parse(summaryParts[0]),
+            'lowestScore': double.parse(summaryParts[1]),
+            'numberOfAssignments': int.parse(summaryParts[2]),
+            'numberOfTasks': int.parse(summaryParts[3]),
+            'numberOfCourses': int.parse(summaryParts[4]),
+            'numberOfAssignmentsPastDue': int.parse(summaryParts[5]),
+          };
+        });
+      } else {
+        throw Exception(response.split('~')[1]);
+      }
+
+      socket.close();
+    } catch (e) {
+      throw Exception('Failed to load summary data: $e');
+    }
+  }
+
+  void fetchTasks() async {
+    try {
+      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      serverSocket.write("GET: studentTasks~${widget.studentID}\u0000");
+
+      List<int> responseBytes = [];
+      await serverSocket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        String data = response.split('~')[1];
+        List<String> tasksData = data.split(";");
+        List<ListItem> fetchedTasks =
+            tasksData.where((taskData) => taskData.isNotEmpty).map((taskData) {
+          List<String> parts = taskData.split(",");
+          String dateTime = parts[2];
+          DateTime parsedDateTime = DateTime.parse(dateTime);
+          String date =
+              "${parsedDateTime.year}-${parsedDateTime.month.toString().padLeft(2, '0')}-${parsedDateTime.day.toString().padLeft(2, '0')}";
+          String time =
+              "${parsedDateTime.hour.toString().padLeft(2, '0')}:${parsedDateTime.minute.toString().padLeft(2, '0')}";
+          return ListItem(parts[0], parts[1] == 'true', date, time);
+        }).toList();
+        setState(() {
+          section1Items = fetchedTasks.where((item) => item.isActive).toList();
+          section2Items = fetchedTasks.where((item) => !item.isActive).toList();
+        });
+      } else {
+        print("ERROR: ${response.split('~')[1]}");
+      }
+
+      serverSocket.close();
+    } catch (e) {
+      print("ERROR: $e");
+    }
+  }
+
+  Widget buildSummaryCard(
+      String title, String value, IconData icon, Color iconColor) {
+    return Container(
+      width: 128,
+      margin: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xFF74C69D),
+            Color(0xFF52B788),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10.0,
+            offset: Offset(0, 4),
+          ),
+        ],
+        borderRadius: BorderRadius.circular(15),
+      ),
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 30,
+            color: iconColor,
+          ),
+          SizedBox(height: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -153,8 +336,8 @@ class CompletedExerciseCard extends StatelessWidget {
             ],
           ),
           Positioned(
-            top: -18, // انحراف بالایی برای آیکون
-            right: -18, // انحراف راستی برای آیکون
+            top: -18,
+            right: -18,
             child: Container(
               padding: EdgeInsets.all(6),
               decoration: BoxDecoration(
@@ -173,82 +356,6 @@ class CompletedExerciseCard extends StatelessWidget {
                 size: 7,
                 color: Colors.lightGreen[400],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-List<GreenGradientCard> greenCards = [
-  GreenGradientCard(
-      icon: Icons.share_arrival_time,
-      text: '۳ تا تمرین داری ',
-      colorIcon: Colors.pink[400]!),
-  GreenGradientCard(
-      icon: Icons.heart_broken_outlined,
-      text: '۳ تا تمرین داری ',
-      colorIcon: Colors.red[700]!),
-  GreenGradientCard(
-      icon: Icons.star_border_outlined,
-      text: '۳ تا تمرین داری ',
-      colorIcon: Colors.yellowAccent),
-  GreenGradientCard(
-      icon: Icons.sentiment_dissatisfied_rounded,
-      text: '۳ تا تمرین داری ',
-      colorIcon: Color(0XFFF5487F)),
-  GreenGradientCard(
-      icon: Icons.timer_off_outlined,
-      text: '۳ تا تمرین داری ',
-      colorIcon: Colors.lightBlue)
-];
-
-class GreenGradientCard extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final Color colorIcon;
-  GreenGradientCard(
-      {required this.icon, required this.text, required this.colorIcon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 128,
-      margin: EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF008000),
-            Color(0xFF32cd32),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10.0,
-            offset: Offset(0, 4),
-          ),
-        ],
-        borderRadius: BorderRadius.circular(15),
-      ),
-      padding: EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 30, 
-            color: colorIcon,
-          ),
-          SizedBox(height: 8),
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 14, 
-              color: Colors.white,
             ),
           ),
         ],
@@ -308,17 +415,20 @@ class TaskList extends StatelessWidget {
           fontWeight: FontWeight.bold,
           color: item.isActive ? Colors.black : Colors.black54,
         ),
+        overflow: TextOverflow.ellipsis,
       ),
     ));
   }
 }
 
 class CurrentTasks extends StatelessWidget {
+  final String formattedDate;
+
+  CurrentTasks({required this.formattedDate});
+
   @override
   Widget build(BuildContext context) {
     var widthOfScreen = MediaQuery.of(context).size.width;
-    final Jalali jDate = Jalali.now();
-    final String formattedDate = '${jDate.year}/${jDate.month}/${jDate.day}';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -332,7 +442,7 @@ class CurrentTasks extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(width: widthOfScreen * 0.46),
+          SizedBox(width: widthOfScreen * 0.344),
           Text(
             formattedDate,
             style: TextStyle(
@@ -343,37 +453,3 @@ class CurrentTasks extends StatelessWidget {
     );
   }
 }
-
-void showAddItemDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Add New Task"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(hintText: "Enter task name"),
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text("Add"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text("Cancel"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-

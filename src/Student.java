@@ -72,7 +72,7 @@ public class Student {
     }
 
     public int getCourseCount() {
-        return courseCount;
+        return courses.size();
     }
 
     public void setCourseCount(int courseCount) {
@@ -269,8 +269,21 @@ public class Student {
 
     public int getNumberOfAssignments() {
         int numberOfAssignments = 0;
-        for (Course course : courses.keySet()) {
-            numberOfAssignments += Assignment.getAssignmentsByCourse(course.getCourseID()).size();
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        for (StudentAssignment studentAssignment : StudentAssignment.getAssignmentsForStudent(this.studentID)) {
+            if (!studentAssignment.getIsActive()) {
+                continue;
+            }
+            try {
+                Date dueDate = dateFormat.parse(studentAssignment.getDueDate() + " " + studentAssignment.getDueTime());
+                if (dueDate.after(now)) {
+                    numberOfAssignments++;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         return numberOfAssignments;
     }
@@ -284,27 +297,33 @@ public class Student {
         }
         return numberOfTasks;
     }
-
-    public int getNumberOfCourses() {
-        return courses.size();
-    }
-
     public int getNumberOfAssignmentsPastDue() {
         int numberOfPastDueAssignments = 0;
         Date now = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        for (Course course : courses.keySet()) {
-            for (Assignment assignment : Assignment.getAssignmentsByCourse(course.getCourseID())) {
-                try {
-                    Date dueDate = dateFormat.parse(assignment.dueDate + " " + assignment.dueTime);
-                    if (dueDate.before(now)) {
-                        numberOfPastDueAssignments++;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
+
+        for (StudentAssignment studentAssignment : StudentAssignment.getAssignmentsForStudent(this.studentID)) {
+            if (!studentAssignment.getIsActive()) {
+                continue;
+            }
+            try {
+                Date dueDate = dateFormat.parse(studentAssignment.getDueDate() + " " + studentAssignment.getDueTime());
+                if (dueDate.before(now)) {
+                    numberOfPastDueAssignments++;
                 }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         }
         return numberOfPastDueAssignments;
+    }
+
+    public String getSummaryData() {
+        return getHighestScore() + "," +
+                getLowestScore() + "," +
+                getNumberOfAssignments() + "," +
+                getNumberOfTasks() + "," +
+                getCourseCount() + "," +
+                getNumberOfAssignmentsPastDue();
     }
 }

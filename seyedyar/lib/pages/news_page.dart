@@ -99,122 +99,127 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     String formattedDate = DateTime.now().toLocal().toString().split(' ')[0];
 
-    return Scaffold(
-      backgroundColor: Color(0xFFD8F3DC),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          Container(
-            height: 40,
-            margin: EdgeInsets.only(bottom: 10),
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: List.generate(newsTitles.length, (index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = index;
-                      _pageController.jumpToPage(index);
-                    });
-                  },
-                  child: Container(
-                    width: 100,
-                    margin: EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1),
-                      color: _selectedIndex == index
-                          ? Colors.green[700]
-                          : Colors.green[300],
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        newsTitles[index],
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Color(0xFFD8F3DC),
+        body: Column(
+          children: [
+            SizedBox(height: 20),
+            Container(
+              height: 40,
+              margin: EdgeInsets.only(bottom: 10),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: List.generate(newsTitles.length, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedIndex = index;
+                        _pageController.jumpToPage(index);
+                      });
+                    },
+                    child: Container(
+                      width: 100,
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1),
+                        color: _selectedIndex == index
+                            ? Colors.green[700]
+                            : Colors.green[300],
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          newsTitles[index],
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.green[50],
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
+                  );
+                }),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.calendar_today,
-                    color: Colors.green[800],
-                    size: 20,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    formattedDate,
-                    style: TextStyle(
-                      fontSize: 18,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.green[50],
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.calendar_today,
                       color: Colors.green[800],
-                      fontWeight: FontWeight.bold,
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      formattedDate,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.green[800],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ListView.builder(
+                      itemCount: newsList.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: CustomCardWidget(
+                            title: newsList[index]['title']!,
+                            description: newsList[index]['content']!,
+                            imageUrl: 'lib/images/image4.png',
+                            URL: newsList[index]['url']!,
+                          ),
+                        );
+                      },
                     ),
                   ),
+                  // Add other pages here if necessary
                 ],
               ),
             ),
-          ),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: ListView.builder(
-                    itemCount: newsList.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: CustomCardWidget(
-                          title: newsList[index]['title']!,
-                          description: newsList[index]['content']!,
-                          imageUrl: 'lib/images/image4.png',
-                          URL: newsList[index]['url']!,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                // Add other pages here if necessary
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -307,7 +312,8 @@ class _CustomCardWidgetState extends State<CustomCardWidget> {
                       SizedBox(height: 4),
                       if (widget.URL != null && widget.URL!.isNotEmpty)
                         GestureDetector(
-                          onTap: () => _launchInWebViewOrVC(Uri.parse(widget.URL!)),
+                          onTap: () =>
+                              _launchInWebViewOrVC(Uri.parse(widget.URL!)),
                           child: Text(
                             'Read more...',
                             style: TextStyle(
