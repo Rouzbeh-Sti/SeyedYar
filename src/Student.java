@@ -2,6 +2,8 @@ import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Student {
@@ -256,5 +258,53 @@ public class Student {
             totalUnits += course.units;
         }
         return totalUnits == 0 ? 0 : totalScore / totalUnits;
+    }
+    public double getHighestScore() {
+        return courses.values().stream().max(Double::compareTo).orElse(0.0);
+    }
+
+    public double getLowestScore() {
+        return courses.values().stream().min(Double::compareTo).orElse(0.0);
+    }
+
+    public int getNumberOfAssignments() {
+        int numberOfAssignments = 0;
+        for (Course course : courses.keySet()) {
+            numberOfAssignments += Assignment.getAssignmentsByCourse(course.getCourseID()).size();
+        }
+        return numberOfAssignments;
+    }
+
+    public int getNumberOfTasks() {
+        int numberOfTasks = 0;
+        for (Task task : Task.allTasks) {
+            if (task.forStudentID == this.studentID) {
+                numberOfTasks++;
+            }
+        }
+        return numberOfTasks;
+    }
+
+    public int getNumberOfCourses() {
+        return courses.size();
+    }
+
+    public int getNumberOfAssignmentsPastDue() {
+        int numberOfPastDueAssignments = 0;
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        for (Course course : courses.keySet()) {
+            for (Assignment assignment : Assignment.getAssignmentsByCourse(course.getCourseID())) {
+                try {
+                    Date dueDate = dateFormat.parse(assignment.dueDate + " " + assignment.dueTime);
+                    if (dueDate.before(now)) {
+                        numberOfPastDueAssignments++;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return numberOfPastDueAssignments;
     }
 }

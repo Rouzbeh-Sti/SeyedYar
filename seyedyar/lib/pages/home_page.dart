@@ -376,3 +376,4 @@ void showAddItemDialog(BuildContext context) {
     },
   );
 }
+

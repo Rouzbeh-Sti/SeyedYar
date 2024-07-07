@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class Assignment {
     public String name;
-    public String dueDate;  // Store date as string
-    public String dueTime;  // Store time as string
+    public String dueDate;
+    public String dueTime;
     public Course course;
     public String estimatedTime;
     public int assignmentID;

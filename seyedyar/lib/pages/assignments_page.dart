@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:seyedyar/StudentAssignment.dart';
+import 'package:file_picker/file_picker.dart';
 
 class AssignmentPage extends StatefulWidget {
   final int studentID;
@@ -13,11 +14,21 @@ class AssignmentPage extends StatefulWidget {
 
 class _AssignmentPageState extends State<AssignmentPage> {
   List<StudentAssignment> assignments = [];
-
+  String? selectedFileName;
   @override
   void initState() {
     super.initState();
     fetchAssignments();
+  }
+
+  Future<void> pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        selectedFileName = result.files.single.name; // Store the file name
+      });
+    }
   }
 
   Future<void> fetchAssignments() async {
@@ -311,22 +322,36 @@ class _AssignmentPageState extends State<AssignmentPage> {
   }
 
   Widget buildUploadButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
       children: [
-        ElevatedButton(
-          onPressed: () {},
-          child: Text(
-            'Upload File',
-            style: TextStyle(color: Colors.black),
-          ),
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                pickFile();
+              },
+              child: Text(
+                'Upload File',
+                style: TextStyle(color: Colors.black),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (selectedFileName != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              'Selected file: $selectedFileName',
+              style: TextStyle(fontSize: 16, color: Colors.black54),
             ),
           ),
-        ),
       ],
     );
   }
