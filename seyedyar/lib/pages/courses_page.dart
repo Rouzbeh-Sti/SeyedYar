@@ -24,7 +24,7 @@ class _CoursesPageState extends State<CoursesPage> {
 
   void fetchCourses() async {
     try {
-      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      final serverSocket = await Socket.connect('192.168.1.52', 8080);
       serverSocket.write("GET: studentCourses~${widget.studentId}\u0000");
 
       List<int> responseBytes = [];
@@ -62,7 +62,7 @@ class _CoursesPageState extends State<CoursesPage> {
 
   void addCourse(String courseId) async {
     try {
-      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      final serverSocket = await Socket.connect('192.168.1.13', 8080);
       String message = "ADD: course~${widget.studentId}~$courseId\u0000";
       print(
           "Sending message: $message"); // Add this line to debug the message being sent
