@@ -20,10 +20,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   int units = 0;
   double overallScore = 0.0;
+  String name = '';
 
   @override
   void initState() {
     super.initState();
+    name = widget.name;
     fetchProfileData();
   }
 
@@ -42,8 +44,9 @@ class _ProfilePageState extends State<ProfilePage> {
         String data = response.split('~')[1];
         List<String> profileData = data.split(",");
         setState(() {
-          units = int.parse(profileData[0]);
-          overallScore = double.parse(profileData[1]);
+          name = profileData[0];
+          units = int.parse(profileData[1]);
+          overallScore = double.parse(profileData[2]);
         });
       } else {
         throw Exception(response.split('~')[1]);
@@ -127,7 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    widget.name,
+                    name,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -616,6 +619,12 @@ class _ProfilePageState extends State<ProfilePage> {
       socket.write("UPDATE: changeName~${widget.studentID}~$newName\u0000");
       await socket.flush();
       socket.close();
+
+      setState(() {
+        name = newName;
+        widget.name = newName;
+      });
+
       Flushbar(
         message: 'Name updated successfully',
         duration: Duration(seconds: 3),
@@ -642,7 +651,7 @@ class _ProfilePageState extends State<ProfilePage> {
         responseBytes.addAll(data);
       }).asFuture();
       String response = String.fromCharCodes(responseBytes).trim();
-
+      print(response);
       socket.close();
 
       if (response.startsWith('200~')) {
@@ -652,13 +661,13 @@ class _ProfilePageState extends State<ProfilePage> {
           duration: Duration(seconds: 3),
           backgroundColor: Colors.green,
         )..show(context);
-      } else if (response == '401') {
+      } else if (response.startsWith('401~')) {
         Flushbar(
           message: 'Incorrect current password',
           duration: Duration(seconds: 3),
           backgroundColor: Colors.red,
         )..show(context);
-      } else if (response == '409') {
+      } else if (response.startsWith('409~')) {
         Flushbar(
           message: 'New password must be different from the current password',
           duration: Duration(seconds: 3),

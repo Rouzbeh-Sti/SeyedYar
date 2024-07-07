@@ -375,10 +375,10 @@ class ClientHandler extends Thread {
                 }
                 break;
             case "GET: studentProfile":
-                 studentID = Integer.parseInt(split[1]);
+                studentID = Integer.parseInt(split[1]);
                 Student studentProfile = Student.getStudentById(studentID);
                 if (studentProfile != null) {
-                    String profileData = studentProfile.getTotalUnits() + "," + studentProfile.calculateOverallScore();
+                    String profileData = studentProfile.getName() + "," + studentProfile.getTotalUnits() + "," + studentProfile.calculateOverallScore();
                     try {
                         writer("200~" + profileData);
                     } catch (IOException e) {
@@ -391,8 +391,7 @@ class ClientHandler extends Thread {
                         throw new RuntimeException(e);
                     }
                 }
-                break;
-            case "UPDATE: changeName":
+                break;            case "UPDATE: changeName":
                 studentID = Integer.parseInt(split[1]);
                 String newName = split[2];
                 student = Student.getStudentById(studentID);
@@ -412,7 +411,7 @@ class ClientHandler extends Thread {
                     }
                 }
                 break;
-            case "UPDATE: password":
+                case "UPDATE: password":
                 studentID = Integer.parseInt(split[1]);
                 String currentPassword = split[2];
                  newPassword = split[3];
