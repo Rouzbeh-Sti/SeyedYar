@@ -342,11 +342,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void showTaskOptionsDialog(BuildContext context, ListItem item) {
-    DateTime selectedDate = DateTime.parse("${item.date} ${item.time}");
-    TimeOfDay selectedTime = TimeOfDay(
-      hour: selectedDate.hour,
-      minute: selectedDate.minute,
-    );
+    DateTime selectedDate = DateTime.now();
+    TimeOfDay selectedTime = TimeOfDay.now();
 
     Future<void> _selectDate(BuildContext context, StateSetter setState) async {
       final DateTime? picked = await showDatePicker(
@@ -414,6 +411,83 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text('Delete'),
                   onPressed: () {
                     deleteTask(item);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void showEditDateTimeDialog(BuildContext context, ListItem item) {
+    DateTime selectedDate = DateTime.now();
+    TimeOfDay selectedTime = TimeOfDay.now();
+
+    Future<void> _selectDate(BuildContext context, StateSetter setState) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+      if (picked != null && picked != selectedDate) {
+        setState(() {
+          selectedDate = picked;
+        });
+      }
+    }
+
+    Future<void> _selectTime(BuildContext context, StateSetter setState) async {
+      final TimeOfDay? picked = await showTimePicker(
+        context: context,
+        initialTime: selectedTime,
+      );
+      if (picked != null && picked != selectedTime) {
+        setState(() {
+          selectedTime = picked;
+        });
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('Edit Date and Time'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _selectDate(context, setState),
+                    child: Text("${selectedDate.toLocal()}".split(' ')[0]),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _selectTime(context, setState),
+                    child: Text("${selectedTime.format(context)}"),
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text('Save'),
+                  onPressed: () {
+                    String date =
+                        "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+                    String time =
+                        "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
+                    String dateTime = "$date $time";
+                    updateTaskDateTime(item, dateTime);
                     Navigator.of(context).pop();
                   },
                 ),

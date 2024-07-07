@@ -6,15 +6,17 @@ public class Task {
     String title;
     boolean isActive;
     int forStudentID;
+    String dateTime;
     public static List<Task> allTasks = new ArrayList<>();
 
-    public Task(String title, boolean isActive, int forStudentID, boolean addToFile) {
+    public Task(String title, boolean isActive, int forStudentID, String dateTime, boolean addToFile) {
         this.forStudentID = forStudentID;
         this.title = title;
         this.isActive = isActive;
+        this.dateTime = dateTime;
         allTasks.add(this);
         if (addToFile) {
-            String output = title + "," + isActive + "," + forStudentID;
+            String output = title + "," + isActive + "," + forStudentID + "," + dateTime;
             FileController.AddToFile(output, "src\\database\\taskList.txt");
         }
     }
@@ -44,6 +46,12 @@ public class Task {
     public static boolean checkValidName(String taskName, int studentID) {
         return getTaskByNameAndID(taskName, studentID) != null;
     }
+    public void updateDateTime(String newDateTime) {
+        this.dateTime = newDateTime;
+        FileController.updateTaskDateTime(this);
+    }
+
+
 
     public static void deleteTask(Task task) {
         allTasks.remove(task);

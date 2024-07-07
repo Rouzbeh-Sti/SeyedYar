@@ -22,7 +22,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
 
   Future<void> fetchAssignments() async {
     try {
-      final socket = await Socket.connect('192.168.1.13', 8080);
+      final socket = await Socket.connect('192.168.1.199', 8080);
       socket.write("GET: studentAssignments~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
@@ -350,7 +350,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
   void updateAssignmentStatus(
       BuildContext context, StudentAssignment assignment, bool isActive) async {
     try {
-      final socket = await Socket.connect('192.168.1.13', 8080);
+      final socket = await Socket.connect('192.168.1.199', 8080);
       socket.write(
           "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~isActive~$isActive\u0000");
 
@@ -383,7 +383,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
   Future<void> sendUpdate(BuildContext context, StudentAssignment assignment,
       String field, String value) async {
     try {
-      final socket = await Socket.connect('192.168.1.13', 8080);
+      final socket = await Socket.connect('192.168.1.199', 8080);
       socket.write(
           "UPDATE: studentAssignment~${widget.studentID}~${assignment.assignmentID}~$field~$value\u0000");
       await socket.flush();
