@@ -1,6 +1,7 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:shamsi_date/shamsi_date.dart';
 
 class NewsPage extends StatelessWidget {
   final String name;
@@ -17,12 +18,16 @@ class NewsPage extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: HomeScreen(),
+      home: HomeScreen(studentID: studentID),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
+  final int studentID;
+
+  HomeScreen({required this.studentID});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -30,11 +35,52 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late PageController _pageController;
   int _selectedIndex = 0;
+  List<Map<String, String>> newsList = [];
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    fetchNews();
+  }
+
+  Future<void> fetchNews() async {
+    try {
+      final socket = await Socket.connect('192.168.1.199', 8080);
+      socket.write("GET: news\u0000");
+
+      List<int> responseBytes = [];
+      await socket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        String data = response.split('~')[1];
+        List<String> newsData = data.split(";");
+        List<Map<String, String>> fetchedNews =
+            newsData.where((newsItem) => newsItem.isNotEmpty).map((newsItem) {
+          List<String> parts = newsItem.split(",");
+          return {
+            "id": parts[0],
+            "title": parts[1],
+            "content": parts[2],
+            "url": parts[3]
+          };
+        }).toList();
+
+        setState(() {
+          newsList = fetchedNews;
+        });
+      } else {
+        print("ERROR: ${response.split('~')[1]}");
+      }
+
+      socket.close();
+    } catch (e) {
+      print("ERROR: $e");
+    }
   }
 
   @override
@@ -49,16 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
     'Remind',
   ];
 
-  List<String> descriptions = [
-    'Description for news 1',
-    'Description for news 2',
-    'Description for news 3',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final jDate = Jalali.now();
-    String formattedDate = "${jDate.day} ${jDate.formatter.mN} ${jDate.year}";
+    String formattedDate = DateTime.now().toLocal().toString().split(' ')[0];
 
     return Scaffold(
       backgroundColor: Color(0xFFD8F3DC),
@@ -70,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
             margin: EdgeInsets.only(bottom: 10),
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: List.generate(3, (index) {
+              children: List.generate(newsTitles.length, (index) {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
@@ -153,40 +192,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   _selectedIndex = index;
                 });
               },
-              children: List.generate(5, (index) {
-                if (index == 0) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ListView.builder(
-                      itemCount: newsTitles.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: CustomCardWidget(
-                            title: newsTitles[index],
-                            description: descriptions[index],
-                            imageUrl: 'lib/images/image4.png',
-                            URL: 'https://www.golestan.ir',
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  return Container(
-                    color: Colors.green[50],
-                    child: Center(
-                      child: Text(
-                        'Page $index',
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.green,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: ListView.builder(
+                    itemCount: newsList.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: CustomCardWidget(
+                          title: newsList[index]['title']!,
+                          description: newsList[index]['content']!,
+                          imageUrl: 'lib/images/image4.png',
+                          URL: newsList[index]['url']!,
                         ),
-                      ),
-                    ),
-                  );
-                }
-              }),
+                      );
+                    },
+                  ),
+                ),
+                // Add other pages here if necessary
+              ],
             ),
           ),
         ],
@@ -195,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class CustomCardWidget extends StatelessWidget {
+class CustomCardWidget extends StatefulWidget {
   final String title;
   final String description;
   final String imageUrl;
@@ -209,12 +234,16 @@ class CustomCardWidget extends StatelessWidget {
   });
 
   @override
+  _CustomCardWidgetState createState() => _CustomCardWidgetState();
+}
+
+class _CustomCardWidgetState extends State<CustomCardWidget> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('sdw');
-        if (URL != null && URL!.isNotEmpty) {
-          launchURL(URL!);
+        if (widget.URL != null && widget.URL!.isNotEmpty) {
+          _launchInWebViewOrVC(Uri.parse(widget.URL!));
         }
       },
       child: Card(
@@ -242,15 +271,25 @@ class CustomCardWidget extends StatelessWidget {
             padding: EdgeInsets.all(8),
             child: Row(
               children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child: Image.asset(
+                    widget.imageUrl,
+                    width: 100,
+                    height: 130,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(width: 20),
                 Expanded(
                   flex: 2,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 4),
                       Text(
-                        title,
+                        widget.title,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -259,20 +298,18 @@ class CustomCardWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 4),
                       Text(
-                        description,
+                        widget.description,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white70,
                         ),
                       ),
                       SizedBox(height: 4),
-                      if (URL != null && URL!.isNotEmpty)
+                      if (widget.URL != null && widget.URL!.isNotEmpty)
                         GestureDetector(
-                          onTap: () {
-                            launchURL(URL!);
-                          },
+                          onTap: () => _launchInWebViewOrVC(Uri.parse(widget.URL!)),
                           child: Text(
-                            'بیشتر بخوانید...',
+                            'Read more...',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.blue,
@@ -283,14 +320,6 @@ class CustomCardWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 20),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: Image.asset(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
               ],
             ),
           ),
@@ -299,19 +328,9 @@ class CustomCardWidget extends StatelessWidget {
     );
   }
 
-
-  void launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication, // این خط برای باز کردن URL در مرورگر خارجی است
-      );
-    } else {
-      print('Could not launch $url');
-      throw 'Could not launch $url';
+  Future<void> _launchInWebViewOrVC(Uri url) async {
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
     }
   }
-
 }
-

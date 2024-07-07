@@ -57,7 +57,6 @@ public class Admin {
         new News(title, content, newsID, url, true);
     }
 
-    // متد حذف خبر
     public static void deleteNews(News news) {
         News.deleteNews(news);
     }

@@ -22,7 +22,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
 
   Future<void> fetchAssignments() async {
     try {
-      final socket = await Socket.connect('192.168.1.52', 8080);
+      final socket = await Socket.connect('192.168.1.199', 8080);
       socket.write("GET: studentAssignments~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];

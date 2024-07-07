@@ -29,6 +29,18 @@ public class News {
         return newsID;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
     public static boolean checkValidID(int newsID){
         for (News news : newsList) {
             if (news.getNewsID() == newsID)

@@ -13,11 +13,12 @@ public class FileController {
         readStudentAssignmentList();
         readStudentList();
         readTaskList();
+        readNewsList();
     }
 
     private static void readTaskList() {
         checkFileExists("src\\database\\taskList.txt");
-        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\smmah\\OneDrive\\Desktop\\Ap_project\\AP-Flutter-Project\\src\\database\\taskList.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\taskList.txt"))) {
             String line;
             String[] info;
             while ((line = reader.readLine()) != null) {
@@ -51,6 +52,19 @@ public class FileController {
             }catch (Exception e){
                 System.out.println("Error: student "+e.getMessage());
             }
+    }
+    public static void readNewsList() {
+        checkFileExists("src\\database\\newsList.txt");
+        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\newsList.txt"))) {
+            String line;
+            String[] info;
+            while ((line = reader.readLine()) != null) {
+                info = line.split(",");
+                new News(info[1], info[2], Integer.parseInt(info[0]), info[3], false);
+            }
+        } catch (Exception e) {
+            System.out.println("Error: news " + e.getMessage());
+        }
     }
 
     public static void readTeacherList(){

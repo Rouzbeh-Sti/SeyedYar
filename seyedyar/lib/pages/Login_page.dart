@@ -155,8 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                                     MaterialPageRoute(
                                       builder: (context) => MainPage(
                                         name: userData['name'],
-                                        studentID:
-                                            userData['studentID'],
+                                        studentID: userData['studentID'],
                                       ),
                                     ),
                                   );
@@ -227,7 +226,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<String> logUserIn() async {
     print("clicked");
     try {
-      final serverSocket = await Socket.connect("192.168.1.52", 8080);
+      final serverSocket = await Socket.connect("192.168.1.199", 8080);
       print("Connected to server");
       serverSocket.write(
           "GET: loginChecker~${studentIDController.text}~${passwordController.text}\u0000");

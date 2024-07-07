@@ -432,6 +432,20 @@ class ClientHandler extends Thread {
                     }
                 }
                 break;
+            case "GET: news":
+                StringBuilder newsData = new StringBuilder();
+                for (News news : News.newsList) {
+                    newsData.append(news.getNewsID()).append(",")
+                            .append(news.getTitle()).append(",")
+                            .append(news.getContent()).append(",")
+                            .append(news.getUrl()).append(";");
+                }
+                try {
+                    writer("200~" + newsData.toString());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
         }
         try {
             dis.close();

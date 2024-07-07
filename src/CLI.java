@@ -86,10 +86,10 @@ public class CLI {
             System.out.println("11 - Remove a student from a course");
             System.out.println("12 - Set a student score in a course");
             System.out.println("13 - Create a News");
-            System.out.println("14 - Delete a Delete");
+            System.out.println("14 - Delete a news");
             System.out.println("15 - Back to main menu");
             input=scanner.nextInt();
-            if (input>=1 && input<=13)
+            if (input>=1 && input<=15)
                 check=false;
             clearScreen();
         }while (check);
@@ -521,7 +521,7 @@ public class CLI {
                         }
                     } catch (NumberFormatException e) {
                     }
-
+                    scanner.nextLine();
                     System.out.println("Enter News Title: ");
                     String title = scanner.nextLine();
 
@@ -538,6 +538,7 @@ public class CLI {
                     } else {
                         clearScreen();
                         Admin.createNews(title, content, ID, url);
+                        System.out.println("News created !");
                         checkValidID = false;
                     }
                     clearScreen();

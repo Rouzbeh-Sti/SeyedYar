@@ -36,16 +36,11 @@ class HomePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                      child: greenCards[0]
-                  ),
+                  Expanded(child: greenCards[0]),
                   SizedBox(width: 10),
-                  Expanded(
-                      child: greenCards[1]
-                  ),
+                  Expanded(child: greenCards[1]),
                   SizedBox(width: 10),
-                  Expanded(
-                      child: greenCards[2]),
+                  Expanded(child: greenCards[2]),
                 ],
               ),
               SizedBox(height: 20),
@@ -104,7 +99,6 @@ final List<String> completedExercises = [
   'Exercise 4',
   'Exercise 5',
 ];
-
 
 class CompletedExerciseCard extends StatelessWidget {
   final String exercise;
@@ -188,31 +182,45 @@ class CompletedExerciseCard extends StatelessWidget {
 }
 
 List<GreenGradientCard> greenCards = [
-  GreenGradientCard(icon: Icons.share_arrival_time, text: '۳ تا تمرین داری ', colorIcon: Colors.pink[400]!),
-  GreenGradientCard(icon: Icons.heart_broken_outlined, text: '۳ تا تمرین داری ', colorIcon: Colors.red[700]!),
-  GreenGradientCard(icon: Icons.star_border_outlined, text: '۳ تا تمرین داری ', colorIcon: Colors.yellowAccent),
-  GreenGradientCard(icon: Icons.sentiment_dissatisfied_rounded, text: '۳ تا تمرین داری ', colorIcon: Color(0XFFF5487F)),
-  GreenGradientCard(icon: Icons.timer_off_outlined, text: '۳ تا تمرین داری ', colorIcon: Colors.lightBlue)
-
+  GreenGradientCard(
+      icon: Icons.share_arrival_time,
+      text: '۳ تا تمرین داری ',
+      colorIcon: Colors.pink[400]!),
+  GreenGradientCard(
+      icon: Icons.heart_broken_outlined,
+      text: '۳ تا تمرین داری ',
+      colorIcon: Colors.red[700]!),
+  GreenGradientCard(
+      icon: Icons.star_border_outlined,
+      text: '۳ تا تمرین داری ',
+      colorIcon: Colors.yellowAccent),
+  GreenGradientCard(
+      icon: Icons.sentiment_dissatisfied_rounded,
+      text: '۳ تا تمرین داری ',
+      colorIcon: Color(0XFFF5487F)),
+  GreenGradientCard(
+      icon: Icons.timer_off_outlined,
+      text: '۳ تا تمرین داری ',
+      colorIcon: Colors.lightBlue)
 ];
 
 class GreenGradientCard extends StatelessWidget {
   final IconData icon;
   final String text;
   final Color colorIcon;
-  GreenGradientCard({required this.icon, required this.text, required this.colorIcon});
+  GreenGradientCard(
+      {required this.icon, required this.text, required this.colorIcon});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 128,
       margin: EdgeInsets.all(5.0),
-      // فاصله کارت‌ها از تمامی جهات
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF008000), // سبز چمنی
-            Color(0xFF32cd32), // سبز لیمویین
+            Color(0xFF008000),
+            Color(0xFF32cd32),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -232,14 +240,14 @@ class GreenGradientCard extends StatelessWidget {
         children: [
           Icon(
             icon,
-            size: 30, // اندازه آیکون
+            size: 30, 
             color: colorIcon,
           ),
           SizedBox(height: 8),
           Text(
             text,
             style: TextStyle(
-              fontSize: 14, // اندازه فونت
+              fontSize: 14, 
               color: Colors.white,
             ),
           ),
@@ -328,10 +336,7 @@ class CurrentTasks extends StatelessWidget {
           Text(
             formattedDate,
             style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-              fontWeight: FontWeight.w500
-            ),
+                fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500),
           ),
         ],
       ),
