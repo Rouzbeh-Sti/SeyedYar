@@ -1,4 +1,2 @@
-1,1,2,false,,,0.0,taklifap
-1,2,,true,,,0.0,taklifap
-2,2,7,false,ba,ehd,0.0,taklif itp
-2,1,,false,,,0.0,taklif itp
+2,1,,false,,,0.0,ap
+1,1,,false,,,0.0,tahlil

@@ -53,4 +53,12 @@ public class Admin {
         assignment.setEstimatedTime(newEstimatedTime);
         FileController.changeSpecifiedField("src\\database\\assignmentList.txt", assignment.getAssignmentID(), 5, newEstimatedTime);
     }
+    public static void createNews(String title, String content, int newsID, String url ) {
+        new News(title, content, newsID, url, true);
+    }
+
+    // متد حذف خبر
+    public static void deleteNews(News news) {
+        News.deleteNews(news);
+    }
 }

@@ -4,7 +4,7 @@ import 'package:shamsi_date/shamsi_date.dart';
 
 class NewsPage extends StatelessWidget {
   final String name;
-  final int  studentID;
+  final int studentID;
 
   NewsPage({required this.name, required this.studentID});
 
@@ -57,18 +57,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // گرفتن تاریخ شمسی فعلی
     final jDate = Jalali.now();
-
-    // نمایش تاریخ شمسی در قالب دلخواه
     String formattedDate = "${jDate.day} ${jDate.formatter.mN} ${jDate.year}";
 
     return Scaffold(
       backgroundColor: Color(0xFFD8F3DC),
-      // appBar: AppBar(
-      //   backgroundColor: Color(0xFFD8F3DC),
-      //   title: Text('News'),
-      // ),
       body: Column(
         children: [
           SizedBox(height: 20),
@@ -89,18 +82,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 100,
                     margin: EdgeInsets.symmetric(horizontal: 8.0),
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                      ),
+                      border: Border.all(width: 1),
                       color: _selectedIndex == index
                           ? Colors.green[700]
                           : Colors.green[300],
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
                         BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 5,
-                            offset: Offset(0, 3)),
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
                       ],
                     ),
                     child: Center(
@@ -120,7 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Container(
-              // width: 200,
               height: 40,
               decoration: BoxDecoration(
                 color: Colors.green[50],
@@ -133,7 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              // padding: EdgeInsets.all(12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -222,6 +212,7 @@ class CustomCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print('sdw');
         if (URL != null && URL!.isNotEmpty) {
           launchURL(URL!);
         }
@@ -308,12 +299,19 @@ class CustomCardWidget extends StatelessWidget {
     );
   }
 
+
   void launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication, // این خط برای باز کردن URL در مرورگر خارجی است
+      );
     } else {
+      print('Could not launch $url');
       throw 'Could not launch $url';
     }
   }
+
 }
+

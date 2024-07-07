@@ -3,10 +3,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileController {
-    public static void loadObjects(){
-        File file=new File("src\\database");
+    public static void loadObjects() {
+        File file = new File("src\\database");
         if (!file.exists())
-          file.mkdir();
+            file.mkdir();
         readTeacherList();
         readCourseList();
         readAssignmentList();
@@ -17,7 +17,7 @@ public class FileController {
 
     private static void readTaskList() {
         checkFileExists("src\\database\\taskList.txt");
-        try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\taskList.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\smmah\\OneDrive\\Desktop\\Ap_project\\AP-Flutter-Project\\src\\database\\taskList.txt"))) {
             String line;
             String[] info;
             while ((line = reader.readLine()) != null) {
@@ -74,7 +74,7 @@ public class FileController {
             String[] info;
             while ((line= reader.readLine())!=null){
                 info=line.split(",");
-                new Course(info[1],Integer.parseInt(info[0]),Teacher.getTeacherById(Integer.parseInt(info[2])),Integer.parseInt(info[3]),false);
+                new Course(info[1],Integer.parseInt(info[0]),Teacher.getTeacherById(Integer.parseInt(info[2])),0,false);
             }
         }catch (Exception e){
             System.out.println("Errorcourse: "+e.getStackTrace());
@@ -143,11 +143,12 @@ public class FileController {
     }
 
     public static void AddToFile(String input,String fileName){
-        try(FileWriter fileWriter=new FileWriter(fileName,true)) {
+        try(FileWriter fileWriter = new FileWriter(fileName,true)) {
         fileWriter.write(input+"\n");
         fileWriter.flush();
         }catch (Exception e){
             System.out.println("Error: "+ e.getStackTrace());
+            e.printStackTrace();
         }
     }
     public static void deleteSpecifiedIDFromFile(int ID,String fileName){

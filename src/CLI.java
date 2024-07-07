@@ -85,7 +85,9 @@ public class CLI {
             System.out.println("10 - Add a student to a course");
             System.out.println("11 - Remove a student from a course");
             System.out.println("12 - Set a student score in a course");
-            System.out.println("13 - Back to main menu");
+            System.out.println("13 - Create a News");
+            System.out.println("14 - Delete a Delete");
+            System.out.println("15 - Back to main menu");
             input=scanner.nextInt();
             if (input>=1 && input<=13)
                 check=false;
@@ -505,6 +507,68 @@ public class CLI {
                 adminMenu();
                 break;
             case 13:
+                checkValidID=true;
+                do {
+                    System.out.println("Create a News. \n");
+                    System.out.println("Enter News ID or press '0' button to back to admin menu: ");
+                    scanner.nextLine();
+                    int ID = scanner.nextInt();
+                    try {
+                        if (ID == 0) {
+                            clearScreen();
+                            adminMenu();
+                            break;
+                        }
+                    } catch (NumberFormatException e) {
+                    }
+
+                    System.out.println("Enter News Title: ");
+                    String title = scanner.nextLine();
+
+                    System.out.println("Enter News Content: ");
+                    String content = scanner.nextLine();
+
+                    System.out.println("Enter News URL: ");
+                    String url = scanner.nextLine();
+
+                    if (News.checkValidID(ID)) {
+                        clearScreen();
+                        System.out.println("ERROR: News ID Already Exists.");
+                        Thread.sleep(1500);
+                    } else {
+                        clearScreen();
+                        Admin.createNews(title, content, ID, url);
+                        checkValidID = false;
+                    }
+                    clearScreen();
+                } while (checkValidID);
+                adminMenu();
+                break;
+            case 14:
+                checkValidID=true;
+                do {
+                    System.out.println("Delete a News. \n");
+                    System.out.println("Enter News ID or press '0' button to back to admin menu : ");
+                    int newsID = scanner.nextInt();
+                    if(newsID == 0){
+                        clearScreen();
+                        adminMenu();
+                        break;
+                    }
+                    if (News.checkValidID(newsID)){
+                        clearScreen();
+                        System.out.println("ERROR: News ID not valid.");
+                        Thread.sleep(1500);
+                    } else {
+                        clearScreen();
+                        Admin.deleteNews(News.getNewsById(newsID));
+                        checkValidID=false;
+                    }
+                    clearScreen();
+                }while (checkValidID);
+                adminMenu();
+                break;
+            case 15:
                 clearScreen();
                 printAdminOrTeacher();
                 break;

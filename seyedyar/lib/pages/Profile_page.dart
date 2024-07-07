@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> fetchProfileData() async {
     try {
-      final socket = await Socket.connect('192.168.1.199', 8080);
+      final socket = await Socket.connect('192.168.1.52', 8080);
       socket.write("GET: studentProfile~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
@@ -612,7 +612,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _changeName(String newName) async {
     try {
-      final socket = await Socket.connect('192.168.1.199', 8080);
+      final socket = await Socket.connect('192.168.1.13', 8080);
       socket.write("UPDATE: changeName~${widget.studentID}~$newName\u0000");
       await socket.flush();
       socket.close();
@@ -633,7 +633,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _updatePassword(
       BuildContext context, String currentPassword, String newPassword) async {
     try {
-      final socket = await Socket.connect('192.168.1.199', 8080);
+      final socket = await Socket.connect('192.168.1.13', 8080);
       socket.write(
           "UPDATE: password~${widget.studentID}~$currentPassword~$newPassword\u0000");
 
