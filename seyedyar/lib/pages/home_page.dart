@@ -34,6 +34,9 @@ class _homePageState extends State<homePage> {
   @override
   Widget build(BuildContext context) {
     String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    Duration totalRemainingTime = calculateTotalRemainingTime();
+    String totalRemainingTimeString =
+        formatTotalRemainingTime(totalRemainingTime);
 
     return WillPopScope(
       onWillPop: () async {
@@ -109,6 +112,18 @@ class _homePageState extends State<homePage> {
                             Colors.redAccent)),
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        child: buildSummaryCard(
+                      "Time to Finish",
+                      totalRemainingTimeString,
+                      Icons.access_time,
+                      Colors.lightBlue,
+                    ))
+                  ],
+                ),
                 SizedBox(height: 20),
                 CurrentTasks(formattedDate: formattedDate),
                 Container(
@@ -144,6 +159,26 @@ class _homePageState extends State<homePage> {
         ),
       ),
     );
+  }
+
+  Duration calculateTotalRemainingTime() {
+    Duration totalDuration = Duration();
+
+    for (var item in section1Items) {
+      DateTime taskDateTime = DateTime.parse("${item.date} ${item.time}");
+      if (taskDateTime.isAfter(DateTime.now())) {
+        totalDuration += taskDateTime.difference(DateTime.now());
+      }
+    }
+
+    return totalDuration;
+  }
+
+  String formatTotalRemainingTime(Duration duration) {
+    int days = duration.inDays;
+    int hours = duration.inHours % 24;
+    int minutes = duration.inMinutes % 60;
+    return '${days}d ${hours}h ${minutes}m';
   }
 
   Future<void> fetchSummaryData() async {
