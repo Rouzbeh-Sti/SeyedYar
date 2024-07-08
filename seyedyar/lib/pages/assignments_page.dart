@@ -26,7 +26,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
 
     if (result != null) {
       setState(() {
-        selectedFileName = result.files.single.name; // Store the file name
+        selectedFileName = result.files.single.name;
       });
     }
   }
@@ -225,6 +225,7 @@ class _AssignmentPageState extends State<AssignmentPage> {
                   buildDetailRow('Due Time:', assignment.dueTime),
                   buildDetailRow(
                       'Status:', assignment.isActive ? "Active" : "Inactive"),
+                  buildDetailRow('Score:', assignment.score.toString()),
                   buildEditableRow(
                       context,
                       'Estimated Time:',

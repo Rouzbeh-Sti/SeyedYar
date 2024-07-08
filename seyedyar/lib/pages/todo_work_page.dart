@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:seyedyar/main.dart';
 
 class ListItem {
   String title;
@@ -94,6 +96,31 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> scheduleNotification(String title, String dateTime) async {
+    DateTime scheduledDate = DateTime.parse(dateTime);
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+      playSound: true,
+    );
+
+    var platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.schedule(
+      0,
+      'Task Time Finished',
+      title,
+      scheduledDate,
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+    );
+  }
+
   void addTask(String title, String dateTime) async {
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -135,6 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           fetchTasks();
         });
+        await scheduleNotification(title, dateTime);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Task added successfully")));
       } else {
@@ -162,6 +190,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
       if (response.startsWith("200~")) {
         fetchTasks();
+        if (!isActive) {
+          await flutterLocalNotificationsPlugin.cancel(0);
+        } else {
+          String dateTime = "${item.date} ${item.time}:00";
+          await scheduleNotification(item.title, dateTime);
+        }
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(response.split("~")[1])));
@@ -186,6 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
       String response = String.fromCharCodes(responseBytes).trim();
 
       if (response.startsWith("200~")) {
+        await flutterLocalNotificationsPlugin.cancel(0);
         fetchTasks();
       } else {
         ScaffoldMessenger.of(context)

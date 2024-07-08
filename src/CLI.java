@@ -87,9 +87,10 @@ public class CLI {
             System.out.println("12 - Set a student score in a course");
             System.out.println("13 - Create a News");
             System.out.println("14 - Delete a news");
-            System.out.println("15 - Back to main menu");
+            System.out.println("15 - Set a score for a student's assignment");
+            System.out.println("16 - Back to main menu");
             input=scanner.nextInt();
-            if (input>=1 && input<=15)
+            if (input>=1 && input<=16)
                 check=false;
             clearScreen();
         }while (check);
@@ -570,6 +571,55 @@ public class CLI {
                 adminMenu();
                 break;
             case 15:
+                checkValidID = true;
+                do {
+                    System.out.println("Set a score for a student's assignment \n");
+                    System.out.println("Enter Student's ID or press '0' button to back to admin menu : ");
+                    scanner.nextLine();
+                    int studentID = scanner.nextInt();
+                    if (studentID == 0) {
+                        clearScreen();
+                        adminMenu();
+                        break;
+                    }
+                    System.out.println("Enter Assignment ID or press '0' button to back to admin menu : ");
+                    int assignmentID = scanner.nextInt();
+                    if (assignmentID == 0) {
+                        clearScreen();
+                        adminMenu();
+                        break;
+                    }
+                    System.out.println("Enter Score : ");
+                    double score = scanner.nextDouble();
+                    if (!Student.checkValidID(studentID)) {
+                        clearScreen();
+                        System.out.println("ERROR: Student ID is not valid !");
+                        Thread.sleep(1500);
+                    } else if (!Assignment.checkValidID(assignmentID)) {
+                        clearScreen();
+                        System.out.println("ERROR: Assignment ID is not valid !");
+                        Thread.sleep(1500);
+                    } else if (StudentAssignment.getStudentAssignment(studentID, assignmentID) == null) {
+                        clearScreen();
+                        System.out.println("This student doesn't have this assignment.");
+                        Thread.sleep(1500);
+                    } else if (score < 0 || score > 20) {
+                        clearScreen();
+                        System.out.println("ERROR: Score is not valid !");
+                        Thread.sleep(1500);
+                    } else {
+                        clearScreen();
+                        StudentAssignment studentAssignment = StudentAssignment.getStudentAssignment(studentID, assignmentID);
+                        studentAssignment.setScore(score);
+                        System.out.println("Score has been set successfully!");
+                        checkValidID = false;
+                        Thread.sleep(1000);
+                    }
+                    clearScreen();
+                } while (checkValidID);
+                adminMenu();
+                break;
+            case 16:
                 clearScreen();
                 printAdminOrTeacher();
                 break;
@@ -590,7 +640,7 @@ public class CLI {
             System.out.println("6 - Change a Assignment's Deadline");
             System.out.println("7 - back to main menu");
             input = Integer.parseInt(scanner.next());
-            if (input>=1 && input<=7)
+            if (input>=1 && input<=8)
                 check = false;
             clearScreen();
         }while (check);
@@ -814,7 +864,8 @@ public class CLI {
                 Thread.sleep(1500);
                 clearScreen();
                 teacherMenu(teacher);
-                break;                case 5:
+                break;
+                case 5:
                 condition = true;
                 do{
                     System.out.println("please enter assignmentId or '0' to back to teacher menu : ");
@@ -873,7 +924,64 @@ public class CLI {
                 } while (condition);
                 teacherMenu(teacher);
                 break;
-                case 7:
+            case 7:
+                condition = true;
+                do {
+                    System.out.println("Set a score for a student's assignment \n");
+                    System.out.println("Enter Student's ID or press '0' button to back to teacher menu : ");
+                    scanner.nextLine();
+                    int studentID = scanner.nextInt();
+                    if (studentID == 0) {
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    System.out.println("Enter Assignment ID or press '0' button to back to teacher menu : ");
+                    int assignmentID = scanner.nextInt();
+                    if (assignmentID == 0) {
+                        clearScreen();
+                        teacherMenu(teacher);
+                        break;
+                    }
+                    System.out.println("Enter Score : ");
+                    double score = scanner.nextDouble();
+                    if (!Student.checkValidID(studentID)) {
+                        clearScreen();
+                        System.out.println("ERROR: Student ID is not valid !");
+                        Thread.sleep(1500);
+                    } else if (!Assignment.checkValidID(assignmentID)) {
+                        clearScreen();
+                        System.out.println("ERROR: Assignment ID is not valid !");
+                        Thread.sleep(1500);
+                    } else if (StudentAssignment.getStudentAssignment(studentID, assignmentID) == null) {
+                        clearScreen();
+                        System.out.println("This student doesn't have this assignment.");
+                        Thread.sleep(1500);
+                    } else if (score < 0 || score > 20) {
+                        clearScreen();
+                        System.out.println("ERROR: Score is not valid !");
+                        Thread.sleep(1500);
+                    } else {
+                        Assignment assignment = Assignment.getAssignmentById(assignmentID);
+                        if (assignment != null && assignment.course != null && assignment.course.teacher.getTeacherID() != teacher.getTeacherID()) { // Assuming course has a getTeacherID method
+                            clearScreen();
+                            System.out.println("ERROR: You do not have this course.");
+                            Thread.sleep(1500);
+                        } else {
+                            clearScreen();
+                            StudentAssignment studentAssignment = StudentAssignment.getStudentAssignment(studentID, assignmentID);
+                            studentAssignment.setScore(score);
+                            System.out.println("Score has been set successfully!");
+                            condition = false;
+                            Thread.sleep(1000);
+                        }
+                    }
+                    clearScreen();
+                } while (condition);
+                teacherMenu(teacher);
+                break;
+
+            case 8:
                 printAdminOrTeacher();
                 break;
         }
