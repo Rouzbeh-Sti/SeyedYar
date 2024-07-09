@@ -88,7 +88,7 @@ public class FileController {
             String[] info;
             while ((line= reader.readLine())!=null){
                 info=line.split(",");
-                new Course(info[1],Integer.parseInt(info[0]),Teacher.getTeacherById(Integer.parseInt(info[2])),0,false);
+                new Course(info[1],Integer.parseInt(info[0]),Teacher.getTeacherById(Integer.parseInt(info[2])),Integer.parseInt(info[3]),false);
             }
         }catch (Exception e){
             System.out.println("Errorcourse: "+e.getStackTrace());

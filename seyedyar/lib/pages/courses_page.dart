@@ -62,10 +62,9 @@ class _CoursesPageState extends State<CoursesPage> {
 
   void addCourse(String courseId) async {
     try {
-      final serverSocket = await Socket.connect('192.168.1.13', 8080);
+      final serverSocket = await Socket.connect('192.168.148.145', 8080);
       String message = "ADD: course~${widget.studentId}~$courseId\u0000";
-      print(
-          "Sending message: $message"); // Add this line to debug the message being sent
+      print("Sending message: $message");
       serverSocket.write(message);
 
       List<int> responseBytes = [];
@@ -76,7 +75,7 @@ class _CoursesPageState extends State<CoursesPage> {
 
       if (response.startsWith("200~")) {
         setState(() {
-          fetchCourses(); // Refresh the course list after adding
+          fetchCourses();
         });
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Course added successfully")));

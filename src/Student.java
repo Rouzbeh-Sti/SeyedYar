@@ -291,7 +291,7 @@ public class Student {
     public int getNumberOfTasks() {
         int numberOfTasks = 0;
         for (Task task : Task.allTasks) {
-            if (task.forStudentID == this.studentID) {
+            if (task.forStudentID == this.studentID && task.isActive) {
                 numberOfTasks++;
             }
         }

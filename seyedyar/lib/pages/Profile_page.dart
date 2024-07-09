@@ -168,7 +168,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   _buildInfoRow("Current Term", "1402-1403"),
                   _buildInfoRow("Number of Units", "$units"),
-                  _buildInfoRow("Overall GPA", "$overallScore"),
+                  _buildInfoRow(
+                      "Overall GPA", "${overallScore.toStringAsFixed(2)}"),
                 ],
               ),
             ),
