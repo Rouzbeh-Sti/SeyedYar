@@ -126,6 +126,9 @@ public class Student {
                 coursesToList += course.courseID + "#" + course.students.get(this) + "#";
             }
             FileController.changeSpecifiedField("src\\database\\studentList.txt", this.getStudentID(), 3, coursesToList);
+            for (Assignment assignment : crs.assignments) {
+                new StudentAssignment(assignment.assignmentID,studentID,assignment.estimatedTime, assignment.isActive, assignment.description,assignment.givingDescription,assignment.score,true);
+            }
         }
     }
 
@@ -140,6 +143,10 @@ public class Student {
                 coursesToList += course.courseID + "#" + course.students.get(this) + "#";
             }
             FileController.changeSpecifiedField("src\\database\\studentList.txt", this.getStudentID(), 3, coursesToList);
+            for (Assignment assignment : crs.assignments) {
+                new StudentAssignment(assignment.assignmentID,studentID,assignment.estimatedTime, assignment.isActive, assignment.description,assignment.givingDescription,assignment.score,true);
+            }
+
         }
     }
 

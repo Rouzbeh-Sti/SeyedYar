@@ -25,6 +25,7 @@ public class Assignment {
         this.description = "";
         this.givingDescription = "";
         allAssignments.add(this);
+        course.addAssignment(this);
         if (addToFile) {
             String output = assignmentID + "," + name + "," + course.courseID + "," + dueDate + "," + dueTime + "," + estimatedTime + "," + isActive + "," + description + "," + givingDescription + "," + score;
             FileController.AddToFile(output, "src\\database\\assignmentList.txt");
@@ -87,31 +88,14 @@ public class Assignment {
         this.estimatedTime = estimatedTime;
     }
 
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
-    }
 
-    public void setDueTime(String dueTime) {
-        this.dueTime = dueTime;
-    }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-        FileController.changeSpecifiedField("src/database/assignmentList.txt", this.assignmentID, 6, String.valueOf(isActive));
-    }
     public void setDescription(String description) {
         this.description = description;
         FileController.changeSpecifiedField("src\\database\\assignmentList.txt", this.assignmentID, 7, description);
     }
 
-    public void setGivingDescription(String givingDescription) {
-        this.givingDescription = givingDescription;
-        FileController.changeSpecifiedField("src\\database\\assignmentList.txt", this.assignmentID, 8, givingDescription);
-    }
-    public void setScore(double score) {
-        this.score = score;
-        FileController.changeSpecifiedField("src/database/assignmentList.txt", this.assignmentID, 9, String.valueOf(score));
-    }
+
+
     public static List<Assignment> getAssignmentsByCourse(int courseID) {
         List<Assignment> courseAssignments = new ArrayList<>();
         for (Assignment assignment : allAssignments) {
