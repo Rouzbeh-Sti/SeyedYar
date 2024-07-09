@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchNews() async {
     try {
-      final socket = await Socket.connect('192.168.1.199', 8080);
+      final socket = await Socket.connect('192.168.148.145', 8080);
       socket.write("GET: news\u0000");
 
       List<int> responseBytes = [];

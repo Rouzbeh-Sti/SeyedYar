@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void fetchTasks() async {
     try {
-      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      final serverSocket = await Socket.connect('192.168.148.145', 8080);
       serverSocket.write("GET: studentTasks~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     try {
-      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      final serverSocket = await Socket.connect('192.168.148.145', 8080);
       serverSocket
           .write("ADD: task~${widget.studentID}~$title~$dateTime\u0000");
 
@@ -149,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void updateTaskStatus(ListItem item, bool isActive) async {
     try {
-      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      final serverSocket = await Socket.connect('192.168.148.145', 8080);
       serverSocket.write(
           "UPDATE: task~${widget.studentID}~${item.title}~$isActive\u0000");
 
@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void deleteTask(ListItem item) async {
     try {
-      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      final serverSocket = await Socket.connect('192.168.148.145', 8080);
       serverSocket
           .write("DELETE: task~${widget.studentID}~${item.title}\u0000");
 
@@ -316,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void updateTaskDateTime(ListItem item, String dateTime) async {
     try {
-      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      final serverSocket = await Socket.connect('192.168.148.145', 8080);
       serverSocket.write(
           "UPDATE: taskDateTime~${widget.studentID}~${item.title}~$dateTime\u0000");
 

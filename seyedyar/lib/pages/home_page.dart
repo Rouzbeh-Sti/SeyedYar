@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:seyedyar/StudentAssignment.dart';
 import 'todo_work_page.dart';
 
 class homePage extends StatefulWidget {
   final String name;
   final int studentID;
-
   homePage({required this.name, required this.studentID});
 
   @override
@@ -29,6 +29,7 @@ class _homePageState extends State<homePage> {
     super.initState();
     fetchSummaryData();
     fetchTasks();
+    fetchAssignments();
   }
 
   @override
@@ -64,25 +65,31 @@ class _homePageState extends State<homePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                        child: buildSummaryCard(
-                            'Highest Score',
-                            summaryData['highestScore'].toString(),
-                            Icons.trending_up,
-                            Colors.green)),
+                      child: buildSummaryCard(
+                        'Highest Score',
+                        summaryData['highestScore'].toString(),
+                        Icons.trending_up,
+                        Colors.green,
+                      ),
+                    ),
                     SizedBox(width: 10),
                     Expanded(
-                        child: buildSummaryCard(
-                            'Lowest Score',
-                            summaryData['lowestScore'].toString(),
-                            Icons.trending_down,
-                            Colors.red)),
+                      child: buildSummaryCard(
+                        'Lowest Score',
+                        summaryData['lowestScore'].toString(),
+                        Icons.trending_down,
+                        Colors.red,
+                      ),
+                    ),
                     SizedBox(width: 10),
                     Expanded(
-                        child: buildSummaryCard(
-                            'Assignments',
-                            summaryData['numberOfAssignments'].toString(),
-                            Icons.assignment,
-                            Colors.blue)),
+                      child: buildSummaryCard(
+                        'Assignments',
+                        summaryData['numberOfAssignments'].toString(),
+                        Icons.assignment,
+                        Colors.blue,
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -90,38 +97,44 @@ class _homePageState extends State<homePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Expanded(
-                        child: buildSummaryCard(
-                            'Tasks',
-                            summaryData['numberOfTasks'].toString(),
-                            Icons.task,
-                            Colors.orange)),
+                      child: buildSummaryCard(
+                        'Tasks',
+                        summaryData['numberOfTasks'].toString(),
+                        Icons.task,
+                        Colors.orange,
+                      ),
+                    ),
                     SizedBox(width: 10),
                     Expanded(
-                        child: buildSummaryCard(
-                            'Courses',
-                            summaryData['numberOfCourses'].toString(),
-                            Icons.school,
-                            Colors.purple)),
+                      child: buildSummaryCard(
+                        'Courses',
+                        summaryData['numberOfCourses'].toString(),
+                        Icons.school,
+                        Colors.purple,
+                      ),
+                    ),
                     SizedBox(width: 10),
                     Expanded(
-                        child: buildSummaryCard(
-                            'Past Due',
-                            summaryData['numberOfAssignmentsPastDue']
-                                .toString(),
-                            Icons.assignment_late,
-                            Colors.redAccent)),
+                      child: buildSummaryCard(
+                        'Past Due',
+                        summaryData['numberOfAssignmentsPastDue'].toString(),
+                        Icons.assignment_late,
+                        Colors.redAccent,
+                      ),
+                    ),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Expanded(
-                        child: buildSummaryCard(
-                      "Time to Finish",
-                      totalRemainingTimeString,
-                      Icons.access_time,
-                      Colors.lightBlue,
-                    ))
+                      child: buildSummaryCard(
+                        "Time to Finish",
+                        totalRemainingTimeString,
+                        Icons.access_time,
+                        Colors.lightBlue,
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -141,13 +154,70 @@ class _homePageState extends State<homePage> {
                   ),
                 ),
                 Container(
-                  height: 100,
+                  height: completedAssignments.length * 150.0,
                   child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: completedExercises.length,
+                    itemCount: completedAssignments.length,
                     itemBuilder: (context, index) {
-                      return CompletedExerciseCard(
-                        exercise: completedExercises[index],
+                      final assignment = completedAssignments[index];
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          shape: BoxShape.rectangle,
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomRight,
+                            end: Alignment.topLeft,
+                            colors: [
+                              Color(0xFFD8F3DC),
+                              Color(0xFFb7e4c7),
+                              Color(0xFF95d5b2),
+                              Color(0xFF74c69d),
+                              Color(0xFF52b788),
+                            ],
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 5.0,
+                              offset: Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              assignment.name,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              "Course: ${assignment.courseName}",
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              "Due: ${assignment.dueDate} ${assignment.dueTime}",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            Text(
+                              "Score: ${assignment.score}",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -162,16 +232,33 @@ class _homePageState extends State<homePage> {
   }
 
   Duration calculateTotalRemainingTime() {
-    Duration totalDuration = Duration();
+    DateTime now = DateTime.now();
+    DateTime? latestTime;
 
     for (var item in section1Items) {
       DateTime taskDateTime = DateTime.parse("${item.date} ${item.time}");
-      if (taskDateTime.isAfter(DateTime.now())) {
-        totalDuration += taskDateTime.difference(DateTime.now());
+      if (taskDateTime.isAfter(now)) {
+        if (latestTime == null || taskDateTime.isAfter(latestTime)) {
+          latestTime = taskDateTime;
+        }
       }
     }
 
-    return totalDuration;
+    for (var assignment in fetchedAssignments.where((a) => a.isActive)) {
+      DateTime assignmentDateTime =
+          DateTime.parse("${assignment.dueDate} ${assignment.dueTime}");
+      if (assignmentDateTime.isAfter(now)) {
+        if (latestTime == null || assignmentDateTime.isAfter(latestTime)) {
+          latestTime = assignmentDateTime;
+        }
+      }
+    }
+
+    if (latestTime == null) {
+      return Duration();
+    }
+
+    return latestTime.difference(now);
   }
 
   String formatTotalRemainingTime(Duration duration) {
@@ -183,7 +270,7 @@ class _homePageState extends State<homePage> {
 
   Future<void> fetchSummaryData() async {
     try {
-      final socket = await Socket.connect('192.168.1.199', 8080);
+      final socket = await Socket.connect('192.168.148.145', 8080);
       socket.write("GET: studentSummary~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
@@ -215,9 +302,61 @@ class _homePageState extends State<homePage> {
     }
   }
 
+  Future<void> fetchAssignments() async {
+    try {
+      final socket = await Socket.connect('192.168.148.145', 8080);
+      socket.write("GET: studentAssignments~${widget.studentID}\u0000");
+
+      List<int> responseBytes = [];
+      await socket.listen((data) {
+        responseBytes.addAll(data);
+      }).asFuture();
+      String response = String.fromCharCodes(responseBytes).trim();
+
+      if (response.startsWith("200~")) {
+        String data = response.split('~')[1];
+        if (data.isEmpty) {
+          setState(() {
+            completedAssignments = [];
+          });
+        } else {
+          List<String> assignmentsData = data.split(";");
+          fetchedAssignments = assignmentsData
+              .where((assignmentData) => assignmentData.isNotEmpty)
+              .map((assignmentData) {
+            List<String> parts = assignmentData.split(",");
+            return StudentAssignment(
+              assignmentID: int.parse(parts[0]),
+              studentID: widget.studentID,
+              name: parts[1],
+              courseName: parts[2],
+              dueDate: parts[3],
+              dueTime: parts[4],
+              estimatedTime: parts[5],
+              isActive: parts[6] == 'true',
+              description: parts[7],
+              givingDescription: parts[8],
+              score: double.parse(parts[9]),
+            );
+          }).toList();
+
+          setState(() {
+            completedAssignments =
+                fetchedAssignments.where((item) => !item.isActive).toList();
+          });
+        }
+      } else {
+        throw Exception(response.split('~')[1]);
+      }
+      socket.close();
+    } catch (e) {
+      throw Exception('Failed to load assignments: $e');
+    }
+  }
+
   void fetchTasks() async {
     try {
-      final serverSocket = await Socket.connect('192.168.1.199', 8080);
+      final serverSocket = await Socket.connect('192.168.148.145', 8080);
       serverSocket.write("GET: studentTasks~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
@@ -310,13 +449,8 @@ class _homePageState extends State<homePage> {
   }
 }
 
-final List<String> completedExercises = [
-  'Exercise 1',
-  'Exercise 2',
-  'Exercise 3',
-  'Exercise 4',
-  'Exercise 5',
-];
+List<StudentAssignment> completedAssignments = [];
+List<StudentAssignment> fetchedAssignments = [];
 
 class CompletedExerciseCard extends StatelessWidget {
   final String exercise;

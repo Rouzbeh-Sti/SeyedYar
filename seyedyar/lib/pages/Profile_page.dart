@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> fetchProfileData() async {
     try {
-      final socket = await Socket.connect('192.168.1.199', 8080);
+      final socket = await Socket.connect('192.168.148.145', 8080);
       socket.write("GET: studentProfile~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
