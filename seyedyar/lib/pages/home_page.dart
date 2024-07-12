@@ -270,7 +270,7 @@ class _homePageState extends State<homePage> {
 
   Future<void> fetchSummaryData() async {
     try {
-      final socket = await Socket.connect('192.168.148.145', 8080);
+      final socket = await Socket.connect('192.168.30.145', 8080);
       socket.write("GET: studentSummary~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
@@ -304,7 +304,7 @@ class _homePageState extends State<homePage> {
 
   Future<void> fetchAssignments() async {
     try {
-      final socket = await Socket.connect('192.168.148.145', 8080);
+      final socket = await Socket.connect('192.168.30.145', 8080);
       socket.write("GET: studentAssignments~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
@@ -356,7 +356,7 @@ class _homePageState extends State<homePage> {
 
   void fetchTasks() async {
     try {
-      final serverSocket = await Socket.connect('192.168.148.145', 8080);
+      final serverSocket = await Socket.connect('192.168.30.145', 8080);
       serverSocket.write("GET: studentTasks~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];

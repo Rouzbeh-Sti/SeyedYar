@@ -26,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<String> signUserUp() async {
     print("clicked");
     try {
-      final serverSocket = await Socket.connect("192.168.148.145", 8080);
+      final serverSocket = await Socket.connect("192.168.30.145", 8080);
       print("Connected to server");
       serverSocket.write(
           "GET: signup~${studentIDController.text}~${passwordController.text}~${nameController.text}\u0000");

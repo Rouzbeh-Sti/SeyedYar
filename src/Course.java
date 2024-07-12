@@ -39,12 +39,6 @@ public class Course {
         return Objects.hash(courseID);
     }
 
-    public void printStudents() {
-        List<Student> temp = students.keySet().stream().toList();
-        for (int i = 0; i < temp.size(); i++) {
-            System.out.println((i + 1) + "- " + temp.get(i).getName());
-        }
-    }
 
     public void addStudent(Student stu) {
         if (!students.keySet().contains(stu)) {
@@ -57,17 +51,6 @@ public class Course {
         students.remove(stu);
         stu.removeCourse(this);
     }
-
-    public Double topScore() {
-        List<Student> temp = students.keySet().stream().toList();
-        Double topScore = temp.get(0).courses.get(this);
-        for (Student student : temp) {
-            if (topScore < student.courses.get(this))
-                topScore = student.courses.get(this);
-        }
-        return topScore;
-    }
-
     public void addAssignment(Assignment asg) {
         assignments.add(asg);
     }

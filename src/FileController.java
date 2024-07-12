@@ -9,9 +9,9 @@ public class FileController {
             file.mkdir();
         readTeacherList();
         readCourseList();
+        readStudentList();
         readAssignmentList();
         readStudentAssignmentList();
-        readStudentList();
         readTaskList();
         readNewsList();
     }
@@ -97,6 +97,7 @@ public class FileController {
     public static void readAssignmentList() {
         checkFileExists("src\\database\\assignmentList.txt");
         try (BufferedReader reader = new BufferedReader(new FileReader("src\\database\\assignmentList.txt"))) {
+            deleteFileContent("src\\database\\studentAssignmentList.txt");
             String line;
             String[] info;
             while ((line = reader.readLine()) != null) {

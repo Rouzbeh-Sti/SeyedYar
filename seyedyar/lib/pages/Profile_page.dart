@@ -31,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> fetchProfileData() async {
     try {
-      final socket = await Socket.connect('192.168.148.145', 8080);
+      final socket = await Socket.connect('192.168.30.145', 8080);
       socket.write("GET: studentProfile~${widget.studentID}\u0000");
 
       List<int> responseBytes = [];
@@ -270,6 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           TextButton(
             onPressed: () {
+              print("Clicked on delete");
               _deleteAccount(context);
             },
             child: Text("Delete"),
@@ -281,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _deleteAccount(BuildContext context) async {
     try {
-      final serverSocket = await Socket.connect("192.168.1.55", 8080);
+      final serverSocket = await Socket.connect("192.168.30.145", 8080);
       print("Connected to server");
       serverSocket.write("DELETE: deleteStudent~${widget.studentID}\u0000");
       serverSocket.flush();
@@ -349,8 +350,7 @@ class _ProfilePageState extends State<ProfilePage> {
             top: 20,
           ),
           child: Container(
-            height:
-                MediaQuery.of(context).size.height * 0.35, // Adjust height here
+            height: MediaQuery.of(context).size.height * 0.35,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -616,7 +616,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _changeName(String newName) async {
     try {
-      final socket = await Socket.connect('192.168.1.13', 8080);
+      final socket = await Socket.connect('192.168.30.145', 8080);
       socket.write("UPDATE: changeName~${widget.studentID}~$newName\u0000");
       await socket.flush();
       socket.close();
@@ -643,7 +643,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _updatePassword(
       BuildContext context, String currentPassword, String newPassword) async {
     try {
-      final socket = await Socket.connect('192.168.1.13', 8080);
+      final socket = await Socket.connect('192.168.30.145', 8080);
       socket.write(
           "UPDATE: password~${widget.studentID}~$currentPassword~$newPassword\u0000");
 
@@ -656,7 +656,7 @@ class _ProfilePageState extends State<ProfilePage> {
       socket.close();
 
       if (response.startsWith('200~')) {
-        Navigator.pop(context); // Close the dialog before showing Flushbar
+        Navigator.pop(context);
         Flushbar(
           message: 'Password updated successfully',
           duration: Duration(seconds: 3),
